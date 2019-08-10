@@ -1,0 +1,441 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link rel="stylesheet" href="./css/element.css">
+    <link rel="stylesheet" href="./css/iconfont/iconfont.css">
+    <link rel="stylesheet" href="./css/home.min.css">
+    <title>湖南移动首页展示</title>
+</head>
+
+<body>
+    <div id="main" class="homeShow">
+        <el-row class="content" :gutter="20">
+            <el-col :span="7" class="left">
+                <div class="electricity">
+                    <div id="electricity"></div>
+                </div>
+                <div class="resource">
+                    <div id="resource"></div>
+                </div>
+                <div class="flux">
+                    <div id="flux"></div>
+                </div>
+            </el-col>
+            <el-col :span="10" class="middle">
+                <div class="infomation">
+                    <div id="map" class="map"></div>
+                </div>
+            </el-col>
+            <el-col :span="7" class="right">
+                <div class="business">
+                    <div class="content">
+                        <div class="header" @click="handleCity">
+                            <h4 class="city" data-id="dpq" :class="isActive=='dpq'?'active':''">东片区</h4>
+                            <h4 class="city" data-id="xs" :class="isActive=='xs'?'active':''">星沙</h4>
+                            <h4 class="city" data-id="xpq" :class="isActive=='xpq'?'active':''">西片区</h4>
+                            <h4 class="city" data-id="yg" :class="isActive=='yg'?'active':''">云谷</h4>
+                        </div>
+                        <div class="addBusiness">
+                            <div class="add-header">
+                                <div class="line"></div>
+                                <p class="title">新增业务</p>
+                                <div class="line"></div>
+                            </div>
+                            <div class="items">
+                                <div class="item">
+                                    <div class="count blue0">72</div>
+                                    <div class="text blue">机架</div>
+                                </div>
+                                <div class="item">
+                                    <div class="count yellow0">34</div>
+                                    <div class="text yellow">机位</div>
+                                </div>
+                                <div class="item">
+                                    <div class="count skyblue0">1216</div>
+                                    <div class="text skyblue">带宽</div>
+                                </div>
+                                <div class="item">
+                                    <div class="count skygreen0">103</div>
+                                    <div class="text skygreen">IP</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="expireBusiness">
+                            <div class="expire-header">
+                                <div class="line"></div>
+                                <p class="title">到期业务</p>
+                                <div class="line"></div>
+                            </div>
+                            <div class="items">
+                                <div class="item">
+                                    <div class="count blue0">69</div>
+                                    <div class="text blue">机架</div>
+                                </div>
+                                <div class="item">
+                                    <div class="count yellow0">24</div>
+                                    <div class="text yellow">机位</div>
+                                </div>
+                                <div class="item">
+                                    <div class="count skyblue0">178</div>
+                                    <div class="text skyblue">带宽</div>
+                                </div>
+                                <div class="item">
+                                    <div class="count skygreen0">20</div>
+                                    <div class="text skygreen">IP</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="cabinet-visitor">
+                            <div class="visitor-header">
+                                <div class="line"></div>
+                                <p class="title">机房访客</p>
+                                <div class="line"></div>
+                            </div>
+                            <div class="items items-different">
+                                <div class="item">
+                                    <div class="count yellow0">0</div>
+                                    <div class="text yellow">参观人数</div>
+                                </div>
+                                <div class="item middle-items">
+                                    <div class="count blue0">1270</div>
+                                    <div class="text blue">施工人数</div>
+                                </div>
+                                <div class="item">
+                                    <div class="count skyblue0">657</div>
+                                    <div class="text skyblue">接待人数</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="wait-work">
+                    <h3 class="title">待办任务</h3>
+                    <div class="content">
+                        <div class="items">
+                            <el-badge :value="11" class="item violet">
+                                <i class="iconfont icon-renzhengshouquan"></i>
+                                <p class="text">认证授权</p>
+                            </el-badge>
+                            <el-badge :value="9" class="item red">
+                                <i class="iconfont icon-churukou"></i>
+                                <p class="text">出入预约</p>
+                            </el-badge>
+                            <el-badge class="item yellow">
+                                <i class="iconfont icon-yuyue"></i>
+                                <p class="text">参观预约</p>
+                            </el-badge>
+                            <el-badge class="item green">
+                                <i class="iconfont icon-renquntouxiangshixin"></i>
+                                <p class="text">用户建议</p>
+                            </el-badge>
+                        </div>
+                        <div class="items">
+                            <el-badge class="item blue">
+                                <i class="iconfont icon-ceshi"></i>
+                                <p class="text">测试资源</p>
+                            </el-badge>
+                            <el-badge class="item green">
+                                <i class="iconfont icon-dingdan"></i>
+                                <p class="text">业务订单</p>
+                            </el-badge>
+                            <el-badge class="item red">
+                                <i class="iconfont icon-shandiandianliang"></i>
+                                <p class="text">上电预约</p>
+                            </el-badge>
+                            <el-badge class="item violet">
+                                <i class="iconfont icon-zhongduanzhongqi"></i>
+                                <p class="text">设备重启</p>
+                            </el-badge>
+                        </div>
+                    </div>
+                </div>
+            </el-col>
+        </el-row>
+    </div>
+    <script src="./js/es6-shim.min.js"></script>
+    <script src="./js/vue.js"></script>
+    <script src="./js/element.js"></script>
+    <script src="./js/echarts/dist/echarts.min.js"></script>
+    <script src="./js/hunan.js"></script>
+    <script>
+        var v = new Vue({
+            el: "#main",
+            data: {
+                isActive: "dpq"
+            },
+            methods: {
+                handleCity: function (e) {
+                    if (
+                        e.target.nodeName.toLowerCase() === 'h4'
+                    ) {
+                        this.isActive = e.target.dataset.id
+                    }
+                },
+                mapCharts: function (id) {
+                    var myChart = echarts.init(document.getElementById(id));
+                    var geoCoordMap = {
+                        张家界市: [110.479921, 29.127401],
+                        常德市: [111.691347, 29.040225],
+                        岳阳市: [113.132855, 29.37029],
+                        吉首市: [109.739735, 28.314296],
+                        益阳市: [112.355042, 28.570066],
+                        长沙市: [112.982279, 28.19409],
+                        怀化市: [109.97824, 27.550082],
+                        娄底市: [112.008497, 27.728136],
+                        湘潭市: [112.944052, 27.82973],
+                        株洲市: [113.151737, 27.835806],
+                        邵阳市: [111.46923, 27.237842],
+                        衡阳市: [112.607693, 26.900358],
+                        永州市: [111.608019, 26.434516],
+                        郴州市: [113.032067, 25.793589],
+                    };
+                    var data = [{
+                            name: "张家界市",
+                            value: 199
+                        },
+                        {
+                            name: "常德市",
+                            value: 186
+                        },
+                        {
+                            name: "岳阳市",
+                            value: 11
+                        },
+                        {
+                            name: "吉首市",
+                            value: 199
+                        },
+                        {
+                            name: "益阳市",
+                            value: 199
+                        },
+                        {
+                            name: "长沙市",
+                            value: 199
+                        },
+                        {
+                            name: "怀化市",
+                            value: 199
+                        },
+                        {
+                            name: "娄底市",
+                            value: 123
+                        },
+                        {
+                            name: "湘潭市",
+                            value: 199
+                        },
+                        {
+                            name: "株洲市",
+                            value: 146
+                        },
+                        {
+                            name: "邵阳市",
+                            value: 199
+                        },
+                        {
+                            name: "衡阳市",
+                            value: 109
+                        },
+                        {
+                            name: "永州市",
+                            value: 116
+                        },
+                        {
+                            name: "郴州市",
+                            value: 199
+                        },
+                    ];
+                    var convertData = function (data) {
+                        var res = [];
+                        for (var i = 0; i < data.length; i++) {
+                            var geoCoord = geoCoordMap[data[i].name];
+                            if (geoCoord) {
+                                res.push({
+                                    name: data[i].name,
+                                    value: geoCoord.concat(data[i].value)
+                                });
+                            }
+                        }
+                        return res;
+                    };
+
+                    let option = {
+                        title: {
+                            text: "机房数据实时概览",
+                            left: 0,
+                            textStyle: {
+                                fontSize: 14,
+                                fontWeight: "normal",
+                                color: "#666666"
+                            },
+                        },
+
+                        visualMap: {
+                            show: true,
+                            min: 0,
+                            max: 200,
+                            right: '10%',
+                            calculable: true,
+                            text: ['高', '低'],
+                            seriesIndex: [1],
+                            inRange: {
+                                color: ['rgb(18,168,127)', 'rgb(33,150,243)'] // 蓝绿
+                            }
+                        },
+                        tooltip: {
+                            padding: 10,
+                            backgroundColor: "#fff",
+                            trigger: 'item',
+                            textStyle: {
+                                color: '#000',
+                                decoration: 'none',
+                            },
+                            formatter: function (params) {
+                                var tipHtml = "";
+                                if (params.componentSubType == "scatter") {
+                                    tipHtml =
+                                        `${params.data.name}:${params.data.value[2]}`;
+                                } else {
+                                    tipHtml =
+                                        `${params.data.name}:${params.value}`;
+                                }
+
+                                return tipHtml;
+                            }
+                        },
+                        geo: {
+                            show: true,
+                            map: "hunan",
+                            label: {
+                                normal: {
+                                    show: false
+                                },
+                                emphasis: {
+                                    show: false,
+                                }
+                            },
+                            roam: true,
+                            itemStyle: {
+                                normal: {
+                                    areaColor: '#023677',
+                                    borderColor: '#1180c7',
+                                },
+                                emphasis: {
+                                    areaColor: 'green',
+                                }
+                            }
+                        },
+                        series: [{
+                                type: 'scatter',
+                                left: '150',
+                                coordinateSystem: 'geo',
+                                data: convertData(data),
+                                symbolSize: 10,
+                                showEffectOn: 'render',
+                                rippleEffect: {
+                                    brushType: 'stroke'
+                                },
+                                hoverAnimation: true,
+                                label: {
+                                    normal: {
+                                        formatter: '{b}',
+                                        position: 'bottom',
+                                        color: '#fff',
+                                        show: true
+                                    }
+                                },
+                                itemStyle: {
+                                    normal: {
+                                        color: '#fff',
+                                        borderColor: "#03E2E2",
+                                        borderWidth: 2,
+                                        borderType: "solid"
+                                    }
+                                },
+                                zlevel: 6
+                            },
+                            {
+                                type: 'map',
+                                map: "hunan",
+                                geoIndex: 0,
+                                showLegendSymbol: false, // 存在legend时显示
+                                label: {
+                                    normal: {
+                                        show: true
+                                    },
+                                    emphasis: {
+                                        show: false,
+                                        textStyle: {
+                                            color: '#fff'
+                                        }
+                                    }
+                                },
+                                roam: true,
+                                itemStyle: {
+                                    normal: {
+                                        areaColor: '#031525',
+                                        borderColor: '#3B5077',
+                                    },
+                                    emphasis: {
+                                        areaColor: '#2B91B7'
+                                    }
+                                },
+                                animation: false,
+                                data: data
+                            },
+                            {
+                                type: 'scatter',
+                                coordinateSystem: 'geo',
+                                data: convertData([{
+                                    name: "长沙市",
+                                    value: 100
+                                }]),
+                                symbolSize: 10,
+                                symbol: "path://M511.232009 66.412572 616.888374 407.136697 958.801581 407.136697 682.188612 617.71674 787.844977 958.441888 511.232009 747.860822 234.618017 958.441888 340.275405 617.71674 63.662437 407.136697 405.57462 407.136697Z",
+                                itemStyle: {
+                                    color: "#03E2E2"
+                                },
+                                zlevel: 10
+                            },
+                            {
+                                type: 'scatter',
+                                left: '150',
+                                coordinateSystem: 'geo',
+                                data: convertData(data),
+                                symbolSize: 4,
+                                showEffectOn: 'render',
+                                rippleEffect: {
+                                    brushType: 'stroke'
+                                },
+                                hoverAnimation: true,
+                                label: {
+                                    normal: {
+                                        show: false
+                                    }
+                                },
+                                itemStyle: {
+                                    normal: {
+                                        color: '#03E2E2',
+                                    }
+                                },
+                                zlevel:10
+                            }
+
+                        ]
+                    };
+                    myChart.setOption(option);
+                }
+            },
+            mounted: function () {
+                this.mapCharts("map")
+            }
+        })
+    </script>
+</body>
+
+</html>
