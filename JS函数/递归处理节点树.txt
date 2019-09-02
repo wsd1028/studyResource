@@ -1,0 +1,11 @@
+ private AddChildNode(node) {
+    node.children = [];
+    this.nodeMess.forEach(item => {
+      if (item.fatherNodeId == node.nodeId) {
+        let child = item;
+        node.children.push(child);
+        this.AddChildNode(child);
+      }
+    });
+    return node;
+  }

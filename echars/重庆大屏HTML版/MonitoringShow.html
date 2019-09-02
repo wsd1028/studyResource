@@ -768,6 +768,12 @@
                 this.noopschecharts("pdu", "#12A87F", "rgba(18,168,127,0.5)", "rgba(18,168,127,0)");
                 this.noopschecharts("entrance", "#FD5D93", "rgba(253,93,147,0.5)",
                     "rgba(253,93,147,0)");
+                    window.addEventListener("resize", function() {
+            that.myChart1.resize();
+            that.myChart2.resize();
+            that.myChart3.resize();
+            that.myChart4.resize();
+          });
             }
         })
     </script>

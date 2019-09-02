@@ -187,7 +187,12 @@
         var v = new Vue({
             el: "#main",
             data: {
-                isActive: "dpq"
+                isActive: "dpq",
+                myChart1: null,
+                myChart2: null,
+                myChart3: null,
+                myChart4: null,
+
             },
             methods: {
                 handleCity: function (e) {
@@ -199,7 +204,7 @@
                 },
                 //机柜耗电量
                 electricityCharts: function (id) {
-                    var myChart = echarts.init(document.getElementById(id));
+                    this.myChart1 = echarts.init(document.getElementById(id));
                     var dpqData = [1.9, 15, 14, 17, 83, 87];
                     var xsData = [13.9, 15.9, 11.1, 18.27, 48.3, 75];
                     var xpqData = [12.6, 25.9, 9.0, 62.4, 28.7, 100];
@@ -545,7 +550,7 @@
 
                         ]
                     };
-                    myChart.setOption(option, false);
+                    this.myChart1.setOption(option, false);
                 },
                 //机柜资源容量
                 resourceCharts: function (
@@ -555,7 +560,7 @@
                     color,
                     content
                 ) {
-                    var myChart = echarts.init(document.getElementById(id));
+                    this.myChart2 = echarts.init(document.getElementById(id));
                     let data = [{
                         use: 50,
                         all: 100,
@@ -656,11 +661,11 @@
                             }],
                         }
                     };
-                    myChart.setOption(option, true);
+                    this.myChart2.setOption(option, true);
                 },
                 //省公司机房流量
                 fluxCharts: function (id) {
-                    var myChart = echarts.init(document.getElementById(id));
+                    this.myChart3 = echarts.init(document.getElementById(id));
                     var lcData = [1.9, 15, 14, 17, 83, 87];
                     var lrData = [13.9, 15.9, 11.1, 18.27, 48.3, 75];
                     var XData = ["1月", "2月", "3月", "4月", "5月", "6月"];
@@ -718,11 +723,11 @@
                             }
                         },
                         legend: {
+                            data:['cpu','内存'],
                             icon: 'roundRect',
                             righr: "center",
                             top: "10%",
                             itemGap: 40
-
                         },
                         grid: {
                             left: '10%',
@@ -879,10 +884,10 @@
                             },
                         ]
                     };
-                    myChart.setOption(option, false);
+                    this.myChart3.setOption(option, false);
                 },
                 mapCharts: function (id) {
-                    var myChart = echarts.init(document.getElementById(id));
+                    this.myChart4 = echarts.init(document.getElementById(id));
                     var geoCoordMap = {
                         张家界市: [110.479921, 29.127401],
                         常德市: [111.691347, 29.040225],
@@ -892,8 +897,8 @@
                         长沙市: [112.982279, 28.19409],
                         怀化市: [109.97824, 27.550082],
                         娄底市: [112.008497, 27.728136],
-                        湘潭市: [112.944052, 27.82973],
-                        株洲市: [113.151737, 27.835806],
+                        湘潭市: [112.544052, 27.82973],
+                        株洲市: [113.551737, 27.035806],
                         邵阳市: [111.46923, 27.237842],
                         衡阳市: [112.607693, 26.900358],
                         永州市: [111.608019, 26.434516],
@@ -1029,7 +1034,7 @@
                             roam: true,
                             itemStyle: {
                                 normal: {
-                                    
+
                                     borderColor: '#fff',
                                 },
                                 emphasis: {
@@ -1134,10 +1139,11 @@
                             }
                         ]
                     };
-                    myChart.setOption(option);
+                    this.myChart4.setOption(option);
                 }
             },
             mounted: function () {
+                let that = this;
                 this.electricityCharts("electricity");
                 this.resourceCharts(
                     "resource",
@@ -1147,7 +1153,13 @@
                     ""
                 );
                 this.fluxCharts("flux");
-                this.mapCharts("map")
+                this.mapCharts("map");
+                window.addEventListener("resize", function () {
+                    that.myChart1.resize();
+                    that.myChart2.resize();
+                    that.myChart3.resize();
+                    that.myChart4.resize();
+                });
             }
         })
     </script>

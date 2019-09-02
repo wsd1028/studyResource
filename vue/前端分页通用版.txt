@@ -1,0 +1,37 @@
+ //前端分页通用版
+          getPageData: function(rule) {
+            let { data, pageIndex0, pageSize0 } = rule;
+            let pageData = []; //分页数据
+            let pageIndex = this[pageIndex0] - 1;
+            let pageSize = this[pageSize0];
+            let count = 0;
+            for (let i = 0; i < data.length; i++) {
+              if (data[i + pageIndex * pageSize]) {
+                pageData.push(data[i + pageIndex * pageSize]);
+                count++;
+              } else {
+                break;
+              }
+              if (count > pageSize - 1) {
+                break;
+              }
+            }
+            return pageData;
+          },
+
+
+使用：
+数据结构
+routerMessData: [], //总数据
+routerMessPageData: [], //分页后
+routerDataCount: 0,
+routerPageSize: 5,
+routerPageIndex: 1,
+
+调用
+
+that.routerMessPageData = that.getPageData({
+              data: that.routerMessData,
+              pageSize0: "routerPageSize",
+              pageIndex0: "routerPageIndex"
+            });

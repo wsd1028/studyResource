@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>流程图</title>
+    <style>
+        #myCanvas,
+        #myCanvas2 {
+            border: 1px solid black;
+        }
+    </style>
+</head>
+
+<body>
+    <canvas id="myCanvas" width="500" height="500"></canvas>
+    <canvas id="myCanvas2" width="500" height="500"></canvas>
+
+    <script src="./myDrawCanvas.js"></script>
+    <script>
+        // canvas基础样式
+        // let itemWidth = 80; //每一项的宽
+        // let itemHeight = 40; //每一项的高
+        // let rowWidth = 30; //行间距
+        // let coleWidth = 40; //列间距
+        let data = [{
+            id: "3-3",
+            type: "rule",
+            text: "是少时所所否",
+            row: 3,
+            cole: 3,
+            line: [{
+                targetId: "1-3",
+                direction: [{
+                    type: "top",
+                    value: 1
+                }]
+            }],
+        }, {
+            id: "1-3",
+            type: "step",
+            text: "是少时诵诗书所所所否",
+            row: 2,
+            cole: 3,
+            line: [{
+                targetId: "",
+                direction: []
+            }],
+        }, ]
+        let canvas = document.getElementById('myCanvas');
+        let context = canvas.getContext('2d');
+        for (let i = 0; i < data.length; i++) {
+            let item = data[i];
+            if (item.type == "step") {
+                drawStep(context, item)
+            }
+            if (item.type == "start" || item.type == "end") {
+                drawStartEnd(context, item)
+            }
+            if (item.type == "rule") {
+                drawRhombus(context, item)
+            }
+            if (item.line.length > 0) {
+                let startLocation = {
+                    x1: (item.cole - 1) * (itemWidth + coleWidth) + itemWidth / 2,
+                    y1: (item.row - 1) * (itemHeight + rowWidth)
+                };
+                let endLocation = {
+                    x2: 0,
+                    y2: 0
+                };
+                for (let m = 0; m < item.line.length; m++) {
+                    let xIndex = parseInt(item.line[m].targetId.split("-")[0]);
+                    let yIndex = parseInt(item.line[m].targetId.split("-")[1]);
+                    
+                    for (let n = 0; n < item.line[m].direction.length; n++) {
+                        if (item.line[m].direction[n].type == "top") {
+                            endLocation.x2 = startLocation.x1;
+                            endLocation.y2 = startLocation.y1 - item.value * (itemHeight +
+                                rowWidth) - itemHeight;
+                            drawLine(context, startLocation, endLocation);
+                            startLocation.x1 = endLocation.x2;
+                            startLocation.y1 = endLocation.y2;
+                        }
+                    }
+                }
+            }
+        }
+        let canvas2 = document.getElementById('myCanvas2');
+        let context2 = canvas2.getContext('2d');
+        context2.arc(25, 25, 10, 180, 180, true);
+        context2.fillStyle = "red";
+        context2.fill();
+    </script>
+</body>
+
+</html>

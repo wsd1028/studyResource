@@ -1,0 +1,33 @@
+//前端分页：
+  private getMapPageData() {
+    let mapData = this.mapData;//总数据
+    let mapPageData = [];//分页数据
+    let pageIndex = this.pageIndex - 1;
+    let count = 0;
+    for (let i = 0; i < mapData.length; i++) {
+      if (mapData[i + pageIndex * this.pageSize]) {
+        mapPageData.push(mapData[i + pageIndex * this.pageSize]);
+        count++;
+      } else {
+        break;
+      }
+      if (count > this.pageSize - 1) {
+        break;
+      }
+    }
+    this.mapPageData = mapPageData;
+  }
+
+
+//vue监听界面刷新
+  async mounted() {
+    this.handleSearch(1);
+    this.getCustTypes();
+    this.getCustManagers();
+    window.addEventListener("beforeunload", e => this.beforeunloadHandler(e));
+  }
+  beforeDestroy() {
+    window.removeEventListener("beforeunload", e =>
+      this.beforeunloadHandler(e)
+    );
+  }

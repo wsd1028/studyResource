@@ -1,6 +1,13 @@
 https://echarts.baidu.com/echarts2/doc/doc.html
 https://v-charts.js.org/#/ring
 
+//视口改变，重新绘制
+window.onresize = function () {
+                        myChart.resize();
+                        //myChart1.resize();    //若有多个图表变动，可多写(多个图标时，不能使用重复使用)on事件会覆盖
+                    }
+
+
 
 a,b,c,d
 其中变量a、b、c在不同图表类型下代表数据含义为：

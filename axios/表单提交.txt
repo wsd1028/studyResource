@@ -1,0 +1,12 @@
+  var fd = new FormData();
+            fd.append("group_ids", data);
+            let url =
+              "/v5/NewHome/DataProvider.aspx?m=SaveGroupInfoIndexPermission";
+            axios.post(url, fd).then(function(res) {
+              that.$message({
+                type: "success",
+                message: "修改首页查看权限成功!"
+              });
+              that.getLimitData();
+              that.mainLoading = false;
+            });

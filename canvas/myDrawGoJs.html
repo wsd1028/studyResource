@@ -1,0 +1,912 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="UTF-8">
+  <title>流程图</title>
+  <meta name="description" content="Interactive flowchart diagram implemented by GoJS in JavaScript for HTML." />
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+</head>
+
+<body onload="init()">
+  <div id="sample">
+    <div style="width: 100%; display: flex; justify-content: space-between">
+      <div id="myPaletteDiv"
+        style="width: 150px; margin-right: 2px; background-color: whitesmoke; border: solid 1px black"></div>
+      <div style="flex-grow: 1; height: 750px; border: solid 1px black">
+        <div id="stateCanvas" style=" height: 100px; "></div>
+        <div id="myDiagramDiv" style=" height: 650px; border: solid 1px black"></div>
+      </div>
+    </div>
+    <button id="SaveButton" onclick="save()">保存</button>
+    <button onclick="load()">Load</button>
+    <textarea id="mySavedModel" style="width:100%;height:300px"></textarea>
+  </div>
+  <script src="./js/go.js"></script>
+  <script>
+    let itemWidth = 120; //每一项的宽
+    let itemHeight = 40; //每一项的高
+    let rowWidth = 70; //行间距
+    let coleWidth = 140; //列间距
+    let textColor = "white"
+    let mainColor = "green";
+
+    function init() {
+      if (window.goSamples) goSamples();
+      var $ = go.GraphObject.make;
+
+      //流程图
+      myDiagram =
+        $(go.Diagram, "myDiagramDiv", {
+          "LinkDrawn": showLinkLabel,
+          "LinkRelinked": showLinkLabel,
+          "undoManager.isEnabled": true
+        });
+      myDiagram.addDiagramListener("Modified", function (e) {
+        var button = document.getElementById("SaveButton");
+        if (button) button.disabled = !myDiagram.isModified;
+        var idx = document.title.indexOf("*");
+        if (myDiagram.isModified) {
+          if (idx < 0) document.title += "*";
+        } else {
+          if (idx >= 0) document.title = document.title.substr(0, idx);
+        }
+      });
+      //状态div(右上canvas)
+      stateCanvas =
+        $(go.Diagram, "stateCanvas", {
+          "LinkDrawn": showLinkLabel,
+          "LinkRelinked": showLinkLabel,
+          "undoManager.isEnabled": true,
+          isReadOnly: true,
+          allowSelect: false,
+          contentAlignment: go.Spot.Center,
+          initialPosition: new go.Point(0, 0)
+        });
+      stateCanvas.addDiagramListener("Modified", function (e) {
+        var button = document.getElementById("SaveButton");
+        if (button) button.disabled = !stateCanvas.isModified;
+        var idx = document.title.indexOf("*");
+        if (stateCanvas.isModified) {
+          if (idx < 0) document.title += "*";
+        } else {
+          if (idx >= 0) document.title = document.title.substr(0, idx);
+        }
+      });
+      stateCanvas.nodeTemplateMap.add("Step",
+        $(go.Node, "Table", nodeStyle(),
+          $(go.Panel, "Auto",
+            $(go.Shape, "Rectangle", {
+                fill: mainColor, //矩形
+                strokeWidth: 0,
+                width: 40, //宽度
+                height: 20 //高度
+              },
+              new go.Binding("figure", "figure"),
+              new go.Binding("fill", "fillColor"),
+              new go.Binding("strokeWidth", "stroke"),
+              new go.Binding("stroke", "strokeColor"),
+            ),
+          ),
+          makePort("T", go.Spot.Top, go.Spot.TopSide, false, true),
+          makePort("L", go.Spot.Left, go.Spot.LeftSide, true, true),
+          makePort("R", go.Spot.Right, go.Spot.RightSide, true, true),
+          makePort("B", go.Spot.Bottom, go.Spot.BottomSide, true, false)
+        ));
+      stateCanvas.linkTemplate =
+        $(go.Link, {
+            routing: go.Link.AvoidsNodes,
+            curve: go.Link.JumpOver,
+            corner: 5,
+            toShortLength: 4,
+            relinkableFrom: true,
+            relinkableTo: true,
+            reshapable: true,
+            resegmentable: true,
+            selectionAdorned: false
+          },
+          new go.Binding("points").makeTwoWay(),
+          $(go.Shape, {
+            isPanelMain: true,
+            strokeWidth: 8,
+            stroke: "transparent",
+            name: "HIGHLIGHT"
+          }),
+          $(go.Shape, {
+              isPanelMain: true,
+              stroke: mainColor,
+              strokeWidth: 2
+            },
+            new go.Binding("stroke", "textColor"),
+          ),
+          $(go.Shape, {
+              toArrow: "standard",
+              strokeWidth: 0,
+              fill: mainColor
+            },
+            new go.Binding("fill", "textColor"),
+          ),
+          $(go.Panel, "Auto", {
+              visible: false,
+              name: "LABEL",
+              segmentIndex: 2,
+              segmentFraction: 0.5
+            },
+            new go.Binding("visible", "visible").makeTwoWay(),
+            $(go.Shape, "RoundedRectangle", {
+              fill: "#fff",
+              strokeWidth: 0
+            }),
+            $(go.TextBlock, "Yes", { //条件线条文字
+                textAlign: "center",
+                font: "12px helvetica, arial, sans-serif",
+                stroke: mainColor,
+                editable: true
+              },
+              new go.Binding("stroke", "textColor"),
+              new go.Binding("text").makeTwoWay())
+          )
+        );
+      //状态div结束(右上canvas)
+      function nodeStyle() {
+        return [
+          new go.Binding("location", "loc", go.Point.parse).makeTwoWay(go.Point.stringify),
+          {
+            locationSpot: go.Spot.Center
+          }
+        ];
+      }
+
+      function makePort(name, align, spot, output, input) {
+        var horizontal = align.equals(go.Spot.Top) || align.equals(go.Spot.Bottom);
+        return $(go.Shape, {
+          fill: "transparent",
+          strokeWidth: 0,
+          width: horizontal ? NaN : 8,
+          height: !horizontal ? NaN : 8,
+          alignment: align,
+          stretch: (horizontal ? go.GraphObject.Horizontal : go.GraphObject.Vertical),
+          portId: name,
+          fromSpot: spot,
+          fromLinkable: output,
+          toSpot: spot,
+          toLinkable: input,
+          cursor: "pointer",
+          mouseEnter: function (e, port) {
+            if (!e.diagram.isReadOnly) port.fill = "rgba(255,0,255,0.5)";
+          },
+          mouseLeave: function (e, port) {
+            port.fill = "transparent";
+          }
+        });
+      }
+
+      //流程图正文canvas开始绘制
+      function textStyle() {
+        return {
+          font: " 10px Helvetica, Arial, sans-serif",
+          stroke: textColor
+        }
+      }
+      //自定义图形 (开始结束)
+      go.Shape.defineFigureGenerator("StartEnd", function (shape, w, h) {
+        var p1 = h / 2; // default corner size
+        if (shape !== null) {
+          var param1 = shape.parameter1;
+          if (!isNaN(param1) && param1 >= 0) p1 = param1; // can't be negative or NaN
+        }
+        var geo = new go.Geometry();
+        geo.add(new go.PathFigure(p1, 0)
+          .add(new go.PathSegment(go.PathSegment.Line, w - p1, 0))
+          .add(new go.PathSegment(go.PathSegment.Arc, -90, 180, w - p1, h - p1, p1, p1))
+          .add(new go.PathSegment(go.PathSegment.Line, p1, h))
+          .add(new go.PathSegment(go.PathSegment.Arc, 90, 180, p1, h - p1, p1, p1).close())
+        );
+        geo.spot1 = new go.Spot(0, 0, 0.3 * p1, 0);
+        geo.spot2 = new go.Spot(1, 1, -0.3 * p1, -0.3 * p1);
+        return geo;
+      });
+
+      //自定义图形 (文档)
+      go.Shape.defineFigureGenerator("Document", function (shape, w, h) {
+        var p1 = 10; // default corner size
+        if (shape !== null) {
+          var param1 = shape.parameter1;
+          if (!isNaN(param1) && param1 >= 0) p1 = param1; // can't be negative or NaN
+        }
+        var geo = new go.Geometry();
+        geo.add(new go.PathFigure(0, 0)
+          .add(new go.PathSegment(go.PathSegment.Line, w, 0))
+          .add(new go.PathSegment(go.PathSegment.Line, w, h - p1))
+          .add(new go.PathSegment(go.PathSegment.Arc, 0, -180, 3 / 4 * w, h, w / 4, h / 8))
+          .add(new go.PathSegment(go.PathSegment.Arc, 0, 180, 1 / 4 * w, h - 2, w / 4, h / 8).close())
+        );
+        geo.spot1 = new go.Spot(0, 0, 0.3 * p1, 0);
+        geo.spot2 = new go.Spot(1, 1, -0.3 * p1, -0.3 * p1);
+        return geo;
+      });
+      //矩形
+      myDiagram.nodeTemplateMap.add("Step",
+        $(go.Node, "Table", nodeStyle(),
+          $(go.Panel, "Auto",
+            $(go.Shape, "Rectangle", {
+                fill: mainColor,
+                strokeWidth: 0,
+                width: itemWidth, //宽度
+                height: itemHeight //高度
+              },
+              new go.Binding("figure", "figure"),
+              new go.Binding("fill", "state", function (state) {
+                let color = "";
+                if (state == 0) {
+                  color = "white";
+                }
+                if (state == 1) {
+                  color = mainColor;
+                }
+                if (state == 2) {
+                  color = "yellow";
+                }
+                return color;
+              }),
+              new go.Binding("strokeWidth", "state", function (state) {
+                let strokeWidth = 0;
+                if (state == 0) {
+                  strokeWidth = 1;
+                }
+
+                return strokeWidth;
+              }),
+              new go.Binding("stroke", "state", function (state) {
+                let color = "transparent";
+                if (state == 0) {
+                  color = mainColor;
+                }
+                return color;
+              }),
+            ),
+            $(go.TextBlock, textStyle(), {
+                maxSize: new go.Size(itemWidth, NaN),
+                wrap: go.TextBlock.WrapFit,
+                editable: true
+              },
+              new go.Binding("text").makeTwoWay(),
+              new go.Binding("stroke", "state", function (state) {
+                let color = "white";
+                if (state == 0) {
+                  color = "black";
+                }
+                return color;
+              }))
+          ),
+          makePort("T", go.Spot.Top, go.Spot.TopSide, false, true),
+          makePort("L", go.Spot.Left, go.Spot.LeftSide, true, true),
+          makePort("R", go.Spot.Right, go.Spot.RightSide, true, true),
+          makePort("B", go.Spot.Bottom, go.Spot.BottomSide, true, false)
+        ));
+      //菱形
+      myDiagram.nodeTemplateMap.add("Conditional",
+        $(go.Node, "Table", nodeStyle(),
+          $(go.Panel, "Auto",
+            $(go.Shape, "Diamond", {
+                fill: mainColor,
+                strokeWidth: 0,
+                width: itemWidth,
+                height: itemHeight
+              },
+              new go.Binding("figure", "figure"),
+              new go.Binding("strokeWidth", "state", function (state) {
+                let strokeWidth = 0;
+                if (state == 0) {
+                  strokeWidth = 1;
+                }
+
+                return strokeWidth;
+              }),
+              new go.Binding("fill", "state", function (state) {
+                let color = "";
+                if (state == 0) {
+                  color = "white";
+                }
+                if (state == 1) {
+                  color = mainColor;
+                }
+                if (state == 2) {
+                  color = "yellow";
+                }
+                return color;
+              }),
+              new go.Binding("stroke", "state", function (state) {
+                let color = "transparent";
+                if (state == 0) {
+                  color = mainColor;
+                }
+                return color;
+              }),
+            ),
+            $(go.TextBlock, textStyle(), {
+                maxSize: new go.Size(itemWidth, NaN),
+                wrap: go.TextBlock.WrapFit,
+                editable: true,
+              },
+              new go.Binding("text").makeTwoWay(),
+              new go.Binding("stroke", "state", function (state) {
+                let color = "white";
+                if (state == 0) {
+                  color = "black";
+                }
+                return color;
+              }))
+          ),
+          makePort("T", go.Spot.Top, go.Spot.Top, false, true),
+          makePort("L", go.Spot.Left, go.Spot.Left, true, true),
+          makePort("R", go.Spot.Right, go.Spot.Right, true, true),
+          makePort("B", go.Spot.Bottom, go.Spot.Bottom, true, false)
+        ));
+      //开始
+      myDiagram.nodeTemplateMap.add("Start",
+        $(go.Node, "Table", nodeStyle(),
+          $(go.Panel, "Auto",
+            $(go.Shape, "StartEnd", {
+                fill: mainColor,
+                strokeWidth: 0,
+                width: itemWidth,
+                height: itemHeight
+              },
+
+              new go.Binding("figure", "figure"),
+              new go.Binding("fill", "state", function (state) {
+                let color = "";
+                if (state == 0) {
+                  color = "white";
+                }
+                if (state == 1) {
+                  color = mainColor;
+                }
+                if (state == 2) {
+                  color = "yellow";
+                }
+                return color;
+              }),
+              new go.Binding("strokeWidth", "state", function (state) {
+                let strokeWidth = 0;
+                if (state == 0) {
+                  strokeWidth = 1;
+                }
+
+                return strokeWidth;
+              }),
+              new go.Binding("stroke", "state", function (state) {
+                let color = "transparent";
+                if (state == 0) {
+                  color = mainColor;
+                }
+                return color;
+              }),
+
+            ),
+            $(go.TextBlock, "Start", textStyle(), {
+                textAlign: "center",
+                font: " 16px Helvetica, Arial, sans-serif",
+              },
+              new go.Binding("text"),
+              new go.Binding("stroke", "state", function (state) {
+                let color = "white";
+                if (state == 0) {
+                  color = "black";
+                }
+                return color;
+              }))
+          ),
+          makePort("L", go.Spot.Left, go.Spot.Left, true, false),
+          makePort("R", go.Spot.Right, go.Spot.Right, true, false),
+          makePort("B", go.Spot.Bottom, go.Spot.Bottom, true, false)
+        ));
+      //结束
+      myDiagram.nodeTemplateMap.add("End",
+        $(go.Node, "Table", nodeStyle(),
+          $(go.Panel, "Auto",
+            $(go.Shape, "StartEnd", {
+                fill: mainColor,
+                strokeWidth: 0,
+                width: itemWidth,
+                height: itemHeight
+              },
+              new go.Binding("figure", "figure"),
+              new go.Binding("fill", "state", function (state) {
+                let color = "";
+                if (state == 0) {
+                  color = "white";
+                }
+                if (state == 1) {
+                  color = mainColor;
+                }
+                if (state == 2) {
+                  color = "yellow";
+                }
+                return color;
+              }),
+              new go.Binding("strokeWidth", "state", function (state) {
+                let strokeWidth = 0;
+                if (state == 0) {
+                  strokeWidth = 1;
+                }
+
+                return strokeWidth;
+              }),
+              new go.Binding("stroke", "state", function (state) {
+                let color = "transparent";
+                if (state == 0) {
+                  color = mainColor;
+                }
+                return color;
+              }),
+
+            ),
+            $(go.TextBlock, "End", textStyle(), {
+                textAlign: "center",
+                font: " 16px Helvetica, Arial, sans-serif",
+              },
+              new go.Binding("text"),
+              new go.Binding("stroke", "state", function (state) {
+                let color = "white";
+                if (state == 0) {
+                  color = "black";
+                }
+                return color;
+              })
+            )
+          ),
+          makePort("T", go.Spot.Top, go.Spot.Top, false, true),
+          makePort("L", go.Spot.Left, go.Spot.Left, false, true),
+          makePort("R", go.Spot.Right, go.Spot.Right, false, true)
+        ));
+      //文件
+      myDiagram.nodeTemplateMap.add("Document",
+        $(go.Node, "Auto", nodeStyle(),
+          $(go.Shape, "Document", {
+            fill: mainColor,
+            strokeWidth: 0,
+            width: itemWidth,
+            height: itemHeight
+          }),
+          $(go.TextBlock, textStyle(), {
+              maxSize: new go.Size(200, NaN),
+              wrap: go.TextBlock.WrapFit,
+              textAlign: "center",
+              editable: true,
+              font: " 10px Helvetica, Arial, sans-serif",
+            },
+            new go.Binding("text").makeTwoWay(),
+            new go.Binding("stroke", "state", function (state) {
+              let color = "white";
+              if (state == 0) {
+                color = "black";
+              }
+              return color;
+            }))
+        ));
+      //线条
+      myDiagram.linkTemplate =
+        $(go.Link, {
+            routing: go.Link.AvoidsNodes,
+            curve: go.Link.JumpOver,
+            corner: 5,
+            toShortLength: 4,
+            relinkableFrom: true,
+            relinkableTo: true,
+            reshapable: true,
+            resegmentable: true,
+            mouseEnter: function (e, link) {
+              link.findObject("HIGHLIGHT").stroke = "rgba(30,144,255,0.2)";
+            },
+            mouseLeave: function (e, link) {
+              link.findObject("HIGHLIGHT").stroke = "transparent";
+            },
+            selectionAdorned: false
+          },
+          new go.Binding("points").makeTwoWay(),
+          $(go.Shape, {
+            isPanelMain: true,
+            strokeWidth: 8,
+            stroke: "transparent",
+            name: "HIGHLIGHT"
+          }),
+          $(go.Shape, {
+              isPanelMain: true,
+              stroke: mainColor,
+              strokeWidth: 2
+            },
+            new go.Binding("stroke", "isSelected", function (sel) {
+              return sel ? "dodgerblue" : mainColor;
+            }).ofObject()),
+          $(go.Shape, {
+            toArrow: "standard",
+            strokeWidth: 0,
+            fill: mainColor
+          }),
+          $(go.Panel, "Auto", {
+              visible: false,
+              name: "LABEL",
+              segmentIndex: 2,
+              segmentFraction: 0.5
+            },
+            new go.Binding("visible", "visible").makeTwoWay(),
+            $(go.Shape, "RoundedRectangle", {
+              fill: "#fff",
+              strokeWidth: 0
+            }),
+            $(go.TextBlock, "Yes", { //条件线条文字
+                textAlign: "center",
+                font: "12px helvetica, arial, sans-serif",
+                stroke: mainColor,
+                editable: true
+              },
+              new go.Binding("text").makeTwoWay())
+          )
+        );
+
+      function showLinkLabel(e) {
+        var label = e.subject.findObject("LABEL");
+        if (label !== null) label.visible = (e.subject.fromNode.data.category === "Conditional");
+      }
+      myDiagram.toolManager.linkingTool.temporaryLink.routing = go.Link.Orthogonal;
+      myDiagram.toolManager
+        .relinkingTool.temporaryLink.routing = go.Link.Orthogonal;
+      load();
+      //左侧canvas
+      myPalette =
+        $(go.Palette, "myPaletteDiv", {
+          nodeTemplateMap: myDiagram.nodeTemplateMap,
+          model: new go.GraphLinksModel([{
+              category: "Start",
+              text: "开始"
+            },
+            {
+              category: "Step",
+              text: "Step"
+            },
+            {
+              category: "Conditional",
+              text: "???"
+            },
+            {
+              category: "End",
+              text: "结束"
+            },
+            {
+              category: "Document",
+              text: "文件"
+            }
+          ])
+        });
+    }
+
+    function save() {
+      let obj = JSON.parse(myDiagram.model.toJson());
+      let obj2 = obj.linkDataArray;
+      let arr = [];
+
+      function AddChildNode(node) {
+        node.Childs = [];
+        obj2.forEach((item, index) => {
+          if (item.from == node.key) {
+            let child = {
+              key: item.to,
+              from: item.from,
+              to: item.to,
+              Id: item.to,
+              Fatherid: item.from,
+              fromPort: item.fromPort,
+              toPort: item.toPort,
+              LineTitle: item.text,
+
+              points: item.points
+            };
+            node.Childs.push(child);
+            arr.push(node.key);
+            if (findLoop(arr, child.to)) AddChildNode(child);
+          }
+        });
+        return node;
+      }
+
+      function findLoop(loopObj, item) {
+        if (loopObj.indexOf(item) > -1) {
+          return false;
+        }
+        return true;
+      }
+      console.log(
+        AddChildNode({
+          key: 1,
+          category: "Start",
+          loc: "-7.105427357601002e-15 -28",
+          color: "",
+          text: "开始",
+          state: 1
+        })
+      )
+      document.getElementById("mySavedModel").value = myDiagram.model.toJson();
+      myDiagram.isModified = false;
+    }
+
+    function load() {
+      //流程图正文canvas
+      let obj = {
+        Id: 1,
+        Fatherid: 0,
+        StepName: "开始",
+        StepType: 0,
+        LineTitle: "",
+        State: 1,
+        Childs: [{
+          Id: 2,
+          Fatherid: 1,
+          StepName: "提交申请",
+          StepType: 0,
+          LineTitle: "",
+          State: 1,
+          Childs: [{
+            Id: 3,
+            Fatherid: 2,
+            StepName: "网管审核",
+            StepType: 0,
+            LineTitle: "",
+            State: 1,
+            Childs: [{
+              Id: 4,
+              Fatherid: 3,
+              StepName: "审核是否通过",
+              StepType: 1,
+              LineTitle: "",
+              State: 1,
+              Childs: [{
+                  Id: 5,
+                  Fatherid: 4,
+                  StepName: "工程师配置",
+                  StepType: 0,
+                  LineTitle: "是",
+                  State: 2,
+                  Childs: [{
+                    Id: 7,
+                    Fatherid: 5,
+                    StepName: "业务完成确认",
+                    StepType: 0,
+                    LineTitle: "",
+                    State: 0,
+                    Childs: [{
+                      Id: 8,
+                      Fatherid: 7,
+                      StepName: "备案",
+                      StepType: 0,
+                      LineTitle: "",
+                      State: 0,
+                      Childs: [{
+                        Id: 9,
+                        Fatherid: 8,
+                        StepName: "结束",
+                        StepType: 0,
+                        LineTitle: "",
+                        State: 0,
+                        Childs: []
+                      }]
+                    }]
+                  }]
+                },
+                {
+                  Id: 6,
+                  Fatherid: 4,
+                  StepName: "调整申请",
+                  StepType: 1,
+                  LineTitle: "否",
+                  State: 1,
+                  Childs: [{
+                      Id: 2,
+                      Fatherid: 6,
+                      StepName: "提交申请",
+                      StepType: 0,
+                      LineTitle: "是",
+                      State: 1,
+                      Childs: []
+                    },
+                    {
+                      Id: 9,
+                      Fatherid: 6,
+                      StepName: "结束",
+                      StepType: 0,
+                      LineTitle: "否",
+                      State: 0,
+                      Childs: []
+                    }
+                  ]
+                }
+              ]
+            }]
+          }]
+        }]
+      };
+      let newObj = {
+        class: "go.GraphLinksModel",
+        linkFromPortIdProperty: "fromPort",
+        linkToPortIdProperty: "toPort",
+        nodeDataArray: [],
+        linkDataArray: []
+      };
+
+      function singleArrObj(oldArr, rule) {
+        let newArr = [];
+        for (var i = 0; i < oldArr.length; i++) {
+          var flag = true;
+          for (var j = 0; j < newArr.length; j++) {
+            let oldItem = oldArr[i];
+            let newItem = newArr[j];
+            if (oldItem[rule] == newItem[rule]) {
+              flag = false;
+            }
+          }
+          if (flag) {
+            newArr.push(oldArr[i]);
+          }
+        }
+        return newArr;
+      }
+
+      function sortByKey(array, key, updown) {
+        return array.sort(function (a, b) {
+          var x = a[key];
+          var y = b[key];
+          if (updown == "up") {
+            return x < y ? -1 : x > y ? 1 : 0;
+          }
+          if (updown == "down") {
+            return x < y ? 1 : x > y ? -1 : 0;
+          }
+        });
+      }
+
+      function test(obj) {
+        let type = "";
+        let visible = false;
+        let color = "";
+        if (obj.StepType == 1) {
+          type = "Conditional";
+        }
+        if (obj.StepType == 0) {
+          type = "Step";
+        }
+        if (obj.StepName == "开始") {
+          type = "Start";
+        }
+        if (obj.StepName == "结束") {
+          type = "End";
+        }
+
+
+        let nodeItem = {
+          key: obj.Id,
+          category: type,
+          loc: "",
+          color: color,
+          text: obj.StepName,
+          state: obj.State
+        };
+        let linkItem = {
+          from: obj.Fatherid,
+          to: obj.Id,
+          fromPort: "B",
+          toPort: "T",
+          visible: visible,
+          text: obj.LineTitle
+        };
+        newObj.nodeDataArray.push(nodeItem);
+        newObj.linkDataArray.push(linkItem);
+
+        if (obj.Childs.length > 0) {
+          for (let j = 0; j < obj.Childs.length; j++) {
+            test(obj.Childs[j]);
+          }
+        }
+      }
+      test(obj);
+      newObj.nodeDataArray = singleArrObj(newObj.nodeDataArray, "key");
+      newObj.nodeDataArray = sortByKey(newObj.nodeDataArray, "key", "up");
+      for (let i = 0; i < newObj.linkDataArray.length; i++) {
+        if (newObj.linkDataArray[i].text) {
+          newObj.linkDataArray[i].visible = true;
+        }
+      }
+      for (let i = 0; i < newObj.nodeDataArray.length; i++) {
+        let Xrandom = parseInt((parseInt(newObj.nodeDataArray[i].key) / 4));
+        let Yrandom = (parseInt(newObj.nodeDataArray[i].key) - 1);
+        let offset = 0;
+        if (Xrandom) {
+          offset = Xrandom * 50;
+        }
+        newObj.nodeDataArray[i].loc = Xrandom * coleWidth + " " + (Yrandom * rowWidth - offset);
+      }
+      myDiagram.model = go.Model.fromJson(newObj);
+      document.getElementById("mySavedModel").value = myDiagram.model.toJson();
+
+      //流程图状态栏
+      let stateObj = {
+        "class": "GraphLinksModel",
+        "linkFromPortIdProperty": "fromPort",
+        "linkToPortIdProperty": "toPort",
+        "nodeDataArray": [{
+            "key": 1,
+            "category": "Step",
+            "loc": "0 0",
+            "fillColor": "green",
+          },
+          {
+            "key": 2,
+            "category": "Step",
+            "loc": "150 0",
+            "fillColor": "transparent",
+          },
+          {
+            "key": 3,
+            "category": "Step",
+            "loc": "220 0",
+            "fillColor": "yellow",
+          },
+          {
+            "key": 4,
+            "category": "Step",
+            "loc": "370 0",
+            "fillColor": "transparent",
+
+          },
+          {
+            "key": 5,
+            "category": "Step",
+            "loc": "420 0",
+            "fillColor": "transparent",
+            "stroke": 2,
+            "strokeColor": "green"
+          },
+          {
+            "key": 6,
+            "category": "Step",
+            "loc": "550 0",
+            "fillColor": "transparent",
+          },
+        ],
+        "linkDataArray": [{
+            "from": 1,
+            "to": 2,
+            "fromPort": "R",
+            "toPort": "L",
+            "visible": true,
+            "text": "已办理"
+          },
+          {
+            "from": 3,
+            "to": 4,
+            "fromPort": "R",
+            "toPort": "L",
+            "visible": true,
+            "textColor": "yellow",
+            "text": "正在办理"
+          },
+          {
+            "from": 5,
+            "to": 6,
+            "fromPort": "R",
+            "toPort": "L",
+            "visible": true,
+            "text": "未办理"
+          },
+
+        ]
+      };
+      stateCanvas.model = go.Model.fromJson(stateObj);
+
+
+    }
+  </script>
+</body>
+
+</html>
