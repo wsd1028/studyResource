@@ -1,7 +1,7 @@
-Ç°¶Ë·ÖÒ³£º
+å‰ç«¯åˆ†é¡µï¼š
   private getMapPageData() {
-    let mapData = this.mapData;//×ÜÊı¾İ
-    let mapPageData = [];//·ÖÒ³Êı¾İ
+    let mapData = this.mapData;//æ€»æ•°æ®
+    let mapPageData = [];//åˆ†é¡µæ•°æ®
     let pageIndex = this.pageIndex - 1;
     let count = 0;
     for (let i = 0; i < mapData.length; i++) {
@@ -21,14 +21,14 @@
 
 
 
-¹ıÂË£º
+è¿‡æ»¤ï¼š
  this.updateForm.nodeId = value;
     updateRoomMess = roomMess.filter(item => {
       return item.nodeID == value;
     });
 
 
- //¹ıÂËÊı×éÏîµÄ×Ö·û´®
+ //è¿‡æ»¤æ•°ç»„é¡¹çš„å­—ç¬¦ä¸²
 /*demo*/
  data.xData = this.filterText({
       arr: data.xData,
@@ -63,7 +63,7 @@
     return arr;
   }
 
-vue¼àÌı½çÃæË¢ĞÂ
+vueç›‘å¬ç•Œé¢åˆ·æ–°
   async mounted() {
     this.handleSearch(1);
     this.getCustTypes();

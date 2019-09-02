@@ -1,7 +1,7 @@
 
   // private mapData = [
   //   {
-  //     name: "重庆",
+  //     name: "閲嶅簡",
   //     order: 0,
   //     location: [108.384366, 30.439702],
   //     bandwidth: "1067",
@@ -9,7 +9,7 @@
   //     textColor: "rgb(255,0,0)"
   //   },
   //   {
-  //     name: "四川",
+  //     name: "鍥涘窛",
   //     order: 1,
   //     location: [103.9526, 30.7617],
   //     bandwidth: "1067",
@@ -17,7 +17,7 @@
   //     textColor: "rgb(255,0,0)"
   //   },
   //   {
-  //     name: "贵州",
+  //     name: "璐靛窞",
   //     order: 2,
   //     location: [106.6992, 26.7682],
   //     bandwidth: "1067",
@@ -25,7 +25,7 @@
   //     textColor: "rgb(255,0,0)"
   //   },
   //   {
-  //     name: "云南",
+  //     name: "浜戝崡",
   //     order: 3,
   //     location: [102.9199, 25.4663],
   //     bandwidth: "1067",
@@ -33,7 +33,7 @@
   //     textColor: "rgb(255,0,0)"
   //   },
   //   {
-  //     name: "广西",
+  //     name: "骞胯タ",
   //     order: 4,
   //     location: [108.479, 23.1152],
   //     bandwidth: "1067",
@@ -41,7 +41,7 @@
   //     textColor: "rgb(255,0,0)"
   //   },
   //   {
-  //     name: "广东",
+  //     name: "骞夸笢",
   //     order: 5,
   //     location: [113.12244, 23.009505],
   //     bandwidth: "1067",
@@ -49,7 +49,7 @@
   //     textColor: "rgb(255,0,0)"
   //   },
   //   {
-  //     name: "北京",
+  //     name: "鍖椾含",
   //     order: 6,
   //     location: [116.4551, 40.2539],
   //     bandwidth: "1067",
@@ -57,7 +57,7 @@
   //     textColor: "rgb(255,0,0)"
   //   },
   //   {
-  //     name: "上海",
+  //     name: "涓婃捣",
   //     order: 7,
   //     location: [121.43333, 34.5],
   //     bandwidth: "1067",
