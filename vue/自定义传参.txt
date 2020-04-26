@@ -1,0 +1,5 @@
+吴少冬 3-17 11:27:45
+@select="((item)=>{handleSelect(item, index)})" // 写个闭包就可以了，index表示第几个组件
+
+吴少冬 3-17 11:31:08
+@change="change（$event，自定义参数）”

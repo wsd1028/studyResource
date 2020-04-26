@@ -28,6 +28,28 @@
             <el-col :span="10" class="middle">
                 <div class="infomation">
                     <div id="map" class="map"></div>
+                    <div class="items">
+                        <div class="item">
+                            <div class="count blue0">3686MW.h</div>
+                            <div class="text blue">机柜耗电量</div>
+                        </div>
+                        <div class="item">
+                            <div class="count yellow0">6337Gbps</div>
+                            <div class="text yellow">机房流量</div>
+                        </div>
+                        <div class="item">
+                            <div class="count red0">72</div>
+                            <div class="text red">新增业务</div>
+                        </div>
+                        <div class="item">
+                            <div class="count skyblue0">44</div>
+                            <div class="text skyblue">到期业务</div>
+                        </div>
+                        <div class="item">
+                            <div class="count green0">104</div>
+                            <div class="text green">机房访客</div>
+                        </div>
+                    </div>
                 </div>
             </el-col>
             <el-col :span="7" class="right">
@@ -160,12 +182,17 @@
     <script src="./js/vue.js"></script>
     <script src="./js/element.js"></script>
     <script src="./js/echarts/dist/echarts.min.js"></script>
-    <script src="./js/hunan.js"></script>
+    <script src="./js/anhui.js"></script>
     <script>
         var v = new Vue({
             el: "#main",
             data: {
-                isActive: "dpq"
+                isActive: "dpq",
+                myChart1: null,
+                myChart2: null,
+                myChart3: null,
+                myChart4: null,
+
             },
             methods: {
                 handleCity: function (e) {
@@ -175,79 +202,772 @@
                         this.isActive = e.target.dataset.id
                     }
                 },
-                mapCharts: function (id) {
-                    var myChart = echarts.init(document.getElementById(id));
-                    var geoCoordMap = {
-                        张家界市: [110.479921, 29.127401],
-                        常德市: [111.691347, 29.040225],
-                        岳阳市: [113.132855, 29.37029],
-                        吉首市: [109.739735, 28.314296],
-                        益阳市: [112.355042, 28.570066],
-                        长沙市: [112.982279, 28.19409],
-                        怀化市: [109.97824, 27.550082],
-                        娄底市: [112.008497, 27.728136],
-                        湘潭市: [112.944052, 27.82973],
-                        株洲市: [113.151737, 27.835806],
-                        邵阳市: [111.46923, 27.237842],
-                        衡阳市: [112.607693, 26.900358],
-                        永州市: [111.608019, 26.434516],
-                        郴州市: [113.032067, 25.793589],
+                //机柜耗电量
+                electricityCharts: function (id) {
+                    this.myChart1 = echarts.init(document.getElementById(id));
+                    var dpqData = [1.9, 15, 14, 17, 83, 87];
+                    var xsData = [13.9, 15.9, 11.1, 18.27, 48.3, 75];
+                    var xpqData = [12.6, 25.9, 9.0, 62.4, 28.7, 100];
+                    var ygData = [16, 29, 91.0, 64, 8.7, 77];
+                    var XData = ["1月", "2月", "3月", "4月", "5月", "6月"];
+
+                    let option = {
+                        title: {
+                            text: "客户机柜耗电量 (单位/MW-h)",
+                            left: 0,
+                            textStyle: {
+                                fontSize: 14,
+                                fontWeight: "normal",
+                                color: "#666666"
+                            },
+                        },
+                        tooltip: {
+                            trigger: 'axis',
+                            backgroundColor: 'white',
+                            textStyle: {
+                                color: '#000'
+                            },
+                            formatter: function (value) {
+                                const a0 = value[0] ? value[0].seriesName : '';
+                                const a1 = value[1] ? value[1].seriesName : '';
+                                const c0 = value[0] ? parseFloat(value[0].data) : '';
+                                const c1 = value[1] ? parseFloat(value[1].data) : '';
+                                let sum = c0 + c1;
+                                if (c0 != '' && c1 != '') {
+                                    sum = sum.toFixed(2); //保留两位小数 
+                                }
+                                const b = value[0] ? value[0].name : '';
+                                var atext = '';
+                                var btext = '';
+                                if (c0 != '') {
+                                    atext = '<span style="color: #BDBEC3">' + a0 +
+                                        '&nbsp;&nbsp;&nbsp;</span><span style="font-size:20px;color: #0a080b"><strong>' +
+                                        c0 +
+                                        '</strong></span><span style="color: #0a080b">次&nbsp;&nbsp;&nbsp;</span><span style="color: red">2.85%</span><span class="test1" >&#9650<style>\n' +
+                                        '.test1{color:red }\n' +
+                                        '</style></span></br>';
+                                };
+                                if (c1 != '') {
+                                    btext = '<span style="color: #BDBEC3">' + a1 +
+                                        '&nbsp;&nbsp;&nbsp;</span><span style="font-size:20px;color: #0a080b"><strong>' +
+                                        c1 +
+                                        '</strong></span><span style="color: #0a080b">次&nbsp;&nbsp;&nbsp;</span><span style="color: #00a854">2.85%</span><span class="test2" >&#9660<style>\n' +
+                                        '.test2{color:green }\n' +
+                                        '</style></span></br>';
+                                };
+                                return '<span style="color: #0a080b">全部&nbsp;&nbsp;&nbsp;<span style="font-size:20px;color: #0a080b"><strong>' +
+                                    sum +
+                                    '</strong></span><span style="color: #0a080b">次&nbsp;&nbsp;&nbsp;</span><span style="color: red">2.85%</span><span class="test" >&#9650<style>\n' +
+                                    '.test{color:red }\n' +
+                                    '</style></span></br>' +
+                                    atext + ' ' + btext +
+                                    '<span style="color: #0a080b">' + b + '</span>';
+                            }
+
+                        },
+                        legend: {
+                            icon: 'roundRect',
+                            righr: "center",
+                            top: "10%"
+                        },
+                        grid: {
+                            left: '10%',
+                            bottom: "3%",
+                            containLabel: true
+
+                        },
+                        xAxis: [{
+                            type: 'category',
+                            splitLine: {
+                                show: true,
+                                lineStyle: {
+                                    type: 'solid',
+                                    color: "#f2f2f2"
+                                }
+
+                            },
+                            axisPointer: {
+                                type: "shadow",
+                                shadowStyle: {
+                                    color: "blue",
+                                    opacity: 0.05
+
+                                }
+                            },
+                            boundaryGap: false,
+                            data: XData
+                        }],
+                        yAxis: [{
+                            type: 'value',
+                            splitLine: {
+                                show: false,
+                                lineStyle: {
+                                    type: 'dashed'
+
+                                }
+
+                            },
+                        }],
+                        series: [{
+                            id: 'y0',
+                            name: '东片区',
+                            type: 'line',
+                            smooth: true,
+                            color: "rgb(253,93,147)",
+                            symbol: 'circle',
+                            areaStyle: {
+                                opacity: 0.3,
+                                color: {
+                                    type: "linear",
+                                    x: 1,
+                                    y: 0,
+                                    x: 1,
+                                    y2: 1,
+                                    colorStops: [{
+                                        "offset": 0,
+                                        "color": "rgba(253,93,147,0.5)" //0% 处的颜色
+                                    },
+                                    {
+                                        "offset": 1,
+                                        "color": "rgba(253,93,147,0)" // 100% 处的颜色
+                                    }
+                                    ],
+                                    "globalCoord": false // 缺省为 false
+                                }
+                            },
+                            data: dpqData
+                        },
+                        {
+                            name: '东片区',
+                            type: 'effectScatter',
+                            coordinateSystem: 'cartesian2d',
+                            data: dpqData, //2d坐标系
+                            symbolSize: 10,
+                            showEffectOn: 'emphasis',
+                            rippleEffect: {
+                                brushType: 'stroke'
+                            },
+                            itemStyle: {
+                                normal: {
+                                    color: 'rgb(253,93,147)',
+                                    borderColor: 'white'
+                                }
+                            },
+                            tooltip: {
+                                trigger: 'item',
+                                backgroundColor: 'white',
+                                textStyle: {
+                                    color: '#000'
+                                },
+                                formatter: '<span style="font-size:20px;color: #0a080b"><strong>{c0}</strong></span><span style="color: #0a080b">次&nbsp;&nbsp;&nbsp;</span><span style="color: red">2.85%</span><span class="test1" >&#9650<style>\n' +
+                                    '.test1{color:red }\n' +
+                                    '</style></span></br>' +
+                                    '<span style="color: #0a080b">{b0}</span>'
+
+                            },
+                            zlevel: 1
+                        },
+                        {
+                            id: 'y1',
+                            name: '星沙',
+                            type: 'line',
+                            smooth: true,
+                            color: "rgb(17,168,171)",
+                            // hoverAnimation:true,
+                            symbol: 'circle',
+                            areaStyle: {
+                                opacity: 0.3,
+                                color: {
+                                    type: "linear",
+                                    x: 1,
+                                    y: 0,
+                                    x: 1,
+                                    y2: 1,
+                                    colorStops: [{
+                                        "offset": 0,
+                                        "color": "rgba(17,168,171,0.5)"
+                                    },
+                                    {
+                                        "offset": 1,
+                                        "color": "rgba(17,168,171,0)"
+                                    }
+                                    ],
+                                    "globalCoord": false
+                                }
+                            },
+                            data: xsData
+                        },
+                        {
+                            name: '星沙',
+                            type: 'effectScatter',
+                            coordinateSystem: 'cartesian2d',
+                            data: xsData, //2d坐标系
+                            symbol: 'circle',
+                            symbolSize: 10,
+                            showEffectOn: 'emphasis',
+                            rippleEffect: {
+                                brushType: 'stroke'
+                            },
+                            itemStyle: {
+                                normal: {
+                                    color: 'rgb(17,168,171)',
+                                    borderColor: 'white'
+                                }
+                            },
+                            zlevel: 1,
+                            tooltip: {
+                                trigger: 'item',
+                                backgroundColor: 'white',
+                                textStyle: {
+                                    color: '#000'
+                                },
+                                formatter: '<span style="font-size:20px;color: #0a080b"><strong>{c0}</strong></span><span style="color: #0a080b">次&nbsp;&nbsp;&nbsp;</span><span style="color: green">2.85%</span><span class="test1" >&#9660<style>\n' +
+                                    '.test1{color:green }\n' +
+                                    '</style></span></br>' +
+                                    '<span style="color: #0a080b">{b0}</span>'
+                            }
+                        }, {
+                            id: 'y2',
+                            name: '西片区',
+                            type: 'line',
+                            smooth: true,
+                            color: "rgb(230,162,60)",
+                            // hoverAnimation:true,
+                            symbol: 'circle',
+                            areaStyle: {
+                                opacity: 0.3,
+                                color: {
+                                    type: "linear",
+                                    x: 1,
+                                    y: 0,
+                                    x: 1,
+                                    y2: 1,
+                                    colorStops: [{
+                                        "offset": 0,
+                                        "color": "rgba(230,162,60,0.5)"
+                                    },
+                                    {
+                                        "offset": 1,
+                                        "color": "rgba(230,162,60,0)"
+                                    }
+                                    ],
+                                    "globalCoord": false
+                                }
+                            },
+                            data: xpqData
+                        },
+                        {
+                            name: '西片区',
+                            type: 'effectScatter',
+                            coordinateSystem: 'cartesian2d',
+                            data: xpqData, //2d坐标系
+                            symbol: 'circle',
+                            symbolSize: 10,
+                            showEffectOn: 'emphasis',
+                            rippleEffect: {
+                                brushType: 'stroke'
+                            },
+                            itemStyle: {
+                                normal: {
+                                    color: 'rgb(230,162,60)',
+                                    borderColor: 'white'
+                                }
+                            },
+                            zlevel: 1,
+                            tooltip: {
+                                trigger: 'item',
+                                backgroundColor: 'white',
+                                textStyle: {
+                                    color: '#000'
+                                },
+                                formatter: '<span style="font-size:20px;color: #0a080b"><strong>{c0}</strong></span><span style="color: #0a080b">次&nbsp;&nbsp;&nbsp;</span><span style="color: green">2.85%</span><span class="test1" >&#9660<style>\n' +
+                                    '.test1{color:green }\n' +
+                                    '</style></span></br>' +
+                                    '<span style="color: #0a080b">{b0}</span>'
+                            }
+                        },
+                        {
+                            id: 'y3',
+                            name: '云谷',
+                            type: 'line',
+                            smooth: true,
+                            color: "rgb(33,150,243)",
+                            // hoverAnimation:true,
+                            symbol: 'circle',
+                            areaStyle: {
+                                opacity: 0.3,
+                                color: {
+                                    type: "linear",
+                                    x: 1,
+                                    y: 0,
+                                    x: 1,
+                                    y2: 1,
+                                    colorStops: [{
+                                        "offset": 0,
+                                        "color": "rgba(33,150,243,.5)"
+                                    },
+                                    {
+                                        "offset": 1,
+                                        "color": "rgba(33,150,243,0)"
+                                    }
+                                    ],
+                                    "globalCoord": false
+                                }
+                            },
+                            data: ygData
+                        },
+                        {
+                            name: '云谷',
+                            type: 'effectScatter',
+                            coordinateSystem: 'cartesian2d',
+                            data: ygData, //2d坐标系
+                            symbol: 'circle',
+                            symbolSize: 10,
+                            showEffectOn: 'emphasis',
+                            rippleEffect: {
+                                brushType: 'stroke'
+                            },
+                            itemStyle: {
+                                normal: {
+                                    color: 'rgb(33,150,243)',
+                                    borderColor: 'white'
+                                }
+                            },
+                            zlevel: 1,
+                            tooltip: {
+                                trigger: 'item',
+                                backgroundColor: 'white',
+                                textStyle: {
+                                    color: '#000'
+                                },
+                                formatter: '<span style="font-size:20px;color: #0a080b"><strong>{c0}</strong></span><span style="color: #0a080b">次&nbsp;&nbsp;&nbsp;</span><span style="color: green">2.85%</span><span class="test1" >&#9660<style>\n' +
+                                    '.test1{color:green }\n' +
+                                    '</style></span></br>' +
+                                    '<span style="color: #0a080b">{b0}</span>'
+                            }
+                        },
+
+
+                        ]
                     };
-                    var data = [{
-                            name: "张家界市",
-                            value: 199
+                    this.myChart1.setOption(option, false);
+                },
+                //机柜资源容量
+                resourceCharts: function (
+                    id,
+                    min,
+                    max,
+                    color,
+                    content
+                ) {
+                    this.myChart2 = echarts.init(document.getElementById(id));
+                    let data = [{
+                        use: 50,
+                        all: 100,
+                        name: "湘潭",
+                        Id: 5
+                    }];
+                    let use = data[0].use;
+                    let all = data[0].all;
+                    let name = data[0].name;
+                    let number = "";
+                    if (content) {
+                        number = content;
+                    } else {
+                        number = (use / all) * 100 + "%";
+                    }
+                    let option = {
+                        title: {
+                            text: "省公司机柜资源容量",
+                            textStyle: {
+                                fontSize: "14",
+                                fontWeight: "normal",
+                                color: "#666666"
+                            }
+                        },
+                        series: {
+                            title: {
+                                textStyle: {
+                                    color: "black"
+                                },
+                                fontSize: 24,
+                                offsetCenter: [0, "10%"]
+                            },
+                            type: "gauge",
+                            splitNumber: 1, //刻度数量
+                            min: min,
+                            max: max,
+                            padding: 0,
+                            center: ["50%", "60%"],
+                            radius: "80%",
+                            detail: {
+                                offsetCenter: [0, "8%"],
+                                formatter: "使用占比\n\n{value|{value}}{unit|%}",
+                                textStyle: {
+                                    fontSize: 14,
+                                    color: "#000"
+                                },
+                                rich: {
+                                    value: {
+                                        fontSize: 20,
+                                        color: "#28af8b"
+                                    },
+                                    unit: {
+                                        fontSize: 10,
+                                        color: "#000"
+
+                                    }
+                                }
+                            },
+                            axisLine: {
+                                show: false,
+                                lineStyle: {
+                                    // 属性lineStyle控制线条样式
+                                    color: [
+                                        [use / all, color],
+                                        [1, "#f2f2f2"]
+                                    ],
+                                    width: 12
+                                }
+                            },
+                            axisTick: {
+                                show: false,
+                                lineStyle: {
+                                    color: "#ddd",
+                                    width: 1
+                                },
+                                length: -2,
+                                splitNumber: 3
+                            },
+                            pointer: {
+                                show: false
+                            },
+                            splitLine: {
+                                show: false,
+                                length: 12,
+                                lineStyle: {
+                                    color: "red"
+                                }
+                            },
+                            axisLabel: {
+                                distance: -40,
+                                textStyle: {
+                                    color: "#9999",
+                                    fontSize: "14"
+                                }
+                            },
+                            data: [{
+                                value: (use / all) * 100,
+                            }],
+                        }
+                    };
+                    this.myChart2.setOption(option, true);
+                },
+                //省公司机房流量
+                fluxCharts: function (id) {
+                    this.myChart3 = echarts.init(document.getElementById(id));
+                    var lcData = [1.9, 15, 14, 17, 83, 87];
+                    var lrData = [13.9, 15.9, 11.1, 18.27, 48.3, 75];
+                    var XData = ["1月", "2月", "3月", "4月", "5月", "6月"];
+                    let option = {
+                        title: {
+                            text: "省公司机房流量 (单位/Gbps)",
+                            left: 0,
+                            textStyle: {
+                                fontSize: 14,
+                                fontWeight: "normal",
+                                color: "#666666"
+                            },
+                        },
+                        tooltip: {
+                            trigger: 'axis',
+                            backgroundColor: 'white',
+                            textStyle: {
+                                color: '#000'
+                            },
+                            formatter: function (value) {
+                                const a0 = value[0] ? value[0].seriesName : '';
+                                const a1 = value[1] ? value[1].seriesName : '';
+                                const c0 = value[0] ? parseFloat(value[0].data) : '';
+                                const c1 = value[1] ? parseFloat(value[1].data) : '';
+                                let sum = c0 + c1;
+                                if (c0 != '' && c1 != '') {
+                                    sum = sum.toFixed(2); //保留两位小数 
+                                }
+                                const b = value[0] ? value[0].name : '';
+                                var atext = '';
+                                var btext = '';
+                                if (c0 != '') {
+                                    atext = '<span style="color: #BDBEC3">' + a0 +
+                                        '&nbsp;&nbsp;&nbsp;</span><span style="font-size:20px;color: #0a080b"><strong>' +
+                                        c0 +
+                                        '</strong></span><span style="color: #0a080b">次&nbsp;&nbsp;&nbsp;</span><span style="color: red">2.85%</span><span class="test1" >&#9650<style>\n' +
+                                        '.test1{color:red }\n' +
+                                        '</style></span></br>';
+                                };
+                                if (c1 != '') {
+                                    btext = '<span style="color: #BDBEC3">' + a1 +
+                                        '&nbsp;&nbsp;&nbsp;</span><span style="font-size:20px;color: #0a080b"><strong>' +
+                                        c1 +
+                                        '</strong></span><span style="color: #0a080b">次&nbsp;&nbsp;&nbsp;</span><span style="color: #00a854">2.85%</span><span class="test2" >&#9660<style>\n' +
+                                        '.test2{color:green }\n' +
+                                        '</style></span></br>';
+                                };
+                                return '<span style="color: #0a080b">全部&nbsp;&nbsp;&nbsp;<span style="font-size:20px;color: #0a080b"><strong>' +
+                                    sum +
+                                    '</strong></span><span style="color: #0a080b">次&nbsp;&nbsp;&nbsp;</span><span style="color: red">2.85%</span><span class="test" >&#9650<style>\n' +
+                                    '.test{color:red }\n' +
+                                    '</style></span></br>' +
+                                    atext + ' ' + btext +
+                                    '<span style="color: #0a080b">' + b + '</span>';
+                            }
+                        },
+                        legend: {
+                            data: ['cpu', '内存'],
+                            icon: 'roundRect',
+                            righr: "center",
+                            top: "10%",
+                            itemGap: 40
+                        },
+                        grid: {
+                            left: '10%',
+                            bottom: "3%",
+                            containLabel: true,
+                        },
+                        xAxis: [{
+                            type: 'category',
+                            splitLine: {
+                                show: true,
+                                lineStyle: {
+                                    type: 'solid',
+                                    color: "#f2f2f2"
+                                }
+
+                            },
+                            axisPointer: {
+                                type: "shadow",
+                                shadowStyle: {
+                                    color: "blue",
+                                    opacity: 0.05
+                                }
+                            },
+                            boundaryGap: false,
+                            data: XData
+                        }],
+                        yAxis: [{
+                            type: 'value',
+                            splitLine: {
+                                show: false,
+                                lineStyle: {
+                                    type: 'dashed'
+                                }
+                            },
+                        }],
+                        series: [{
+                            id: 'y0',
+                            name: '流出',
+                            type: 'line',
+                            smooth: true,
+                            color: "rgb(253,93,147)",
+                            symbol: 'circle',
+                            areaStyle: {
+                                opacity: 0.3,
+                                color: {
+                                    type: "linear",
+                                    x: 1,
+                                    y: 0,
+                                    x: 1,
+                                    y2: 1,
+                                    colorStops: [{
+                                        "offset": 0,
+                                        "color": "rgba(253,93,147,.5)" //0% 处的颜色
+                                    },
+                                    {
+                                        "offset": 1,
+                                        "color": "rgba(253,93,147,0)" // 100% 处的颜色
+                                    }
+                                    ],
+                                    "globalCoord": false // 缺省为 false
+                                }
+                            },
+                            data: lcData
                         },
                         {
-                            name: "常德市",
-                            value: 186
+                            name: '流出',
+                            type: 'effectScatter',
+                            coordinateSystem: 'cartesian2d',
+                            data: lcData, //2d坐标系
+                            symbolSize: 10,
+                            showEffectOn: 'emphasis',
+                            rippleEffect: {
+                                brushType: 'stroke'
+                            },
+                            itemStyle: {
+                                normal: {
+                                    color: 'rgb(253,93,147)',
+                                    borderColor: 'white'
+                                }
+                            },
+                            tooltip: {
+                                trigger: 'item',
+                                backgroundColor: 'white',
+                                textStyle: {
+                                    color: '#000'
+                                },
+                                formatter: '<span style="font-size:20px;color: #0a080b"><strong>{c0}</strong></span><span style="color: #0a080b">次&nbsp;&nbsp;&nbsp;</span><span style="color: red">2.85%</span><span class="test1" >&#9650<style>\n' +
+                                    '.test1{color:red }\n' +
+                                    '</style></span></br>' +
+                                    '<span style="color: #0a080b">{b0}</span>'
+
+                            },
+                            zlevel: 1
                         },
                         {
-                            name: "岳阳市",
-                            value: 11
+                            id: 'y1',
+                            name: '流入',
+                            type: 'line',
+                            smooth: true,
+                            color: "rgb(17,168,171)",
+                            // hoverAnimation:true,
+                            symbol: 'circle',
+                            areaStyle: {
+                                opacity: 0.3,
+                                color: {
+                                    type: "linear",
+                                    x: 1,
+                                    y: 0,
+                                    x: 1,
+                                    y2: 1,
+                                    colorStops: [{
+                                        "offset": 0,
+                                        "color": "rgba(17,168,171,.5)"
+                                    },
+                                    {
+                                        "offset": 1,
+                                        "color": "rgba(17,168,171,0)"
+                                    }
+                                    ],
+                                    "globalCoord": false
+                                }
+                            },
+                            data: lrData
                         },
                         {
-                            name: "吉首市",
-                            value: 199
+                            name: '流入',
+                            type: 'effectScatter',
+                            coordinateSystem: 'cartesian2d',
+                            data: lrData, //2d坐标系
+                            symbol: 'circle',
+                            symbolSize: 10,
+                            showEffectOn: 'emphasis',
+                            rippleEffect: {
+                                brushType: 'stroke'
+                            },
+                            itemStyle: {
+                                normal: {
+                                    color: 'rgb(17,168,171)',
+                                    borderColor: 'white'
+                                }
+                            },
+                            zlevel: 1,
+                            tooltip: {
+                                trigger: 'item',
+                                backgroundColor: 'white',
+                                textStyle: {
+                                    color: '#000'
+                                },
+                                formatter: '<span style="font-size:20px;color: #0a080b"><strong>{c0}</strong></span><span style="color: #0a080b">次&nbsp;&nbsp;&nbsp;</span><span style="color: green">2.85%</span><span class="test1" >&#9660<style>\n' +
+                                    '.test1{color:green }\n' +
+                                    '</style></span></br>' +
+                                    '<span style="color: #0a080b">{b0}</span>'
+                            }
+                        },
+                        ]
+                    };
+                    this.myChart3.setOption(option, false);
+                },
+                mapCharts: function (id) {
+                    this.myChart4 = echarts.init(document.getElementById(id));
+                    var geoCoordMap = {
+                        合肥市: [117.283042, 31.86119],
+                        芜湖市: [118.376451, 31.326319],
+                        蚌埠市: [117.363228, 32.939667],
+                        淮南市: [117.018329, 32.647574],
+                        马鞍山市: [118.507906, 31.689362],
+                        淮北市: [116.794664, 33.971707],
+                        铜陵市: [117.816576, 30.929935],
+                        安庆市: [117.043551, 30.50883],
+                        黄山市: [118.317325, 29.709239],
+                        滁州市: [118.316264, 32.303627],
+                        阜阳市: [115.819729, 32.896969],
+                        宿州市: [116.984084, 33.633891],
+                        六安市: [116.507676, 31.752889],
+                        亳州市: [115.782939, 33.869338],
+                        池州市: [117.489157, 30.656037],
+                        宣城市: [118.757995, 30.945667],
+
+                    };
+                    var data = [
+                        {
+                            name: "池州市",
+                             value:0
+                        }, {
+                            name: "宣城市",
+                             value:0
+                        }, {
+                            name: "合肥市",
+                             value:0
                         },
                         {
-                            name: "益阳市",
-                            value: 199
+                            name: "芜湖市",
+                             value:0
                         },
                         {
-                            name: "长沙市",
-                            value: 199
+                            name: "蚌埠市",
+                             value:0                       },
+                        {
+                            name: "淮南市",
+                             value:0
                         },
                         {
-                            name: "怀化市",
-                            value: 199
+                            name: "马鞍山市",
+                             value:0
                         },
                         {
-                            name: "娄底市",
-                            value: 123
+                            name: "淮北市",
+                             value:0
                         },
                         {
-                            name: "湘潭市",
-                            value: 199
+                            name: "铜陵市",
+                             value:0
                         },
                         {
-                            name: "株洲市",
-                            value: 146
+                            name: "安庆市",
+                             value:0
                         },
                         {
-                            name: "邵阳市",
-                            value: 199
+                            name: "黄山市",
+                             value:0
                         },
                         {
-                            name: "衡阳市",
-                            value: 109
+                            name: "滁州市",
+                             value:0
                         },
                         {
-                            name: "永州市",
-                            value: 116
+                            name: "阜阳市",
+                             value:0
                         },
                         {
-                            name: "郴州市",
-                            value: 199
+                            name: "宿州市",
+                             value:0
+                        },
+                        {
+                            name: "六安市",
+                             value:0
+                        },
+                        {
+                            name: "亳州市",
+                             value:0
                         },
                     ];
                     var convertData = function (data) {
@@ -279,12 +999,12 @@
                             show: true,
                             min: 0,
                             max: 200,
-                            right: '10%',
+                            right: '0',
                             calculable: true,
                             text: ['高', '低'],
                             seriesIndex: [1],
                             inRange: {
-                                color: ['rgb(18,168,127)', 'rgb(33,150,243)'] // 蓝绿
+                                color: ['#2196f3', '#12a87f'] // 蓝绿
                             }
                         },
                         tooltip: {
@@ -310,7 +1030,8 @@
                         },
                         geo: {
                             show: true,
-                            map: "hunan",
+                            map: "anhui",
+                            zoom: 1.2,
                             label: {
                                 normal: {
                                     show: false
@@ -322,8 +1043,8 @@
                             roam: true,
                             itemStyle: {
                                 normal: {
-                                    areaColor: '#023677',
-                                    borderColor: '#1180c7',
+
+                                    borderColor: '#fff',
                                 },
                                 emphasis: {
                                     areaColor: 'green',
@@ -331,108 +1052,123 @@
                             }
                         },
                         series: [{
-                                type: 'scatter',
-                                left: '150',
-                                coordinateSystem: 'geo',
-                                data: convertData(data),
-                                symbolSize: 10,
-                                showEffectOn: 'render',
-                                rippleEffect: {
-                                    brushType: 'stroke'
-                                },
-                                hoverAnimation: true,
-                                label: {
-                                    normal: {
-                                        formatter: '{b}',
-                                        position: 'bottom',
-                                        color: '#fff',
-                                        show: true
-                                    }
-                                },
-                                itemStyle: {
-                                    normal: {
-                                        color: '#fff',
-                                        borderColor: "#03E2E2",
-                                        borderWidth: 2,
-                                        borderType: "solid"
-                                    }
-                                },
-                                zlevel: 6
+                            type: 'scatter',
+                            left: '150',
+                            coordinateSystem: 'geo',
+                            data: convertData(data),
+                            symbolSize: 10,
+                            showEffectOn: 'render',
+                            rippleEffect: {
+                                brushType: 'stroke'
                             },
-                            {
-                                type: 'map',
-                                map: "hunan",
-                                geoIndex: 0,
-                                showLegendSymbol: false, // 存在legend时显示
-                                label: {
-                                    normal: {
-                                        show: true
-                                    },
-                                    emphasis: {
-                                        show: false,
-                                        textStyle: {
-                                            color: '#fff'
-                                        }
-                                    }
-                                },
-                                roam: true,
-                                itemStyle: {
-                                    normal: {
-                                        areaColor: '#031525',
-                                        borderColor: '#3B5077',
-                                    },
-                                    emphasis: {
-                                        areaColor: '#2B91B7'
-                                    }
-                                },
-                                animation: false,
-                                data: data
+                            hoverAnimation: true,
+                            label: {
+                                normal: {
+                                    formatter: '{b}',
+                                    position: 'bottom',
+                                    color: '#fff',
+                                    show: true
+                                }
                             },
-                            {
-                                type: 'scatter',
-                                coordinateSystem: 'geo',
-                                data: convertData([{
-                                    name: "长沙市",
-                                    value: 100
-                                }]),
-                                symbolSize: 10,
-                                symbol: "path://M511.232009 66.412572 616.888374 407.136697 958.801581 407.136697 682.188612 617.71674 787.844977 958.441888 511.232009 747.860822 234.618017 958.441888 340.275405 617.71674 63.662437 407.136697 405.57462 407.136697Z",
-                                itemStyle: {
-                                    color: "#03E2E2"
-                                },
-                                zlevel: 10
+                            itemStyle: {
+                                normal: {
+                                    color: '#fff',
+                                    borderColor: "#03E2E2",
+                                    borderWidth: 2,
+                                    borderType: "solid"
+                                }
                             },
-                            {
-                                type: 'scatter',
-                                left: '150',
-                                coordinateSystem: 'geo',
-                                data: convertData(data),
-                                symbolSize: 4,
-                                showEffectOn: 'render',
-                                rippleEffect: {
-                                    brushType: 'stroke'
+                            zlevel: 6
+                        },
+                        {
+                            type: 'map',
+                            map: "hunan",
+                            geoIndex: 0,
+                            showLegendSymbol: false, // 存在legend时显示
+                            label: {
+                                normal: {
+                                    show: true
                                 },
-                                hoverAnimation: true,
-                                label: {
-                                    normal: {
-                                        show: false
+                                emphasis: {
+                                    show: false,
+                                    textStyle: {
+                                        color: '#fff'
                                     }
+                                }
+                            },
+                            roam: true,
+                            itemStyle: {
+                                normal: {
+                                    areaColor: '#031525',
+                                    borderColor: '#3B5077',
                                 },
-                                itemStyle: {
-                                    normal: {
-                                        color: '#03E2E2',
-                                    }
-                                },
-                                zlevel:10
-                            }
-
+                                emphasis: {
+                                    areaColor: '#2B91B7'
+                                }
+                            },
+                            animation: false,
+                            data: data
+                        },
+                        {
+                            type: 'scatter',
+                            coordinateSystem: 'geo',
+                            data: convertData([{
+                                name: "淮北市",
+                                value: 100
+                            }]),
+                            symbolSize: 10,
+                            symbol: "path://M511.232009 66.412572 616.888374 407.136697 958.801581 407.136697 682.188612 617.71674 787.844977 958.441888 511.232009 747.860822 234.618017 958.441888 340.275405 617.71674 63.662437 407.136697 405.57462 407.136697Z",
+                            itemStyle: {
+                                color: "#03E2E2"
+                            },
+                            zlevel: 10
+                        },
+                        {
+                            type: 'scatter',
+                            left: '150',
+                            coordinateSystem: 'geo',
+                            data: convertData(data),
+                            symbolSize: 4,
+                            showEffectOn: 'render',
+                            rippleEffect: {
+                                brushType: 'stroke'
+                            },
+                            hoverAnimation: true,
+                            label: {
+                                normal: {
+                                    show: false
+                                }
+                            },
+                            itemStyle: {
+                                normal: {
+                                    color: '#03E2E2',
+                                }
+                            },
+                            zlevel: 10
+                        }
                         ]
                     };
-                    myChart.setOption(option);
+                    this.myChart4.setOption(option);
                 }
             },
             mounted: function () {
-                this.mapCharts("map")
+                let that = this;
+                this.electricityCharts("electricity");
+                this.resourceCharts(
+                    "resource",
+                    0,
+                    100,
+                    "#28af8b",
+                    ""
+                );
+                this.fluxCharts("flux");
+                this.mapCharts("map");
+                window.addEventListener("resize", function () {
+                    that.myChart1.resize();
+                    that.myChart2.resize();
+                    that.myChart3.resize();
+                    that.myChart4.resize();
+                });
             }
         })
     </script>

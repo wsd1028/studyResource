@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link rel="stylesheet" href="./css/element.css">
+    <link rel="stylesheet" href="./css/iconfont/iconfont.css">
+    <title>温度计</title>
+    <style>
+        .item {
+            width: 150px;
+            height: 130px;
+            background-color: rgb(10, 78, 180);
+        }
+    </style>
+</head>
+
+<body>
+    <div id="main">
+        注意，宽度/高度会影响图形
+        <div id="chart" class="item"></div>
+    </div>
+    <script src="./js/es6-shim.min.js"></script>
+    <script src="./js/vue.js"></script>
+    <script src="./js/element.js"></script>
+    <script src="./js/echarts/dist/echarts.min.js"></script>
+    <script>
+        var v = new Vue({
+            el: "#main",
+            data: {},
+            methods: {
+                drawChart: function () {
+                    var myChart = echarts.init(document.getElementById("chart"));
+                    var data = [40];
+                    let number = data[0];
+                    let option = {
+                        title: {
+                            text: "温度计",
+                            show: false
+                        },
+                        grid: {
+                            top: "-10%",
+                            left: "0%",
+                            containLabel: true
+                        },
+                        yAxis: [{
+                                show: false,
+                                min: 0,
+                                max: 50
+                            },
+                            {
+                                show: false,
+                                data: [],
+                                min: 0,
+                                max: 50
+                            }
+                        ],
+                        xAxis: [{
+                                show: false,
+                                data: []
+                            },
+                            {
+                                show: false,
+                                data: []
+                            },
+                            {
+                                show: false,
+                                data: []
+                            },
+                            {
+                                show: false,
+                                min: -50,
+                                max: 50
+                            }
+                        ],
+                        series: [{
+                                name: "条",
+                                type: "bar",
+                                // 对应上面XAxis的第一个对象配置
+                                xAxisIndex: 0,
+                                data: [number],
+                                barWidth: 15,
+                                itemStyle: {
+                                    normal: {
+                                        color: "rgba(29, 140, 248, 0.8)",
+                                        barBorderRadius: 15
+                                    }
+                                },
+                                label: {
+                                    normal: {
+                                        show: true,
+                                        position: "right",
+                                        right: "50%",
+                                        formatter: function (param) {
+                                            return "{a|温度计}" + "\n\n" + "{b|" + param
+                                                .value +
+                                                "°C}";
+                                        },
+                                        rich: {
+                                            a: {
+                                                color: "#fff",
+                                                fontWeight: "normal"
+                                            },
+                                            b: {
+                                                color: "#fff",
+                                                fontSize: "20",
+                                                fontWeight: "bold"
+                                            }
+                                        }
+                                    }
+                                },
+                                z: 20
+                            },
+                            {
+                                name: "白框",
+                                type: "bar",
+                                xAxisIndex: 1,
+                                barGap: "-100%",
+                                data: [50],
+                                barWidth: 15,
+                                itemStyle: {
+                                    normal: {
+                                        color: "rgba(29, 140, 248, 0.5)",
+                                        barBorderRadius: 15
+                                    }
+                                },
+                                z: 10
+                            },
+                            {
+                                name: "圆",
+                                type: "scatter",
+                                hoverAnimation: false,
+                                data: [0],
+                                xAxisIndex: 0,
+                                symbolSize: 30,
+                                itemStyle: {
+                                    normal: {
+                                        color: "rgb(29, 140, 248)",
+                                        opacity: 1
+                                    }
+                                },
+                                z: 20
+                            }
+                        ]
+                    };
+                    myChart.setOption(option, true);
+                }
+            },
+            mounted: function () {
+                this.drawChart()
+            }
+        })
+    </script>
+</body>
+
+</html>

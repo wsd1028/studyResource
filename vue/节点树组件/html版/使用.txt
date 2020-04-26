@@ -1,0 +1,5 @@
+ <my-tree
+              :options="nodeTree"
+              @get-value="changeAddNodeId"
+              :default_title="addForm.nodename"
+            ></my-tree>

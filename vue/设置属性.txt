@@ -1,0 +1,5 @@
+// this.$set(data,'disabledLimit',true);
+// this.$set(data, "manageLimit", false);
+// this.$set(data, "watchLimit", false);
+
+ this.$forceUpdate()

@@ -1,0 +1,1593 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link rel="stylesheet" href="../css/element.css">
+    <link rel="stylesheet" href="../css/iconfont/iconfont.css">
+    <title>拓扑图-基础</title>
+    <style>
+        #chartFullLink {
+            width: 100%;
+            height: 650px;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="main">
+        <div>
+            <el-tabs v-model="chartType" type="card" v-on:tab-click="handleChartType">
+                <el-tab-pane label="查看模式" name="watch"></el-tab-pane>
+                <el-tab-pane label="编辑模式" name="update"></el-tab-pane>
+            </el-tabs>
+        </div>
+        <div id="chartFullLink"></div>
+
+    </div>
+    <script src="../js/es6-shim.min.js"></script>
+    <script src="../js/vue.js"></script>
+    <script src="../js/element.js"></script>
+    <script src="../js/echarts/dist/echarts.min.js"></script>
+    <script src="../js/linq.min.js"></script>
+
+    <script>
+        var v = new Vue({
+                    el: "#main",
+                    data: {
+                        mainData: {},
+                        chartType: "watch",
+                        node: [],
+                        links: [],
+                        id: "",
+                        type: "",
+                        row: 30, //通过深度depth排序,栅格式-行
+                        cole: 20, //通过深度depth排序,栅格式-列
+                        warnIcon: "M2088.520038 127.63648c-14.88896-14.88384-34.67776-23.17824-55.59808-23.17824-7.9104 0-1541.0432-1.32096-1586.08384-1.5104-58.4192 0-99.12832 28.6464-142.47424 71.61344-41.6512 41.6512-281.37472 280.62208-281.37472 280.62208-14.88384 14.6944-22.9888 34.48832-22.9888 55.40352a78.1312 78.1312 0 0 0 22.9888 55.59296s252.91776 253.48096 287.96928 288.53248c41.08288 41.08288 76.32896 65.01888 135.31648 65.01888 87.82336 0 1578.55232 1.32096 1586.08896 1.32096 20.91008 0 40.69888-8.10496 55.3984-22.80448 14.88896-14.69952 22.9888-34.48832 22.9888-55.40352l0.56832-659.79904c0.19456-20.92544-7.90528-40.51968-22.79936-55.40864z m-1696.6144 483.68128c-54.84032 0-99.31264-44.48256-99.31264-99.31776s44.47744-99.31776 99.31264-99.31776c54.85056 0 99.31776 44.48256 99.31776 99.31776s-44.4672 99.31776-99.31776 99.31776z",
+                        iconList: {
+                            0: {
+                                value: 0,
+                                label: "其他",
+                                path: "M736.1792 456.704c-19.92704-11.52512-44.48256-11.52512-64.40448 0s-32.19968 32.82432-32.19968 55.87456 12.27264 44.34944 32.19968 55.86944c19.92704 11.52512 44.48256 11.52512 64.40448 0 19.93216-11.52 32.19968-32.8192 32.19968-55.86944S756.11136 468.22912 736.1792 456.704z M997.71904 357.7088c-10.9312-34.4064-25.1904-67.37408-43.18208-98.6624-12.16512-21.15584-40.35072-22.93248-54.0416-3.39968-8.56064 12.20096-7.19872 24.61184-0.19968 37.36064 59.61216 108.55424 74.09152 223.05792 40.13056 342.07744-68.73088 240.91648-318.67904 377.15456-558.4128 305.82784-175.66208-52.25472-303.3344-211.02592-316.88192-394.368-5.53984-74.97728 6.90688-146.90816 36.8896-215.91552 82.54976-189.9776 293.2224-299.58656 495.7696-257.8176 46.5664 9.6 90.61888 25.79968 131.99872 49.2544 7.08608 4.00896 14.40768 6.69184 22.68672 5.41184 13.91104-2.15552 24.73472-12.30336 27.22816-25.43104 2.7392-14.39232-3.70176-27.47392-17.72544-35.25632C647.23456 3.03616 525.46048-15.55456 397.50656 13.0816 165.39136 65.02912 0.05632 273.18272 0 511.65184c-0.00512 38.14912 4.0192 75.87328 12.42112 113.06496 65.00864 287.8208 359.52128 461.42976 642.048 378.55232 199.6288-58.56256 343.83872-232.51456 364.79488-440.70912C1026.2784 492.88704 1018.94144 424.51456 997.71904 357.7088z M478.62784 456.704c-19.92704 11.52512-32.2048 32.82432-32.2048 55.87456 0 35.63008 28.83584 64.51712 64.40448 64.51712s64.40448-28.88704 64.40448-64.51712c0-23.05024-12.27264-44.34944-32.2048-55.87456C523.10528 445.17888 498.55488 445.17888 478.62784 456.704z M285.60896 456.704c-19.92704 11.52512-32.2048 32.82432-32.2048 55.87456s12.27264 44.34944 32.2048 55.86944c19.92704 11.52512 44.47744 11.52512 64.40448 0 19.92704-11.52 32.19968-32.8192 32.19968-55.86944s-12.27264-44.34944-32.19968-55.87456C330.0864 445.17888 305.53088 445.17888 285.60896 456.704z",
+
+                            },
+                            1: {
+                                value: 1,
+                                label: "客户设备",
+                                path: "M33.28 665.6h955.733V375.467H33.28V665.6z m757.76-187.733c23.893 0 42.667 18.773 44.373 40.96 0 23.893-18.773 42.667-40.96 44.373s-42.666-18.773-44.373-40.96c0-23.893 18.773-44.373 40.96-44.373z m-136.533 0c17.067 0 32.427 10.24 39.253 25.6 6.827 15.36 3.414 34.133-8.533 46.08-11.947 11.947-30.72 15.36-46.08 10.24-15.36-6.827-27.307-22.187-27.307-39.253 1.707-23.894 20.48-42.667 42.667-42.667z m-484.693 0h238.933V563.2H169.814v-85.333zM917.333 0H106.666c-39.253 0-71.68 32.427-71.68 71.68v218.453h955.733V71.68C989.012 32.427 956.586 0 917.332 0zM408.746 187.733H169.813V102.4h238.933v85.333z m249.173 0c-15.36 0-30.72-6.827-39.253-20.48s-8.534-29.013-1.707-42.667 22.187-22.186 37.547-22.186c22.186 0 40.96 18.773 42.666 40.96 1.707 23.893-15.36 42.666-39.253 44.373z m136.533 0c-23.893 0-42.667-18.773-44.373-40.96 0-23.893 18.773-42.667 40.96-44.373 23.893 0 42.666 18.773 44.373 40.96 0 23.893-18.773 44.373-40.96 44.373zM104.96 733.867H33.28V972.8c0 29.013 22.187 51.2 51.2 51.2h853.333c27.307 0 51.2-22.187 51.2-51.2V733.867H104.96zM408.747 921.6H169.814v-85.333h238.933V921.6z m247.467 0c-23.893 0-42.667-18.773-42.667-42.667s18.774-42.666 42.667-42.666 42.667 18.773 42.667 42.666-18.774 42.667-42.667 42.667z m136.533 0c-23.893 0-42.667-18.773-42.667-42.667s18.774-42.666 42.667-42.666 42.667 18.773 42.667 42.666S816.64 921.6 792.747 921.6z"
+                            },
+                            2: {
+                                value: 2,
+                                label: "自用设备",
+                                path: "M967.014 717.414h-64.819V548.966h-345.6V438.272H842.19a19.251 19.251 0 0 0 19.2-19.251V101.58a19.302 19.302 0 0 0-19.2-19.661H189.44a19.302 19.302 0 0 0-19.2 19.251v317.44a19.302 19.302 0 0 0 19.2 19.661h285.594v110.694h-345.6v168.448h-64.82a9.626 9.626 0 0 0-9.574 9.626v211.712a9.626 9.626 0 0 0 9.574 9.626h211.2a9.626 9.626 0 0 0 9.626-9.626V727.04a9.626 9.626 0 0 0-9.626-9.626h-64.819v-86.63h264.039v86.63h-64.82a9.626 9.626 0 0 0-9.574 9.626v211.712a9.626 9.626 0 0 0 9.574 9.626h211.2a9.626 9.626 0 0 0 9.575-9.626V727.04a9.626 9.626 0 0 0-9.575-9.626h-64.819v-86.63h263.987v86.63h-64.768a9.626 9.626 0 0 0-9.625 9.626v211.712a9.626 9.626 0 0 0 9.625 9.626h211.2a9.626 9.626 0 0 0 9.575-9.626V727.04a9.626 9.626 0 0 0-9.575-9.626zM208.64 868.147a3.277 3.277 0 0 1-3.277 3.277h-70.4a3.277 3.277 0 0 1-3.277-3.277v-70.605a3.277 3.277 0 0 1 3.277-3.276h70.4a3.277 3.277 0 0 1 3.277 3.276z m345.549 0a3.277 3.277 0 0 1-3.226 3.277h-70.451a3.277 3.277 0 0 1-3.226-3.277v-70.605a3.226 3.226 0 0 1 3.226-3.276h70.451a3.226 3.226 0 0 1 3.226 3.276z m-307.2-506.88V159.13h537.6v202.137z m652.749 506.88a3.277 3.277 0 0 1-3.226 3.277h-70.4a3.277 3.277 0 0 1-3.226-3.277v-70.605a3.226 3.226 0 0 1 3.226-3.276h70.451a3.226 3.226 0 0 1 3.226 3.276zM381.44 212.07a48.128 48.128 0 1 0 47.974 48.128 48.077 48.077 0 0 0-47.974-48.128z"
+                            },
+                            3: {
+                                value: 3,
+                                label: "网络设备端口",
+                                path: "M512 512m-451.930903 0a441.638 441.638 0 1 0 903.861806 0 441.638 441.638 0 1 0-903.861806 0Z"
+                            },
+                            4: {
+                                value: 4,
+                                label: "ODF/DDF端口",
+                                path: "M512 512m-451.930903 0a441.638 441.638 0 1 0 903.861806 0 441.638 441.638 0 1 0-903.861806 0Z"
+                            },
+                            5: {
+                                value: 5,
+                                label: "客户",
+                                path: "M593.92 630.329s-34.133-9.102-43.236-13.653c-18.204-11.378-29.582-34.134-29.582-56.89 0-25.03 20.48-45.51 34.134-61.44 34.133-40.96 52.337-95.573 52.337-157.013 0-127.43-91.022-229.83-202.524-229.83S202.524 216.177 202.524 343.608c0 61.44 20.48 116.053 52.338 157.013 20.48 11.378 34.134 36.41 34.134 61.44 0 22.756-11.378 43.236-29.583 56.89v2.275c-2.275 0-4.55 2.275-4.55 2.275-11.379 6.827-22.756 11.378-36.41 11.378-86.47 29.582-159.289 75.093-202.524 131.982h2.275C6.827 782.792 2.276 800.996 2.276 819.2c0 54.613 45.51 100.124 102.4 100.124h600.746c59.165 0 104.676-43.235 104.676-100.124 0-22.756-9.102-43.236-20.48-61.44-43.236-56.889-111.502-100.124-195.698-127.431z m407.324 100.124c-38.684-47.786-97.848-88.746-172.942-111.502 0 0-29.582-6.827-38.684-11.378-15.93-11.377-25.031-29.582-25.031-50.062 0-22.755 18.204-40.96 29.582-52.338 29.582-36.409 47.787-84.195 47.787-138.809 0-111.502-79.645-204.8-179.77-204.8-15.928 0-31.857 2.276-45.51 6.827 34.133 50.062 52.337 109.227 52.337 175.218 0 70.542-25.03 138.809-68.266 195.698l-4.551 4.55v2.276c-4.552 4.551-11.378 11.378-13.654 18.205 0 2.275 0 2.275 2.276 2.275 4.55 2.276 11.378 4.551 18.204 4.551h2.276l9.102 4.552c93.298 29.582 172.942 81.92 225.28 147.91 22.756 29.583 36.409 63.716 36.409 100.125 0 20.48-4.551 36.409-11.378 54.613h65.991c52.338 0 93.298-38.684 93.298-88.746-2.276-25.031-9.102-43.236-22.756-59.165z m0 0"
+
+                            },
+                            6: {
+                                value: 6,
+                                label: "网络设备",
+                                path: "M960 577.6L893.8 91.3c-2.2-15.8-15.7-27.6-31.7-27.6H163.8c-15.9 0-29.4 11.7-31.7 27.5L64 577.6h0.7l-0.7 0.8v345.4c0 20.2 16.4 36.6 36.6 36.6h822.9c20.2 0 36.6-16.4 36.6-36.6V578.4l-0.7-0.8h0.6z m-64 318.8H128V577.6h768v318.8z M213.6 707.3h84.8c11.9 0 21.6-9.7 21.6-21.6v-20.2c0-11.9-9.7-21.6-21.6-21.6h-84.8c-11.9 0-21.6 9.7-21.6 21.6v20.2c0 11.9 9.7 21.6 21.6 21.6z m0 127.5h84.8c11.9 0 21.6-9.7 21.6-21.6V793c0-11.9-9.7-21.6-21.6-21.6h-84.8c-11.9 0-21.6 9.7-21.6 21.6v20.2c0 12 9.7 21.6 21.6 21.6z m201.1-127.5h0.7c17.5 0 31.7-14.2 31.7-31.7v-0.1c0-17.5-14.2-31.7-31.7-31.7h-0.7c-17.5 0-31.7 14.2-31.7 31.7v0.1c0 17.5 14.2 31.7 31.7 31.7z m0 127.5h0.7c17.5 0 31.7-14.2 31.7-31.7v-0.1c0-17.5-14.2-31.7-31.7-31.7h-0.7c-17.5 0-31.7 14.2-31.7 31.7v0.1c0 17.6 14.2 31.7 31.7 31.7z m128-127.5h0.7c17.5 0 31.7-14.2 31.7-31.7v-0.1c0-17.5-14.2-31.7-31.7-31.7h-0.7c-17.5 0-31.7 14.2-31.7 31.7v0.1c0 17.5 14.2 31.7 31.7 31.7z m0 127.5h0.7c17.5 0 31.7-14.2 31.7-31.7v-0.1c0-17.5-14.2-31.7-31.7-31.7h-0.7c-17.5 0-31.7 14.2-31.7 31.7v0.1c0 17.6 14.2 31.7 31.7 31.7z m127-127.5h0.7c17.5 0 31.7-14.2 31.7-31.7v-0.1c0-17.5-14.2-31.7-31.7-31.7h-0.7c-17.5 0-31.7 14.2-31.7 31.7v0.1c0 17.5 14.2 31.7 31.7 31.7z m0 127.5h0.7c17.5 0 31.7-14.2 31.7-31.7v-0.1c0-17.5-14.2-31.7-31.7-31.7h-0.7c-17.5 0-31.7 14.2-31.7 31.7v0.1c0 17.6 14.2 31.7 31.7 31.7z m128-127.5h0.7c17.5 0 31.7-14.2 31.7-31.7v-0.1c0-17.5-14.2-31.7-31.7-31.7h-0.7c-17.5 0-31.7 14.2-31.7 31.7v0.1c0 17.5 14.2 31.7 31.7 31.7z m0 127.5h0.7c17.5 0 31.7-14.2 31.7-31.7v-0.1c0-17.5-14.2-31.7-31.7-31.7h-0.7c-17.5 0-31.7 14.2-31.7 31.7v0.1c0 17.6 14.2 31.7 31.7 31.7z",
+                            },
+                            7: {
+                                value: 7,
+                                label: "ODF/DDF模块",
+                                path: "M16 496h992c9.6 0 16 6.4 16 16v352c0 9.6-6.4 16-16 16H16c-9.6 0-16-6.4-16-16V512c0-9.6 6.4-16 16-16zM128 304h768c9.6 0 16 6.4 16 16v64c0 9.6-6.4 16-16 16H128c-9.6 0-16-6.4-16-16v-64c0-9.6 6.4-16 16-16zM208 144h608c9.6 0 16 6.4 16 16v64c0 9.6-6.4 16-16 16H208c-9.6 0-16-6.4-16-16v-64c0-9.6 6.4-16 16-16z M784 640h32c9.6 0 16 6.4 16 16v64c0 9.6-6.4 16-16 16h-32c-9.6 0-16-6.4-16-16v-64c0-9.6 6.4-16 16-16zM672 640h32c9.6 0 16 6.4 16 16v64c0 9.6-6.4 16-16 16h-32c-9.6 0-16-6.4-16-16v-64c0-9.6 6.4-16 16-16z M240 688m-48 0a48 48 0 1 0 96 0 48 48 0 1 0-96 0Z M400 688m-48 0a48 48 0 1 0 96 0 48 48 0 1 0-96 0Z"
+                            }}
+                        },
+                        methods: {
+                            handleChartType: function (tab) {
+                                this.drawChart();
+                            },
+                            drawChart: function () {
+                                let that = this;
+                                let mainData = this.mainData;
+                                let myChart = echarts.init(document.getElementById("chartFullLink"));
+                                let symbolSize = 30; //图标大小
+                                let portSymbolSize = 10; //端口图标大小
+                                let lineWidth = 0.5; //线条粗细
+                                let zoom = 1; //缩放
+                                let nodes = [],
+                                    links = [];
+                                let xMin = 0,
+                                    xMax = 0,
+                                    yMin = 0,
+                                    yMax = 0;
+
+                                function makeData() {
+                                    //生成节点
+                                    function makeNode(data) {
+                                        // 注意
+                                        // 如果控制台出现 Maximum call stack size exceeded报错
+                                        // 这是由于某个节点绑定数据过多导致
+                                        let nodeData = [];
+                                        let depthObj = {};
+                                        //找到每个深度的节点,根据深度生成数据字典
+                                        for (let i = 0; i < data.length; i++) {
+                                            let depth = data[i].depth;
+                                            if (depth || depth == 0) { //排除depth不存在的时候
+                                                if (depthObj[depth]) {
+                                                    depthObj[depth].push(data[i]);
+                                                } else {
+                                                    depthObj[depth] = [data[i]];
+                                                }
+                                            }
+                                        }
+                                        for (let i = 0; i < data.length; i++) {
+                                            let nodeItem = {
+                                                type: "node",
+                                                name: "", //名称,//必须是唯一标识,用于连线
+                                                value: [], //坐标
+                                                symbol: "", //图标
+                                                symbolSize: symbolSize, //图标大小
+                                                detail: {}, //详细信息
+                                                itemStyle: { //样式
+                                                    color: "#67C23A"
+                                                },
+                                                elementType: data[i].type, //自定义属性，元素类型
+
+                                            };
+                                            nodeItem.name = data[i].id;
+                                            if (data[i].type == "ODF") {
+                                                nodeItem.symbol = "path://" + that.iconList["7"].path;
+                                                nodeItem.detail = data[i];
+                                                nodeItem.elementType = "ODF设备";
+                                            } else {
+                                                nodeItem.symbol = "path://" + that.iconList[data[i].type].path;
+                                                nodeItem.detail = data[i].data;
+                                            }
+                                            if (data[i].x || data[i].y) {
+                                                nodeItem.value[0] = data[i].x || 0;
+                                                nodeItem.value[1] = data[i].y || 0;
+                                            } else {
+                                                let depth = data[i].depth;
+                                                let index = 0;
+                                                nodeItem.value[0] = (data[i].depth + 1) * that.row / 2; //x轴坐标
+                                                if (!depth && depth != 0) { //排除depth不存在的时候
+                                                    nodeItem.value[1] = Math.round(Math.random() * 100); //y轴坐标
+                                                    continue;
+                                                }
+                                                for (let j = 0; j < depthObj[depth].length; j++) {
+                                                    if (data[i].id == depthObj[depth][j].id) {
+                                                        index = j; //取出该节点在深度数据字典里的下标,用于计算y轴做标
+                                                    }
+                                                }
+                                                if (index == 0) {
+                                                    nodeItem.value[1] = that.cole;
+                                                }
+                                                if (index % 2) { //奇数
+                                                    nodeItem.value[1] = ((index + 1) / 2 + 1) * that
+                                                        .cole;
+                                                } else { //偶数
+                                                    nodeItem.value[1] = -(index / 2 + 1) * that.cole;
+                                                }
+                                            }
+                                            nodeData.push(nodeItem);
+                                            //当找到odf设备时,需要通过odfPort渲染出odf端口
+                                            if (data[i].type == "ODF") {
+                                                for (let j = 0; j < data[i].ODFport.length; j++) {
+                                                    data[i].ODFport[j].data.owner =
+                                                        null; //解决Maximum call stack size exceeded报错
+                                                    let portItem = {
+                                                        type: "port",
+                                                        name: data[i].ODFport[j].id, //名称,//必须是唯一标识,用于连线
+                                                        value: [], //坐标
+                                                        symbol: "path://" + that.iconList["4"].path, //图标
+                                                        symbolSize: portSymbolSize, //图标大小
+                                                        detail: data[i].ODFport[j].data, //详细信息
+                                                        itemStyle: { //样式
+                                                            color: "#67C23A"
+
+                                                        },
+                                                        elementType: "ODF端口"
+
+                                                    };
+                                                    portItem.value[0] = nodeItem.value[0];
+                                                    portItem.value[1] = nodeItem.value[1];
+                                                    if (j == 0) {
+                                                        portItem.symbolOffset = [-symbolSize / 2, 0]
+                                                    }
+                                                    if (j == 1) {
+                                                        portItem.symbolOffset = [symbolSize / 2, 0]
+                                                    }
+                                                    nodeData.push(portItem);
+                                                }
+                                            }
+                                            //生成告警
+                                            if (data[i].type == 6) {
+                                                if (data[i].warnData) {
+                                                    if (data[i].warnData.length > 0) {
+                                                        let warnItem = {
+                                                            type: "warn",
+                                                            name: "告警-" + nodeItem.name,
+                                                            value: [nodeItem.value[0], nodeItem.value[1]],
+                                                            symbol: "path://" + that.warnIcon,
+                                                            symbolSize: [40, 20],
+                                                            detail: data[i].warnData,
+                                                            symbolOffset: ["90%", -5],
+                                                            itemStyle: {
+                                                                color: "red",
+                                                            },
+                                                            label: {
+                                                                fontSize: 8,
+                                                                position: "inside",
+                                                                formatter: function (parmas) {
+                                                                    return "告警:" + parmas.data
+                                                                        .detail.length;
+                                                                },
+                                                                color: "#fff"
+                                                            },
+                                                            elementType: "告警"
+
+                                                        };
+                                                        nodeData.push(warnItem);
+                                                    }
+                                                }
+                                            }
+                                        }
+                                        return nodeData;
+                                    }
+                                    nodes = makeNode(mainData.nodes);
+                                    //生成线条
+                                    function makeLinks(data) {
+                                        let linksData = [];
+                                        for (let i = 0; i < data.length; i++) {
+                                            let src = null,
+                                                dest = null;
+                                            for (let j = 0; j < nodes.length; j++) {
+                                                if (nodes[j].name == data[i].source) {
+                                                    src = nodes[j]
+                                                }
+                                                if (nodes[j].name == data[i].target) {
+                                                    dest = nodes[j];
+                                                }
+                                            }
+                                            if (src && dest)
+                                                // 3.2.0 之前
+                                                linksData.push([{
+                                                        coord: src.value,
+                                                        lineStyle: {
+                                                            // color:"",
+                                                            width: lineWidth
+                                                        }
+                                                    },
+                                                    {
+                                                        coord: dest.value,
+                                                    },
+                                                ])
+                                        }
+                                        return linksData;
+                                    }
+                                    links = makeLinks(mainData.edges);
+                                }
+                                makeData();
+                                var xArr = Enumerable.from(nodes).orderBy(function (item) {
+                                    return item.value[0]
+                                }).toArray();
+                                var yArr = Enumerable.from(nodes).orderBy(function (item) {
+                                    return item.value[1]
+                                }).toArray();
+                                xMin = xArr[0].value[0];
+                                xMax = xArr[xArr.length - 1].value[0];
+                                yMin = yArr[0].value[1];
+                                yMax = yArr[yArr.length - 1].value[1];
+                                let option = {
+                                    title: {
+                                        text: ''
+                                    },
+                                    tooltip: {
+                                        trigger: 'item',
+                                        formatter: function (params) {
+                                            if (params.componentSubType == "graph")
+                                                return params.data.name
+                                        }
+                                    },
+                                    grid: {
+                                        left: 0,
+                                        right: 0,
+                                        bottom: 0,
+                                        top: 0
+                                    },
+                                    dataZoom: [{
+                                            type: 'slider',
+                                            xAxisIndex: 0,
+                                            filterMode: 'empty',
+                                            show: false
+                                        },
+                                        {
+                                            type: 'slider',
+                                            yAxisIndex: 0,
+                                            filterMode: 'empty',
+                                            show: false
+                                        },
+                                        {
+                                            type: 'inside',
+                                            xAxisIndex: 0,
+                                            filterMode: 'empty',
+                                            show: false
+                                        },
+                                        {
+                                            type: 'inside',
+                                            yAxisIndex: 0,
+                                            filterMode: 'empty',
+                                            show: false
+                                        }
+                                    ],
+                                    //定义X轴 
+                                    xAxis: {
+                                        min: xMin - 100,
+                                        max: xMax + 100,
+                                        type: 'value',
+                                        axisLine: {
+                                            onZero: false
+                                        },
+                                        show: false
+                                    },
+                                    yAxis: {
+                                        min: yMin - 100,
+                                        max: yMax + 100,
+                                        type: 'value',
+                                        axisLine: {
+                                            onZero: false
+                                        },
+                                        show: false
+                                    },
+                                    series: [{
+                                        //设置id很重要 
+                                        id: 'main',
+                                        //设置为甘特图
+                                        type: 'graph',
+                                        layout: 'none',
+                                        coordinateSystem: 'cartesian2d',
+                                        //设置球的大小
+                                        symbolSize: symbolSize,
+                                        label: {
+                                            show: true,
+                                            color: "#666",
+                                            position: [0, 60],
+                                            formatter: function (parmas) {
+                                                if (parmas.data.type == "port") {
+                                                    return ""
+                                                } else {
+                                                    return parmas.data.name.substring(0, 5) + "..."
+                                                }
+                                            }
+                                        },
+                                        itemStyle: {
+                                            color: '#666',
+                                        },
+                                        //设置连线形式为箭头
+                                        edgeSymbol: ['circle', 'arrow'],
+                                        edgeSymbolSize: [4, 10],
+                                        //指定数据数组
+                                        data: nodes,
+                                        //指定连线颜色
+                                        lineStyle: {
+                                            normal: {
+                                                color: '#333'
+                                            }
+                                        },
+                                    }, {
+                                        id: 'lineId',
+                                        type: 'lines',
+                                        symbol: ['circle', 'arrow'],
+                                        symbolSize: [4, 10],
+                                        coordinateSystem: 'cartesian2d',
+                                        effect: {
+                                            show: true,
+                                            period: 4, //箭头指向速度，值越小速度越快
+                                            trailLength: 0.02,
+                                            symbol: 'pin',
+                                            color: '#ffaa5f',
+                                            symbolSize: 5
+                                        },
+                                        lineStyle: {
+                                            normal: {
+                                                color: new echarts.graphic.LinearGradient(
+                                                    0,
+                                                    0,
+                                                    0,
+                                                    1,
+                                                    [{
+                                                            offset: 0,
+                                                            color: "#777777"
+                                                        },
+                                                        {
+                                                            offset: 1,
+                                                            color: "#777777"
+                                                        }
+                                                    ],
+                                                    false
+                                                ),
+                                                width: 2,
+                                                opacity: 0.6,
+                                                curveness: 0
+                                            }
+                                        },
+                                        data: links
+                                    }],
+                                };
+                                myChart.setOption(option, true);
+                                myChart.on('click', function (params) {
+                                    if (that.chartType == "watch") {
+                                        if (params.data.type == "port") {
+                                            portDetail_show({
+                                                portId: params.data.detail.id
+                                            })
+                                        }
+                                        if (params.data.type == "node") {
+                                            let ip = "";
+                                            let elementType = "";
+                                            let modelId = "";
+                                            let nodeId = "";
+                                            let deviceId = "";
+                                            let isDevice = false;
+                                            if (params.data.elementType == "ODF设备") {
+                                                modelId = params.data.detail.id;
+                                                elementType = "ODF设备";
+                                                isDevice = true;
+                                            }
+                                            if (params.data.elementType == "6") { //网络设备
+                                                ip = params.data.detail.ipString;
+                                                elementType = "网络设备";
+                                                nodeId = params.data.detail.nodeId;
+                                                isDevice = true;
+                                            }
+                                            if (params.data.elementType == "1") { //客户设备
+                                                elementType = "客户设备";
+                                                deviceId = params.data.detail.resId;
+                                                isDevice = true;
+                                            }
+                                            if (params.data.elementType == "5") { //客户信息
+                                                deviceId = params.data.detail.resId;
+                                            }
+                                            if (isDevice) {
+                                                deviceMsg_show({
+                                                    nodeId,
+                                                    ip,
+                                                    elementType,
+                                                    modelId,
+                                                    deviceId
+                                                })
+                                            } else {
+                                                custMsg_show({
+                                                    custId: params.data.detail.id
+                                                })
+                                            }
+                                        }
+                                    }
+                                });
+                                myChart.on('dataZoom', function (param) {
+                                    if (that.chartType == "update") {
+                                        updatePosition();
+                                        myChart.setOption({
+                                            series: [{
+                                                id: 'main',
+                                                data: nodes,
+                                            }, {
+                                                id: "lineId",
+                                                data: links
+                                            }]
+                                        });
+                                    }
+
+                                })
+                                //在demo里，必须要加setTimeout ，否则执行 myChart.convertToPixel 会报错
+                                setTimeout(function () {
+                                    if (that.chartType == "update") {
+                                        initGraphic();
+                                        window.addEventListener('resize', updatePosition);
+                                        myChart.setOption({
+                                            series: [{
+                                                id: 'main',
+                                                data: nodes,
+                                            }, {
+                                                id: "lineId",
+                                                data: links
+                                            }]
+                                        });
+                                    }
+                                }, 50);
+
+                                //重新定位图形元素
+                                function updatePosition() {
+                                    myChart.setOption({
+                                        graphic: echarts.util.map(nodes, function (item, dataIndex) {
+                                            if (item.type == "node")
+                                                return {
+                                                    position: myChart.convertToPixel('grid', item
+                                                        .value),
+                                                };
+                                        })
+                                    });
+                                    myChart.setOption({
+                                        series: [{
+                                            id: 'main',
+                                            data: nodes,
+                                        }, {
+                                            id: "lineId",
+                                            data: links
+                                        }]
+                                    });
+                                }
+
+                                //绘制图形元素
+                                function initGraphic() {
+                                    let graphicNode = [];
+                                    echarts.util.map(nodes, function (item, dataIndex) {
+                                        if (item.type == "node")
+                                            graphicNode.push({
+                                                //圆形
+                                                type: 'circle',
+                                                //将坐标转化为像素
+                                                position: myChart.convertToPixel('grid', item
+                                                    .value),
+                                                shape: {
+                                                    // 拖动点的大小
+                                                    r: symbolSize / 2 - 2
+                                                },
+                                                style: {
+                                                    fill: '#3FA7DC50',
+                                                    borderColor: '#22faf7',
+                                                    borderWidth: 1,
+                                                },
+                                                detail: item,
+                                                //指定虚拟圈是否可见  false 可见
+                                                invisible: false,
+                                                //指定圈被拖拽（可以与不可以）
+                                                draggable: true,
+                                                onmouseup: echarts.util.curry(onPointDragging,
+                                                    dataIndex),
+                                                //层级
+                                                z: 100
+                                            })
+                                    });
+                                    myChart.setOption({
+                                        graphic: graphicNode
+                                    });
+                                }
+
+                                //图形元素拖动后， 修改节点位置
+                                function onPointDragging(dataIndex, e) {
+                                    let value = myChart.convertFromPixel('grid', this.position);
+                                    let item = e.target.detail;
+                                    for (let i = 0; i < mainData.nodes.length; i++) {
+                                        let idName = "";
+                                        if (item.detail.id)
+                                            idName = "id"
+                                        if (item.detail.resId)
+                                            idName = "resId"
+                                        if (item.detail.type == "ODF") {
+                                            if (mainData.nodes[i][idName] == item.detail[idName]) {
+                                                mainData.nodes[i].x = value[0];
+                                                mainData.nodes[i].y = value[1];
+                                                break
+                                            }
+                                        } else {
+                                            if (mainData.nodes[i].data[idName] == item.detail[idName]) {
+                                                mainData.nodes[i].x = value[0];
+                                                mainData.nodes[i].y = value[1];
+                                                break
+                                            }
+                                        }
+                                    }
+                                    that.mainData = mainData;
+                                    makeData()
+                                    myChart.setOption({
+                                        series: [{
+                                            id: 'main',
+                                            data: nodes,
+                                        }, {
+                                            id: "lineId",
+                                            data: links
+                                        }]
+                                    });
+                                };
+                            },
+                            getMainData: async function () {
+                                let that = this;
+                                let res = {
+                                    data: {
+                                        code: 100,
+                                        msg: "执行成功",
+                                        content: {
+                                            nodes: [{
+                                                    isStart: "否",
+                                                    isEnd: "否",
+                                                    type: 5,
+                                                    typeDescription: "客户",
+                                                    id: "Customer-2",
+                                                    name: "重庆吉庆信息技术有限公司",
+                                                    depth: 0,
+                                                    x: 0.0,
+                                                    y: 0.0,
+                                                    data: {
+                                                        id: "2",
+                                                        name: "重庆吉庆信息技术有限公司",
+                                                        customerPerson: "罗浩洋",
+                                                        customerLogoId: "",
+                                                        customerLogoPath: "",
+                                                        customerPersonTel: "15922665568",
+                                                        idcIspCustName: "重庆吉庆信息技术有限公司",
+                                                        code: "IDCCUST20140619247546",
+                                                        custownerId: 34,
+                                                        custownerName: "武隆分公司",
+                                                        level: 0,
+                                                        decr: "",
+                                                        status: 0,
+                                                        statusText: "正式客户",
+                                                        email: "",
+                                                        address: "",
+                                                        qq: "",
+                                                        weChat: "",
+                                                        createTime: "2014-02-28T14:48:46.57",
+                                                        source: 0,
+                                                        sourceText: "本地资源",
+                                                        isvdc: 1,
+                                                        manager_name: "",
+                                                        manager_phone: "",
+                                                        linkNodeType: 5
+                                                    }
+                                                },
+                                                {
+                                                    isStart: "否",
+                                                    isEnd: "否",
+                                                    type: 1,
+                                                    typeDescription: "客户设备",
+                                                    id: "CustomerDevice-00037B3F-AEE9-4A13-A84D-8E7A48A8F491",
+                                                    name: "IDCDEV20131121203703",
+                                                    depth: 1,
+                                                    x: 0.0,
+                                                    y: 0.0,
+                                                    data: {
+                                                        custId: "",
+                                                        custName: "北京爱奇艺科技有限公司",
+                                                        nodeId: 20009,
+                                                        nodeName: "重庆五里店IDC中心",
+                                                        roomSpaceId: "2",
+                                                        roomName: "重庆五里店IDC机房",
+                                                        rackId: "456",
+                                                        rackName: "CQ-WLD-5F-A-J10-04",
+                                                        sourceText: "本地资源",
+                                                        deviceName: "IDCDEV20131121203703",
+                                                        deviceDescr: "",
+                                                        deviceLocalCode: "IDCDEV20131121203703",
+                                                        deviceStatusText: "正常",
+                                                        deviceStatus: 0,
+                                                        categoryId: 0,
+                                                        categoryText: "",
+                                                        cardNumber: "",
+                                                        deviceTypeText: "",
+                                                        power: 0.0,
+                                                        powerText: 0.0,
+                                                        weight: 0.0,
+                                                        height: 0,
+                                                        heightPosition: 0,
+                                                        ipAddress: "",
+                                                        ipAddress1: "",
+                                                        ipv6: "",
+                                                        onRack: 0,
+                                                        facStandard: 0,
+                                                        direction: "",
+                                                        actualPower: "",
+                                                        ratedPower: "",
+                                                        businessStatus: 0,
+                                                        linkNodeType: 1,
+                                                        ports: [],
+                                                        monitor: 0,
+                                                        alais: "IDCDEV20131121203703",
+                                                        typeId: 0,
+                                                        resStatus: 0,
+                                                        resCategory: 4,
+                                                        createTimeUtc: 1582884529,
+                                                        createTime: "2020-02-28T18:08:49.493",
+                                                        resId: "00037B3F-AEE9-4A13-A84D-8E7A48A8F491",
+                                                        resName: "IDCDEV20131121203703",
+                                                        resCode: "IDCDEV20131121203703",
+                                                        register: 0,
+                                                        checkResult: 0,
+                                                        status: 0,
+                                                        source: 0
+                                                    }
+                                                },
+                                                {
+                                                    isStart: "否",
+                                                    isEnd: "否",
+                                                    type: 4,
+                                                    typeDescription: "ODF/DDF端口",
+                                                    id: "OdfDdfPort-03C5138C-3BA2-44EC-BDBC-4D759B23A831",
+                                                    name: "test333-2",
+                                                    depth: 3,
+                                                    x: 0.0,
+                                                    y: 0.0,
+                                                    data: {
+                                                        id: "03C5138C-3BA2-44EC-BDBC-4D759B23A831",
+                                                        name: "test333-2",
+                                                        code: "testMode333-2",
+                                                        modelId: "88f55f31-6a1f-4219-b079-eba6b1e47f16",
+                                                        modelName: "test333",
+                                                        alias: "",
+                                                        memo: "",
+                                                        roomId: "66",
+                                                        roomName: "腾龙202机房",
+                                                        rackId: "10086",
+                                                        rackName: "CQ-023-CQTLIDC-TLJF202-N-12",
+                                                        owner: {
+                                                            id: "88f55f31-6a1f-4219-b079-eba6b1e47f16",
+                                                            name: "test333",
+                                                            code: "",
+                                                            type: "ODF",
+                                                            roomId: "66",
+                                                            roomName: "腾龙202机房",
+                                                            rackId: "10086",
+                                                            rackName: "CQ-023-CQTLIDC-TLJF202-N-12",
+                                                            portNum: 5,
+                                                            memo: "22",
+                                                            location: 1,
+                                                            height: 1,
+                                                            linkNodeUuid: "88f55f31-6a1f-4219-b079-eba6b1e47f16",
+                                                            linkNodeType: 0,
+                                                            linkNodeName: "test333",
+                                                            depth: 0,
+                                                            resStatus: 1,
+                                                            resCategory: 170,
+                                                            createTimeUtc: 1574912606,
+                                                            createTime: "2019-11-28T11:43:26.073",
+                                                            resId: "88f55f31-6a1f-4219-b079-eba6b1e47f16",
+                                                            resName: "test333",
+                                                            resCode: "",
+                                                            nodeId: 20019,
+                                                            nodeName: "重庆腾龙合作IDC中心",
+                                                            register: 0,
+                                                            checkResult: 0,
+                                                            status: 0,
+                                                            source: 0
+                                                        },
+                                                        resStatus: 1,
+                                                        resCategory: 180,
+                                                        createTimeUtc: 1574912606,
+                                                        createTime: "2019-11-28T11:43:26.09",
+                                                        resId: "03C5138C-3BA2-44EC-BDBC-4D759B23A831",
+                                                        nodeId: 20019,
+                                                        nodeName: "重庆腾龙合作IDC中心",
+                                                        register: 0,
+                                                        checkResult: 0,
+                                                        status: 0,
+                                                        source: 0
+                                                    }
+                                                },
+                                                {
+                                                    isStart: "否",
+                                                    isEnd: "否",
+                                                    type: 4,
+                                                    typeDescription: "ODF/DDF端口",
+                                                    id: "OdfDdfPort-2ED899EC-1F31-4610-9EC9-F46B7BD72C3B",
+                                                    name: "test333-3",
+                                                    depth: 5,
+                                                    x: 0.0,
+                                                    y: 0.0,
+                                                    data: {
+                                                        id: "2ED899EC-1F31-4610-9EC9-F46B7BD72C3B",
+                                                        name: "test333-3",
+                                                        code: "testMode333-3",
+                                                        modelId: "88f55f31-6a1f-4219-b079-eba6b1e47f16",
+                                                        modelName: "test333",
+                                                        alias: "",
+                                                        memo: "",
+                                                        roomId: "66",
+                                                        roomName: "腾龙202机房",
+                                                        rackId: "10086",
+                                                        rackName: "CQ-023-CQTLIDC-TLJF202-N-12",
+                                                        owner: {
+                                                            id: "88f55f31-6a1f-4219-b079-eba6b1e47f16",
+                                                            name: "test333",
+                                                            code: "",
+                                                            type: "ODF",
+                                                            roomId: "66",
+                                                            roomName: "腾龙202机房",
+                                                            rackId: "10086",
+                                                            rackName: "CQ-023-CQTLIDC-TLJF202-N-12",
+                                                            portNum: 5,
+                                                            memo: "22",
+                                                            location: 1,
+                                                            height: 1,
+                                                            linkNodeUuid: "88f55f31-6a1f-4219-b079-eba6b1e47f16",
+                                                            linkNodeType: 0,
+                                                            linkNodeName: "test333",
+                                                            depth: 0,
+                                                            resStatus: 1,
+                                                            resCategory: 170,
+                                                            createTimeUtc: 1574912606,
+                                                            createTime: "2019-11-28T11:43:26.073",
+                                                            resId: "88f55f31-6a1f-4219-b079-eba6b1e47f16",
+                                                            resName: "test333",
+                                                            resCode: "",
+                                                            nodeId: 20019,
+                                                            nodeName: "重庆腾龙合作IDC中心",
+                                                            register: 0,
+                                                            checkResult: 0,
+                                                            status: 0,
+                                                            source: 0
+                                                        },
+                                                        resStatus: 1,
+                                                        resCategory: 180,
+                                                        createTimeUtc: 1574912606,
+                                                        createTime: "2019-11-28T11:43:26.09",
+                                                        resId: "2ED899EC-1F31-4610-9EC9-F46B7BD72C3B",
+                                                        nodeId: 20019,
+                                                        nodeName: "重庆腾龙合作IDC中心",
+                                                        register: 0,
+                                                        checkResult: 0,
+                                                        status: 0,
+                                                        source: 0
+                                                    }
+                                                },
+                                                {
+                                                    isStart: "否",
+                                                    isEnd: "否",
+                                                    type: 6,
+                                                    typeDescription: "网络设备",
+                                                    id: "NetDevice-180",
+                                                    name: "WLD-5A-12518-1",
+                                                    depth: 7,
+                                                    x: 0.0,
+                                                    y: 0.0,
+                                                    data: {
+                                                        ports: {},
+                                                        cpus: {},
+                                                        targetCategory: 0,
+                                                        rackId: "",
+                                                        rackName: "",
+                                                        height: 0,
+                                                        location: 0,
+                                                        power: 0.0,
+                                                        weight: 0.0,
+                                                        ipString: "61.161.69.1",
+                                                        address: 1033979137,
+                                                        layer: 0,
+                                                        autoBackup: false,
+                                                        cardNumber: "",
+                                                        ipv6String: "",
+                                                        portNum: 0,
+                                                        isCloud: 0,
+                                                        compareTypeID: 0,
+                                                        portCount: 0,
+                                                        portList: [],
+                                                        totalCPU: {
+                                                            index: 0,
+                                                            clock: 0.0,
+                                                            rate: 0,
+                                                            per1: 0,
+                                                            per5: 0
+                                                        },
+                                                        cpuList: [],
+                                                        physicalMemory: {
+                                                            descr: "",
+                                                            size: 0,
+                                                            used: 0,
+                                                            free: 0,
+                                                            lFree: 0,
+                                                            fail: 0,
+                                                            index: -1
+                                                        },
+                                                        hasSlot: false,
+                                                        slotCount: 0,
+                                                        linkNodeUuid: "180",
+                                                        linkNodeType: 6,
+                                                        linkNodeName: "WLD-5A-12518-1",
+                                                        depth: 7,
+                                                        roomId: "2",
+                                                        roomName: "重庆五里店IDC机房",
+                                                        monitor: 0,
+                                                        deviceId: "180",
+                                                        deviceName: "WLD-5A-12518-1",
+                                                        deviceCode: "WLD-5A-12518-1",
+                                                        vendor: "",
+                                                        deviceVendorId: 0,
+                                                        category: "",
+                                                        categoryId: 0,
+                                                        type: "",
+                                                        typeId: 148829,
+                                                        resStatus: 0,
+                                                        resCategory: 3,
+                                                        createTimeUtc: 1582877657,
+                                                        createTime: "2020-02-28T16:14:17.783",
+                                                        resId: "180",
+                                                        resName: "WLD-5A-12518-1",
+                                                        resCode: "WLD-5A-12518-1",
+                                                        nodeId: 20009,
+                                                        nodeName: "重庆五里店IDC中心",
+                                                        custName: "局方自有设备",
+                                                        register: 0,
+                                                        checkResult: 0,
+                                                        editable: false,
+                                                        status: 0,
+                                                        source: 0,
+                                                        isVDC: 0,
+                                                        properties: {},
+                                                        attCount: 0
+                                                    }
+                                                },
+                                                {
+                                                    isStart: "否",
+                                                    isEnd: "否",
+                                                    type: 6,
+                                                    typeDescription: "网络设备",
+                                                    id: "NetDevice-355",
+                                                    name: "ShuiTu-2F-IDC-S9516-1",
+                                                    depth: 9,
+                                                    x: 0.0,
+                                                    y: 0.0,
+                                                    data: {
+                                                        ports: {},
+                                                        cpus: {},
+                                                        targetCategory: 0,
+                                                        rackId: "",
+                                                        rackName: "",
+                                                        height: 0,
+                                                        location: 0,
+                                                        power: 0.0,
+                                                        weight: 0.0,
+                                                        ipString: "222.176.21.201",
+                                                        address: 3736081865,
+                                                        layer: 0,
+                                                        autoBackup: false,
+                                                        cardNumber: "",
+                                                        ipv6String: "",
+                                                        portNum: 0,
+                                                        isCloud: 0,
+                                                        compareTypeID: 0,
+                                                        portCount: 0,
+                                                        portList: [],
+                                                        totalCPU: {
+                                                            index: 0,
+                                                            clock: 0.0,
+                                                            rate: 0,
+                                                            per1: 0,
+                                                            per5: 0
+                                                        },
+                                                        cpuList: [],
+                                                        physicalMemory: {
+                                                            descr: "",
+                                                            size: 0,
+                                                            used: 0,
+                                                            free: 0,
+                                                            lFree: 0,
+                                                            fail: 0,
+                                                            index: -1
+                                                        },
+                                                        hasSlot: false,
+                                                        slotCount: 0,
+                                                        linkNodeUuid: "355",
+                                                        linkNodeType: 6,
+                                                        linkNodeName: "ShuiTu-2F-IDC-S9516-1",
+                                                        depth: 9,
+                                                        roomId: "48",
+                                                        roomName: "水土二楼IDC冷池机房",
+                                                        monitor: 0,
+                                                        deviceId: "355",
+                                                        deviceName: "ShuiTu-2F-IDC-S9516-1",
+                                                        deviceCode: "ShuiTu-2F-IDC-S9516-1",
+                                                        vendor: "Cisco",
+                                                        deviceVendorId: 26,
+                                                        category: "其它",
+                                                        categoryId: 10,
+                                                        type: "nexus 9516",
+                                                        typeId: 148847,
+                                                        resStatus: 0,
+                                                        resCategory: 3,
+                                                        createTimeUtc: 1582877657,
+                                                        createTime: "2020-02-28T16:14:17.94",
+                                                        resId: "355",
+                                                        resName: "ShuiTu-2F-IDC-S9516-1",
+                                                        resCode: "ShuiTu-2F-IDC-S9516-1",
+                                                        nodeId: 20013,
+                                                        nodeName: "重庆水土IDC中心",
+                                                        custName: "局方自有设备",
+                                                        register: 0,
+                                                        checkResult: 0,
+                                                        editable: false,
+                                                        status: 0,
+                                                        source: 0,
+                                                        isVDC: 0,
+                                                        properties: {},
+                                                        attCount: 0
+                                                    }
+                                                },
+                                                {
+                                                    isStart: "否",
+                                                    isEnd: "否",
+                                                    type: 6,
+                                                    typeDescription: "网络设备",
+                                                    id: "NetDevice-232",
+                                                    name: "XPF-15-S9306-1",
+                                                    depth: 9,
+                                                    x: 0.0,
+                                                    y: 0.0,
+                                                    data: {
+                                                        ports: {},
+                                                        cpus: {},
+                                                        targetCategory: 0,
+                                                        rackId: "",
+                                                        rackName: "",
+                                                        height: 0,
+                                                        location: 0,
+                                                        power: 0.0,
+                                                        weight: 0.0,
+                                                        ipString: "219.153.59.252",
+                                                        address: 3684252668,
+                                                        layer: 0,
+                                                        autoBackup: false,
+                                                        cardNumber: "",
+                                                        ipv6String: "",
+                                                        portNum: 0,
+                                                        isCloud: 0,
+                                                        compareTypeID: 0,
+                                                        portCount: 0,
+                                                        portList: [],
+                                                        totalCPU: {
+                                                            index: 0,
+                                                            clock: 0.0,
+                                                            rate: 0,
+                                                            per1: 0,
+                                                            per5: 0
+                                                        },
+                                                        cpuList: [],
+                                                        physicalMemory: {
+                                                            descr: "",
+                                                            size: 0,
+                                                            used: 0,
+                                                            free: 0,
+                                                            lFree: 0,
+                                                            fail: 0,
+                                                            index: -1
+                                                        },
+                                                        hasSlot: false,
+                                                        slotCount: 0,
+                                                        linkNodeUuid: "232",
+                                                        linkNodeType: 6,
+                                                        linkNodeName: "XPF-15-S9306-1",
+                                                        depth: 9,
+                                                        roomId: "38",
+                                                        roomName: "新牌坊15楼IDC机房",
+                                                        monitor: 0,
+                                                        deviceId: "232",
+                                                        deviceName: "XPF-15-S9306-1",
+                                                        deviceCode: "XPF-15-S9306-1",
+                                                        vendor: "Huawei",
+                                                        deviceVendorId: 55,
+                                                        category: "其它",
+                                                        categoryId: 10,
+                                                        type: "Quidway 9306",
+                                                        typeId: 148813,
+                                                        resStatus: 0,
+                                                        resCategory: 3,
+                                                        createTimeUtc: 1582877657,
+                                                        createTime: "2020-02-28T16:14:17.813",
+                                                        resId: "232",
+                                                        resName: "XPF-15-S9306-1",
+                                                        resCode: "XPF-15-S9306-1",
+                                                        nodeId: 20007,
+                                                        nodeName: "重庆新牌坊IDC中心",
+                                                        custName: "局方自有设备",
+                                                        register: 0,
+                                                        checkResult: 0,
+                                                        editable: false,
+                                                        status: 0,
+                                                        source: 0,
+                                                        isVDC: 0,
+                                                        properties: {},
+                                                        attCount: 0
+                                                    }
+                                                },
+                                                {
+                                                    isStart: "否",
+                                                    isEnd: "否",
+                                                    type: 6,
+                                                    typeDescription: "网络设备",
+                                                    id: "NetDevice-356",
+                                                    name: "ShuiTu-2F-IDC-S9516-2",
+                                                    depth: 11,
+                                                    x: 0.0,
+                                                    y: 0.0,
+                                                    data: {
+                                                        ports: {},
+                                                        cpus: {},
+                                                        targetCategory: 0,
+                                                        rackId: "",
+                                                        rackName: "",
+                                                        height: 0,
+                                                        location: 0,
+                                                        power: 0.0,
+                                                        weight: 0.0,
+                                                        ipString: "222.176.21.202",
+                                                        address: 3736081866,
+                                                        layer: 0,
+                                                        autoBackup: false,
+                                                        cardNumber: "",
+                                                        ipv6String: "",
+                                                        portNum: 0,
+                                                        isCloud: 0,
+                                                        compareTypeID: 0,
+                                                        portCount: 0,
+                                                        portList: [],
+                                                        totalCPU: {
+                                                            index: 0,
+                                                            clock: 0.0,
+                                                            rate: 0,
+                                                            per1: 0,
+                                                            per5: 0
+                                                        },
+                                                        cpuList: [],
+                                                        physicalMemory: {
+                                                            descr: "",
+                                                            size: 0,
+                                                            used: 0,
+                                                            free: 0,
+                                                            lFree: 0,
+                                                            fail: 0,
+                                                            index: -1
+                                                        },
+                                                        hasSlot: false,
+                                                        slotCount: 0,
+                                                        linkNodeUuid: "356",
+                                                        linkNodeType: 6,
+                                                        linkNodeName: "ShuiTu-2F-IDC-S9516-2",
+                                                        depth: 11,
+                                                        roomId: "48",
+                                                        roomName: "水土二楼IDC冷池机房",
+                                                        monitor: 0,
+                                                        deviceId: "356",
+                                                        deviceName: "ShuiTu-2F-IDC-S9516-2",
+                                                        deviceCode: "ShuiTu-2F-IDC-S9516-2",
+                                                        vendor: "Cisco",
+                                                        deviceVendorId: 26,
+                                                        category: "其它",
+                                                        categoryId: 10,
+                                                        type: "nexus 9516",
+                                                        typeId: 148847,
+                                                        resStatus: 0,
+                                                        resCategory: 3,
+                                                        createTimeUtc: 1582877657,
+                                                        createTime: "2020-02-28T16:14:17.94",
+                                                        resId: "356",
+                                                        resName: "ShuiTu-2F-IDC-S9516-2",
+                                                        resCode: "ShuiTu-2F-IDC-S9516-2",
+                                                        nodeId: 20013,
+                                                        nodeName: "重庆水土IDC中心",
+                                                        custName: "局方自有设备",
+                                                        register: 0,
+                                                        checkResult: 0,
+                                                        editable: false,
+                                                        status: 0,
+                                                        source: 0,
+                                                        isVDC: 0,
+                                                        properties: {},
+                                                        attCount: 0
+                                                    }
+                                                },
+                                                {
+                                                    isStart: "否",
+                                                    isEnd: "否",
+                                                    type: 6,
+                                                    typeDescription: "网络设备",
+                                                    id: "NetDevice-88",
+                                                    name: "HX-8B-9306-1",
+                                                    depth: 13,
+                                                    x: 0.0,
+                                                    y: 0.0,
+                                                    data: {
+                                                        ports: {},
+                                                        cpus: {},
+                                                        targetCategory: 0,
+                                                        rackId: "",
+                                                        rackName: "",
+                                                        height: 0,
+                                                        location: 0,
+                                                        power: 0.0,
+                                                        weight: 0.0,
+                                                        ipString: "119.84.124.5",
+                                                        address: 2002025477,
+                                                        layer: 0,
+                                                        autoBackup: false,
+                                                        cardNumber: "",
+                                                        ipv6String: "",
+                                                        portNum: 0,
+                                                        isCloud: 0,
+                                                        compareTypeID: 0,
+                                                        portCount: 0,
+                                                        portList: [],
+                                                        totalCPU: {
+                                                            index: 0,
+                                                            clock: 0.0,
+                                                            rate: 0,
+                                                            per1: 0,
+                                                            per5: 0
+                                                        },
+                                                        cpuList: [],
+                                                        physicalMemory: {
+                                                            descr: "",
+                                                            size: 0,
+                                                            used: 0,
+                                                            free: 0,
+                                                            lFree: 0,
+                                                            fail: 0,
+                                                            index: -1
+                                                        },
+                                                        hasSlot: false,
+                                                        slotCount: 0,
+                                                        linkNodeUuid: "88",
+                                                        linkNodeType: 6,
+                                                        linkNodeName: "HX-8B-9306-1",
+                                                        depth: 13,
+                                                        roomId: "4",
+                                                        roomName: "回兴IDC机房",
+                                                        monitor: 0,
+                                                        deviceId: "88",
+                                                        deviceName: "HX-8B-9306-1",
+                                                        deviceCode: "HX-8B-9306-1",
+                                                        vendor: "Huawei",
+                                                        deviceVendorId: 55,
+                                                        category: "其它",
+                                                        categoryId: 10,
+                                                        type: "Quidway 9306",
+                                                        typeId: 148813,
+                                                        resStatus: 0,
+                                                        resCategory: 3,
+                                                        createTimeUtc: 1582877657,
+                                                        createTime: "2020-02-28T16:14:17.75",
+                                                        resId: "88",
+                                                        resName: "HX-8B-9306-1",
+                                                        resCode: "HX-8B-9306-1",
+                                                        nodeId: 20008,
+                                                        nodeName: "重庆回兴IDC中心",
+                                                        custName: "局方自有设备",
+                                                        register: 0,
+                                                        checkResult: 0,
+                                                        editable: false,
+                                                        status: 0,
+                                                        source: 0,
+                                                        isVDC: 0,
+                                                        properties: {},
+                                                        attCount: 0
+                                                    }
+                                                },
+                                                {
+                                                    isStart: "否",
+                                                    isEnd: "否",
+                                                    type: 6,
+                                                    typeDescription: "网络设备",
+                                                    id: "NetDevice-90",
+                                                    name: "WLD-5A-TXP-2",
+                                                    depth: 13,
+                                                    x: 0.0,
+                                                    y: 0.0,
+                                                    data: {
+                                                        ports: {},
+                                                        cpus: {},
+                                                        targetCategory: 0,
+                                                        rackId: "",
+                                                        rackName: "",
+                                                        height: 0,
+                                                        location: 0,
+                                                        power: 0.0,
+                                                        weight: 0.0,
+                                                        ipString: "222.176.1.244",
+                                                        address: 3736076788,
+                                                        layer: 0,
+                                                        autoBackup: false,
+                                                        cardNumber: "",
+                                                        ipv6String: "",
+                                                        portNum: 0,
+                                                        isCloud: 0,
+                                                        compareTypeID: 0,
+                                                        portCount: 0,
+                                                        portList: [],
+                                                        totalCPU: {
+                                                            index: 0,
+                                                            clock: 0.0,
+                                                            rate: 0,
+                                                            per1: 0,
+                                                            per5: 0
+                                                        },
+                                                        cpuList: [],
+                                                        physicalMemory: {
+                                                            descr: "",
+                                                            size: 0,
+                                                            used: 0,
+                                                            free: 0,
+                                                            lFree: 0,
+                                                            fail: 0,
+                                                            index: -1
+                                                        },
+                                                        hasSlot: false,
+                                                        slotCount: 0,
+                                                        linkNodeUuid: "90",
+                                                        linkNodeType: 6,
+                                                        linkNodeName: "WLD-5A-TXP-2",
+                                                        depth: 13,
+                                                        roomId: "2",
+                                                        roomName: "重庆五里店IDC机房",
+                                                        monitor: 0,
+                                                        deviceId: "90",
+                                                        deviceName: "WLD-5A-TXP-2",
+                                                        deviceCode: "WLD-5A-TXP-2",
+                                                        vendor: "Juniper",
+                                                        deviceVendorId: 62,
+                                                        category: "交换机/HUB",
+                                                        categoryId: 5,
+                                                        type: "TXP",
+                                                        typeId: 148821,
+                                                        resStatus: 0,
+                                                        resCategory: 3,
+                                                        createTimeUtc: 1582877657,
+                                                        createTime: "2020-02-28T16:14:17.75",
+                                                        resId: "90",
+                                                        resName: "WLD-5A-TXP-2",
+                                                        resCode: "WLD-5A-TXP-2",
+                                                        nodeId: 20009,
+                                                        nodeName: "重庆五里店IDC中心",
+                                                        custName: "局方自有设备",
+                                                        register: 0,
+                                                        checkResult: 0,
+                                                        editable: false,
+                                                        status: 0,
+                                                        source: 0,
+                                                        isVDC: 0,
+                                                        properties: {},
+                                                        attCount: 0
+                                                    }
+                                                }
+                                            ],
+                                            edges: [{
+                                                    source: "Customer-2",
+                                                    sourcePortId: "",
+                                                    target: "CustomerDevice-00037B3F-AEE9-4A13-A84D-8E7A48A8F491",
+                                                    targetPortId: ""
+                                                },
+                                                {
+                                                    source: "CustomerDevice-00037B3F-AEE9-4A13-A84D-8E7A48A8F491",
+                                                    sourcePortId: "",
+                                                    target: "OdfDdfPort-03C5138C-3BA2-44EC-BDBC-4D759B23A831",
+                                                    targetPortId: ""
+                                                },
+                                                {
+                                                    source: "OdfDdfPort-03C5138C-3BA2-44EC-BDBC-4D759B23A831",
+                                                    sourcePortId: "",
+                                                    target: "OdfDdfPort-2ED899EC-1F31-4610-9EC9-F46B7BD72C3B",
+                                                    targetPortId: ""
+                                                },
+                                                {
+                                                    source: "OdfDdfPort-2ED899EC-1F31-4610-9EC9-F46B7BD72C3B",
+                                                    sourcePortId: "",
+                                                    target: "NetDevice-180",
+                                                    targetPortId: ""
+                                                },
+                                                {
+                                                    source: "NetDevice-180",
+                                                    sourcePortId: "0001E656-21B9-48DD-A00C-F43717631662",
+                                                    target: "NetDevice-355",
+                                                    targetPortId: "0001E656-21B9-48DD-A00C-F43717631662"
+                                                },
+                                                {
+                                                    source: "NetDevice-180",
+                                                    sourcePortId: "000B0386-DC11-4F93-86AD-A353A84334DA",
+                                                    target: "NetDevice-232",
+                                                    targetPortId: "000B0386-DC11-4F93-86AD-A353A84334DA"
+                                                },
+                                                {
+                                                    source: "NetDevice-355",
+                                                    sourcePortId: "000B0386-DC11-4F93-86AD-A353A84334DA",
+                                                    target: "NetDevice-356",
+                                                    targetPortId: "000B0386-DC11-4F93-86AD-A353A84334DA"
+                                                },
+                                                {
+                                                    source: "NetDevice-356",
+                                                    sourcePortId: "0015264E-A920-47E3-8F42-E61A573ED418",
+                                                    target: "NetDevice-88",
+                                                    targetPortId: "0015264E-A920-47E3-8F42-E61A573ED418"
+                                                },
+                                                {
+                                                    source: "NetDevice-232",
+                                                    sourcePortId: "000E7440-3383-48F6-BD34-A45CCCC18FD0",
+                                                    target: "NetDevice-90",
+                                                    targetPortId: "000E7440-3383-48F6-BD34-A45CCCC18FD0"
+                                                },
+                                                {
+                                                    source: "NetDevice-90",
+                                                    sourcePortId: "00158840-7B45-4026-9DF1-202A5C1AD074",
+                                                    target: "NetDevice-88",
+                                                    targetPortId: "00158840-7B45-4026-9DF1-202A5C1AD074"
+                                                }
+                                            ],
+                                            others: [
+                                                null,
+                                                null,
+                                                null,
+                                                null,
+                                                null,
+                                                null,
+                                                null,
+                                                null,
+                                                null,
+                                                null,
+                                                null,
+                                                null,
+                                                null
+                                            ]
+                                        }
+                                    }
+                                };
+                                if (JSON.stringify(res.data.content) != "{}") {
+                                    let mainData = JSON.parse(JSON.stringify(res.data.content));
+                                    for (let i = 0; i < res.data.content.nodes.length; i++) {
+                                        if (res.data.content.nodes[i].type == 6) {
+                                            res.data.content.nodes[i].warnData = [{
+                                                    statelog: [],
+                                                    nodename: "",
+                                                    nodeid: 20008,
+                                                    roomname: "回兴IDC机房",
+                                                    roomid: "",
+                                                    targetname: "HX-8A-12518-2",
+                                                    appendtarget: 0,
+                                                    targetip: "61.161.69.7",
+                                                    targetid: "181",
+                                                    ifname: "Ten-GigabitEthernet5/0/2",
+                                                    ifspeed: 0.0,
+                                                    ifstate: 0,
+                                                    ifindex: "",
+                                                    beforespeed: null,
+                                                    afterspeed: null,
+                                                    groupid: 3,
+                                                    groupname: "阈值告警",
+                                                    alertcount: 7,
+                                                    memo: "[节点]重庆回兴IDC中心; [设备]HX-8A-12518-2(61.161.69.7); [端口]Ten-GigabitEthernet5/0/2(To-7B-J13-12-IDCDEV20130927183052-XunLei); 端口流入流量过高！，当前采集值:8586.47Mb",
+                                                    shortmemo: null,
+                                                    alarmid: 86,
+                                                    levelid: 5,
+                                                    levelname: "注意",
+                                                    stateid: 0,
+                                                    statename: "未设置",
+                                                    typeid: 30301,
+                                                    typename: "网络端口流量阈值",
+                                                    appendtype: 0,
+                                                    createtime: "2020-01-02 16:34:11",
+                                                    lasttime: "2020-01-12 12:34:11",
+                                                    groupcount: 0,
+                                                    att1: null,
+                                                    att1name: null,
+                                                    appendatt1: 0,
+                                                    custid: "",
+                                                    custname: "",
+                                                    custaddress: null,
+                                                    custcontactperson: null,
+                                                    custcontactphone: null,
+                                                    rackid: 0,
+                                                    rackname: null,
+                                                    resource: null,
+                                                    revertid: 0,
+                                                    reverttime: null,
+                                                    alarmkey: null,
+                                                    rule: ""
+                                                },
+                                                {
+                                                    statelog: [],
+                                                    nodename: "",
+                                                    nodeid: 20008,
+                                                    roomname: "回兴IDC机房",
+                                                    roomid: "",
+                                                    targetname: "HX-8A-12518-2",
+                                                    appendtarget: 0,
+                                                    targetip: "61.161.69.7",
+                                                    targetid: "181",
+                                                    ifname: "Bridge-Aggregation2",
+                                                    ifspeed: 0.0,
+                                                    ifstate: 0,
+                                                    ifindex: "",
+                                                    beforespeed: null,
+                                                    afterspeed: null,
+                                                    groupid: 3,
+                                                    groupname: "阈值告警",
+                                                    alertcount: 7,
+                                                    memo: "[节点]重庆回兴IDC中心; [设备]HX-8A-12518-2(61.161.69.7); [端口]Bridge-Aggregation2(To-7B-J13-12-IDCDEV20130927183052-XunLei); 端口流入流量过高！，当前采集值:8587.20Mb",
+                                                    shortmemo: null,
+                                                    alarmid: 87,
+                                                    levelid: 5,
+                                                    levelname: "注意",
+                                                    stateid: 0,
+                                                    statename: "未设置",
+                                                    typeid: 30301,
+                                                    typename: "网络端口流量阈值",
+                                                    appendtype: 0,
+                                                    createtime: "2019-12-01 00:00:00",
+                                                    lasttime: "2020-01-12 05:50:11",
+                                                    groupcount: 0,
+                                                    att1: null,
+                                                    att1name: null,
+                                                    appendatt1: 0,
+                                                    custid: "",
+                                                    custname: "",
+                                                    custaddress: null,
+                                                    custcontactperson: null,
+                                                    custcontactphone: null,
+                                                    rackid: 0,
+                                                    rackname: null,
+                                                    resource: null,
+                                                    revertid: 0,
+                                                    reverttime: null,
+                                                    alarmkey: null,
+                                                    rule: ""
+                                                }
+                                            ];
+                                        }
+                                    }
+                                    //对odf端口进行处理,将其变为odf设备
+                                    let odfDevice = [];
+                                    //取出所有的odf设备,并将odf端口放入该设备的ODFport字段
+                                    for (let i = 0; i < mainData.nodes.length; i++) {
+                                        if (mainData.nodes[i].type == 4) {
+                                            mainData.nodes[i].data.owner.ODFport = [mainData.nodes[i]];
+                                            odfDevice.push(mainData.nodes[i].data.owner);
+                                        }
+                                    }
+                                    //将同一设备的odf端口放在一起
+                                    let odfDeviceNew = [];
+                                    for (let i = 0; i < odfDevice.length; i++) {
+                                        if (odfDevice.fixed != "false")
+                                            for (let j = i + 1; j < odfDevice.length; j++) {
+                                                if (odfDevice[i].id == odfDevice[j].id) {
+                                                    odfDevice[i].ODFport.push(...odfDevice[j].ODFport);
+                                                    odfDevice[j].fixed = "false";
+                                                }
+                                            }
+                                    }
+                                    for (let i = 0; i < odfDevice.length; i++) {
+                                        if (odfDevice[i].fixed != "false") {
+                                            odfDeviceNew.push(odfDevice[i])
+                                        }
+                                    }
+                                    //为odf添加depth字段,取该设备odf端口列表最小的depth
+                                    for (let i = 0; i < odfDeviceNew.length; i++) {
+                                        let arr = odfDeviceNew[i].ODFport;
+                                        let depthArr = Enumerable.from(arr).orderBy(
+                                            "x => x.depth ").toArray();
+                                        odfDeviceNew[i].depth = depthArr[0].depth;
+                                        odfDeviceNew[i].ODFport =
+                                            depthArr;
+                                    }
+                                    //对odf端口进行处理
+                                    for (let i = 0; i < res.data.content.nodes.length; i++) {
+                                        if (res.data.content.nodes[i].type == 4) {
+                                            res.data.content.nodes.splice(i, 1);
+                                            i--;
+                                        }
+                                    }
+                                    res.data.content.nodes = [...res.data.content.nodes, ...odfDeviceNew]
+                                    that.mainData = res.data.content;
+                                    that.drawChart();
+                                }
+                            },
+                        },
+                        mounted: function () {
+                            this.getMainData();
+                        }
+                    })
+    </script>
+</body>
+
+</html>

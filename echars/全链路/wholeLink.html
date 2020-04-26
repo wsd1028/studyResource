@@ -1,0 +1,521 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <link rel="stylesheet" href="./css/element.css" />
+    <title>全链路</title>
+    <style>
+        body,
+        html {
+            margin: 0;
+            padding: 0;
+            width: 100%;
+            background-color: #f5f5f5;
+        }
+
+        #wholeLink {
+            width: 100%;
+            height: 400px;
+            background-color: #fff;
+        }
+
+        .test {
+            width: 100%;
+            position: relative;
+        }
+
+        .wholeLink {
+            padding: 20px;
+            border-radius: 5px;
+        }
+
+        .my-select {
+            position: absolute;
+            left: 100px;
+            top: 20px;
+            z-index: 30;
+            width: 150px;
+        }
+
+        .my-table {
+            margin-top: 20px;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="main" class="wholeLink">
+        <div class="test">
+            <el-select v-model="linkType" v-on:change="changeSelect" size="small" placeholder="请选择" class="my-select">
+                <el-option v-for="item in options" :key="item.value" :label="item.label" :value="item.value">
+                </el-option>
+            </el-select>
+            <div id="wholeLink"></div>
+        </div>
+        <el-table :data="mainData" v-on:row-click="handelTable" border style="width: 100%"
+            :header-cell-style="{background:'#eef1f6'}" class="my-table">
+            <el-table-column prop="node" label="所在节点" align="center">
+            </el-table-column>
+            <el-table-column prop="room" label="所属机房" align="center">
+            </el-table-column>
+            <el-table-column prop="rack" label="所在机柜" align="center">
+            </el-table-column>
+            <el-table-column prop="name" label="名称" align="center">
+            </el-table-column>
+            <el-table-column prop="type" label="类型" align="center">
+            </el-table-column>
+        </el-table>
+    </div>
+    <script src="./js/es6-shim.min.js"></script>
+    <script src="./js/vue.js"></script>
+    <script src="./js/element.js"></script>
+    <script src="./js/echarts/dist/echarts.min.js"></script>
+    <script>
+        let serviceImg = "data:image/png;base64,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";
+        let offImg = "data:image/png;base64,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";
+        let outImg = "data:image/png;base64,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";
+        let changeImg = "data:image/png;base64,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";
+        var v = new Vue({
+            el: "#main",
+            data: {
+                wholeLink: null,
+                options: [
+                    {
+                        value: 0,
+                        label: "动态链路"
+                    },
+                    {
+                        value: 1,
+                        label: "静态链路"
+                    }
+                ],
+                linkType: 0,
+                activeIndex: 0,
+                mainData: [
+                    {
+                        node: "节点1",
+                        room: "机房1",
+                        rack: "机柜1",
+                        name: "全链路1",
+                        type: "类型1",
+                        wholeLink: [
+                            {
+                                name: "客服设备1",
+                                img: serviceImg,
+                                linkTitle: "端口c1",
+                                flux: 500,
+                                speed: 2000
+                            },
+                            {
+                                name: "ODF模块1",
+                                img: offImg,
+                                linkTitle: "端口a1",
+                                flux: 500,
+                                speed: 2000
+                            },
+                            {
+                                name: "交换机1",
+                                img: changeImg,
+                                linkTitle: "端口B",
+                                flux: 500,
+                                speed: 2000
+                            },
+                            {
+                                name: "边界网关",
+                                img: outImg,
+                                linkTitle: "端口d",
+                                flux: 500,
+                                speed: 2000
+                            }
+                        ]
+                    },
+                    {
+                        node: "节点2",
+                        room: "机房2",
+                        rack: "机柜2",
+                        name: "全链路2",
+                        type: "类型2",
+                        wholeLink: [
+                            {
+                                name: "客服设备2",
+                                img: serviceImg,
+                                linkTitle: "端口c2",
+                                flux: 500,
+                                speed: 2000
+                            },
+                            {
+                                name: "交换机3",
+                                img: changeImg,
+                                linkTitle: "端口B",
+                                flux: 500,
+                                speed: 2000
+                            },
+                            {
+                                name: "ODF模块2",
+                                img: offImg,
+                                linkTitle: "端口a2",
+                                flux: 500,
+                                speed: 2000
+                            },
+                            {
+                                name: "ODF模块3",
+                                img: offImg,
+                                linkTitle: "端口a2",
+                                flux: 500,
+                                speed: 2000
+                            },
+                            {
+                                name: "交换机2",
+                                img: changeImg,
+                                linkTitle: "端口B",
+                                flux: 500,
+                                speed: 2000
+                            },
+                            {
+                                name: "交换机8",
+                                img: changeImg,
+                                linkTitle: "端口d",
+                                flux: 500,
+                                speed: 2000
+                            }
+                        ]
+                    },
+                    {
+                        node: "节点3",
+                        room: "机房3",
+                        rack: "机柜3",
+                        name: "全链路3",
+                        type: "类型3",
+                        wholeLink: [
+                            {
+                                name: "客服设备3",
+                                img: serviceImg,
+                                linkTitle: "端口c3",
+                                flux: 500,
+                                speed: 2000
+                            },
+                            {
+                                name: "交换机9",
+                                img: changeImg,
+                                linkTitle: "端口B",
+                                flux: 500,
+                                speed: 2000
+                            },
+                            {
+                                name: "ODF模块3",
+                                img: offImg,
+                                linkTitle: "端口a3",
+                                flux: 500,
+                                speed: 2000
+                            },
+                            {
+                                name: "交换机3",
+                                img: changeImg,
+                                linkTitle: "端口B",
+                                flux: 500,
+                                speed: 2000
+                            },
+                            {
+                                name: "边界网关",
+                                img: outImg,
+                                linkTitle: "端口d",
+                                flux: 500,
+                                speed: 2000
+                            }
+                        ]
+                    },
+                    {
+                        node: "节点4",
+                        room: "机房4",
+                        rack: "机柜4",
+                        name: "全链路4",
+                        type: "类型4",
+                        wholeLink: [
+                            {
+                                name: "客服设备4",
+                                img: serviceImg,
+                                linkTitle: "端口c4",
+                                flux: 500,
+                                speed: 2000
+                            },
+                            {
+                                name: "交换机3",
+                                img: changeImg,
+                                linkTitle: "端口B",
+                                flux: 500,
+                                speed: 2000
+                            },
+                            {
+                                name: "ODF模块4",
+                                img: offImg, linkTitle: "端口a4",
+                                flux: 500,
+                                speed: 2000
+                            },
+                            {
+                                name: "交换机4",
+                                img: changeImg, linkTitle: "端口B",
+                                flux: 500,
+                                speed: 2000
+                            },
+                            {
+                                name: "边界网关",
+                                img: outImg,
+                                linkTitle: "端口d",
+                                flux: 500,
+                                speed: 2000
+                            }
+                        ]
+                    }
+                ]
+            },
+            methods: {
+                handelTable: function (row, column, cell, event) {
+                    for (let i = 0; i < this.mainData.length; i++) {
+                        if (this.mainData[i] == row) {
+                            if (this.activeIndex != i) {
+                                this.activeIndex = i;
+                                this.getWholeLink();
+                            }
+                        }
+                    }
+                },
+                changeSelect: function () {
+                    this.getWholeLink();
+                },
+                drawWholeLink: function (id, nodes, links) {
+                    let that = this;
+                    this[id] = echarts.init(document.getElementById(id));
+                    for (let i = 0; i < nodes.length; i++) {
+                        nodes[i].angle = (360 / nodes.length) * i;
+                    }
+                    var charts = {
+                        nodes: [],
+                        links: [],
+                        linesData: []
+                    };
+                    var dataMap = new Map();
+                    for (var j = 0; j < nodes.length; j++) {
+                        var node = {
+                            z:10,
+                            name: nodes[j].name,
+                            value: [j * 200 + 400, 200],
+                            symbolSize: 50,
+                            symbol: "image://" + nodes[j].img,
+                            itemStyle: {
+                                normal: {
+                                    color: "#12b5d0"
+                                }
+                            }
+                        };
+                        dataMap.set(nodes[j].name, node.value);
+                        charts.nodes.push(node);
+                    }
+                    for (var i = 0; i < links.length; i++) {
+                        var link = {
+                            source: links[i].source,
+                            target: links[i].target,
+                            detail: links[i],
+                            label: {
+                                normal: {
+                                    show: true,
+                                    formatter: links[i].name
+                                }
+                            },
+                            lineStyle: {
+                                normal: {
+                                    color: "#12b5d0"
+                                }
+                            }
+                        };
+                        charts.links.push(link);
+                        // 组装动态移动的效果数据
+                        var lines = {
+                            coords: [
+                                dataMap.get(links[i].source),
+                                dataMap.get(links[i].target)
+                            ],
+                            detail: links[i]
+                        };
+                        charts.linesData.push(lines);
+                    }
+                    let series = [];
+                    if (this.linkType) {
+                        series = [
+                            {
+                                type: "graph",
+                                coordinateSystem: "geo",
+                                symbolSize: 50,
+                                label: {
+                                    normal: {
+                                        show: true,
+                                        position: "bottom",
+                                        color: "#12b5d0"
+                                    }
+                                },
+                                lineStyle: {
+                                    normal: {
+                                        width: 2,
+                                        shadowColor: "none"
+                                    }
+                                },
+                                edgeSymbolSize: 8,
+                                data: charts.nodes,
+                                links: charts.links,
+                                itemStyle: {
+                                    normal: {
+                                        label: {
+                                            show: true,
+                                            formatter: function (item) {
+                                                return item.data.name;
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        ];
+                    } else {
+                        series = [
+                            {
+                                type: "graph",
+                                coordinateSystem: "geo",
+                                symbolSize: 50,
+                                label: {
+                                    normal: {
+                                        show: true,
+                                        position: "bottom",
+                                        color: "#12b5d0"
+                                    }
+                                },
+                                lineStyle: {
+                                    normal: {
+                                        width: 2,
+                                        shadowColor: "none"
+                                    }
+                                },
+                                edgeSymbolSize: 8,
+                                data: charts.nodes,
+                                itemStyle: {
+                                    normal: {
+                                        label: {
+                                            show: true,
+                                            formatter: function (item) {
+                                                return item.data.name;
+                                            }
+                                        }
+                                    }
+                                }
+                            },
+                            {
+                                name: "line",
+                                type: "lines",
+                                coordinateSystem: "geo",
+                                lineStyle: {
+                                    color: "#a6c84c",
+                                    width: 1,
+                                    curveness: 0.5
+                                },
+                                effect: {
+                                    show: true,
+                                    trailLength: 0,
+                                    symbol: "triangle",
+                                    color: "#12b5d0",
+                                    symbolSize: 8
+                                },
+                                data: charts.linesData
+                            }
+                        ];
+                    }
+                    let option = {
+                        geo: {
+                            map: "北京市",
+                            label: {
+                                emphasis: {
+                                    show: false
+                                }
+                            },
+                            roam: true,
+                            itemStyle: {
+                                normal: {
+                                    borderColor: "#404a59"
+                                },
+                                emphasis: {
+                                    areaColor: "#2a333d"
+                                }
+                            }
+                        },
+                        tooltip: {
+                            formatter: function (item) {
+                                let str = "";
+                                if (item.componentSubType == "lines") {
+                                    str =
+                                        "流量：" +
+                                        item.data.detail.detail.flux +
+                                        "<br />" +
+                                        "带宽：" +
+                                        item.data.detail.detail.speed;
+                                } else {
+                                    str = "名称：" + item.name;
+                                }
+                                return str;
+                            }
+                        },
+                        title: {
+                            text: "全链路",
+                            left: 20,
+                            top: 20,
+                            textStyle: {
+                                color: "#333"
+                            }
+                        },
+                        radiusAxis: {
+                            show: false
+                        },
+                        angleAxis: {
+                            type: "value",
+                            show: false
+                        },
+                        series: series
+                    };
+                    this[id].setOption(option, true);
+                },
+                getWholeLink: function () {
+                    let nodes = [],
+                        links = [];
+                    let nodeItem = {},
+                        linItem = {};
+                    let data = this.mainData[this.activeIndex].wholeLink;
+                    for (let i = 0; i < data.length; i++) {
+                        nodeItem = {
+                            name: data[i].name,
+                            img: data[i].img
+                        };
+                        if (i < data.length - 1) {
+                            linItem = {
+                                source: data[i].name,
+                                target: data[i + 1].name,
+                                name: data[i].linkTitle,
+                                detail: data[i]
+                            };
+                            links.push(linItem);
+                        }
+                        nodes.push(nodeItem);
+                    }
+                    this.drawWholeLink("wholeLink", nodes, links);
+                }
+            },
+            mounted: function () {
+                this.getWholeLink();
+                window.addEventListener("resize", () => {
+                    if (this.wholeLink) {
+                        this.wholeLink.resize();
+                    }
+                });
+            }
+        });
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,7 @@
+"files.associations": {
+        "*.cshtml": "html",
+        "*.aspx": "html",
+
+        // "*.aspx": "html",
+
+    },

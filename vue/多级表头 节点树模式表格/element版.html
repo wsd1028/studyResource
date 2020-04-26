@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <link rel="stylesheet" href="./css/element.css" />
+    <title>重庆大屏2</title>
+</head>
+
+<body>
+    <div id="main">
+        <dynamic-table :table-data="mainData" ref="table" :show-summary="true" 
+            :show-oper="true" :oper-col="operCol" :table-header="tableHeader" >
+        </dynamic-table>
+    </div>
+    <script src="./js/es6-shim.min.js"></script>
+    <script src="./js/vue.js"></script>
+    <script src="./js/element.js"></script>
+    <script src="./js/table-column.js"></script>
+    <script src="./js/dynamic-table.js"></script>
+    <script>
+        var v = new Vue({
+            el: "#main",
+            data: {
+                showRule: {
+                    type: "img",
+                    text: "数值显示"
+                },
+                entityArea: [{
+                    name: "ed"
+                }],
+                mainData: {
+                    "name": "机房出口网络探针",
+                    "entityArea": [{
+                        "NodeID": 20005,
+                        "NodeName": "湖南省移动公司",
+                        "entityHarvester": [{
+                            "MID": 21,
+                            "NodeID": 20005,
+                            "areaIP": "192.3.68.2",
+                            "DevName": "85",
+                            "items": []
+                        }, {
+                            "MID": 22,
+                            "NodeID": 20005,
+                            "areaIP": "12.3.5.8",
+                            "DevName": "852",
+                            "items": []
+                        }, {
+                            "MID": 23,
+                            "NodeID": 20005,
+                            "areaIP": "111.23.13.142",
+                            "DevName": "东片区9楼可视化平台探针",
+                            "items": [{
+                                "time": "-1",
+                                "site": "111.11.11.11",
+                                "siteName": "2222"
+                            }, {
+                                "time": "-1",
+                                "site": "111.8.14.18",
+                                "siteName": "DNS"
+                            }, {
+                                "time": "0",
+                                "site": "111.8.6.1",
+                                "siteName": "东片区9F至星沙出口网络质量监测"
+                            }, {
+                                "time": "-1",
+                                "site": "192.111.111.11",
+                                "siteName": "222"
+                            }, {
+                                "time": "2",
+                                "site": "36.158.194.137",
+                                "siteName": "test"
+                            }]
+                        }, {
+                            "MID": 24,
+                            "NodeID": 20005,
+                            "areaIP": "183.214.2.182",
+                            "DevName": "东片区8楼可视化平台探针",
+                            "items": [{
+                                "time": "-1",
+                                "site": "183.214.143.1",
+                                "siteName": "东片区8F-2至西片区310网络质量监测"
+                            }, {
+                                "time": "2",
+                                "site": "36.158.194.137",
+                                "siteName": "test"
+                            }]
+                        }, {
+                            "MID": 25,
+                            "NodeID": 20005,
+                            "areaIP": "111.8.3.62",
+                            "DevName": "星沙3楼可视化平台探针",
+                            "items": [{
+                                "time": "2",
+                                "site": "36.158.194.137",
+                                "siteName": "test"
+                            }]
+                        }, {
+                            "MID": 27,
+                            "NodeID": 20005,
+                            "areaIP": "36.158.195.26",
+                            "DevName": "湘潭3楼可视化平台探针",
+                            "items": [{
+                                "time": "0",
+                                "site": "36.158.192.1",
+                                "siteName": "湘潭探针服务器至湘潭核心出口网络质量监测1"
+                            }, {
+                                "time": "0",
+                                "site": "36.158.192.2",
+                                "siteName": "湘潭探针服务器至湘潭核心出口网络质量监测2"
+                            }, {
+                                "time": "0",
+                                "site": "36.158.194.137",
+                                "siteName": "test"
+                            }]
+                        }]
+                    }, {
+                        "NodeID": 20006,
+                        "NodeName": "长沙市移动分公司",
+                        "entityHarvester": [{
+                            "MID": 14,
+                            "NodeID": 20006,
+                            "areaIP": "192.168.111.10",
+                            "DevName": "采集机",
+                            "items": [{
+                                "time": "-1",
+                                "site": "61.139.2.69",
+                                "siteName": "SC_DNS"
+                            }]
+                        }, {
+                            "MID": 28,
+                            "NodeID": 20006,
+                            "areaIP": "111.23.15.138",
+                            "DevName": "西片区探针服务器",
+                            "items": [{
+                                "time": "0",
+                                "site": "111.23.0.65",
+                                "siteName": "医疗云出口"
+                            }, {
+                                "time": "1",
+                                "site": "111.23.15.129",
+                                "siteName": "通管局出口"
+                            }, {
+                                "time": "8",
+                                "site": "120.226.179.1",
+                                "siteName": "张家界教育局出口"
+                            }, {
+                                "time": "5",
+                                "site": "183.214.143.121",
+                                "siteName": "自建绿色上网出口1"
+                            }, {
+                                "time": "5",
+                                "site": "183.214.143.125",
+                                "siteName": "自建绿色上网出口2"
+                            }, {
+                                "time": "0",
+                                "site": "183.214.143.8",
+                                "siteName": "中移电商出口1、华为云出口、淘宝云出口1"
+                            }, {
+                                "time": "0",
+                                "site": "183.214.143.9",
+                                "siteName": "中移电商出口2、淘宝云出口2"
+                            }, {
+                                "time": "1",
+                                "site": "211.142.208.115",
+                                "siteName": "至妙高峰省网出口"
+                            }, {
+                                "time": "0",
+                                "site": "211.142.208.116",
+                                "siteName": "至西片区省网出口"
+                            }, {
+                                "time": "0",
+                                "site": "211.142.211.124",
+                                "siteName": "test"
+                            }, {
+                                "time": "9",
+                                "site": "36.158.200.128",
+                                "siteName": "百度网讯出口_岳阳"
+                            }, {
+                                "time": "3",
+                                "site": "36.158.200.129",
+                                "siteName": "湖南三合道出口_株洲"
+                            }, {
+                                "time": "5",
+                                "site": "36.158.200.131",
+                                "siteName": "广州凡骠出口1_常德"
+                            }, {
+                                "time": "3",
+                                "site": "36.158.200.135",
+                                "siteName": "广州凡骠出口2_常德"
+                            }]
+                        }, {
+                            "MID": 29,
+                            "NodeID": 20006,
+                            "areaIP": "111.23.15.142",
+                            "DevName": "西片区探针服务器2",
+                            "items": [{
+                                "time": "0",
+                                "site": "111.23.0.65",
+                                "siteName": "医疗云出口"
+                            }, {
+                                "time": "1",
+                                "site": "111.23.15.129",
+                                "siteName": "通管局出口"
+                            }, {
+                                "time": "10",
+                                "site": "120.226.179.1",
+                                "siteName": "张家界教育局出口"
+                            }, {
+                                "time": "5",
+                                "site": "183.214.143.121",
+                                "siteName": "自建绿色上网出口1"
+                            }, {
+                                "time": "5",
+                                "site": "183.214.143.125",
+                                "siteName": "自建绿色上网出口2"
+                            }, {
+                                "time": "0",
+                                "site": "183.214.143.8",
+                                "siteName": "中移电商出口1、华为云出口、淘宝云出口1"
+                            }, {
+                                "time": "0",
+                                "site": "183.214.143.9",
+                                "siteName": "中移电商出口2、淘宝云出口2"
+                            }, {
+                                "time": "1",
+                                "site": "211.142.208.115",
+                                "siteName": "至妙高峰省网出口"
+                            }, {
+                                "time": "0",
+                                "site": "211.142.208.116",
+                                "siteName": "至西片区省网出口"
+                            }, {
+                                "time": "0",
+                                "site": "211.142.211.124",
+                                "siteName": "test"
+                            }, {
+                                "time": "7",
+                                "site": "36.158.200.128",
+                                "siteName": "百度网讯出口_岳阳"
+                            }, {
+                                "time": "9",
+                                "site": "36.158.200.129",
+                                "siteName": "湖南三合道出口_株洲"
+                            }, {
+                                "time": "8",
+                                "site": "36.158.200.131",
+                                "siteName": "广州凡骠出口1_常德"
+                            }, {
+                                "time": "4",
+                                "site": "36.158.200.135",
+                                "siteName": "广州凡骠出口2_常德"
+                            }]
+                        }]
+                    }]
+                }
+            },
+            methods: {},
+            mounted: function () {
+
+            }
+        });
+    </script>
+</body>
+
+</html>

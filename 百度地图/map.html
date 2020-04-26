@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>地图</title>
+</head>
+
+<body>
+    <div id="main">
+        <baidu-map :center="mapConfig.center" :zoom="mapConfig.zoom" v-on:click="getPoint" v-on:ready="mapReady"
+            class="map" style="width: 100%;height: 500px;margin-top: 0;">
+            <bm-marker :position="postionMap">
+                <bm-info-window :show="show" v-on:close="infoWindowClose" v-on:open="infoWindowOpen"
+                    style="font-size: 14px">
+                    <p>站点：{{ add.siteName }}</p>
+                    <p>站点地址：{{ add.site }}</p>
+                </bm-info-window>
+            </bm-marker>
+        </baidu-map>
+    </div>
+    <script src="../js/vue.js"></script>
+    <script src="../js/baidu-map0.21.2.js"></script>
+
+    <script>
+        Vue.use(VueBaiduMap.default, {
+            ak: 'VlEiPanKyj6oLyHE4jLGlZgAIUkBjN69'
+        })
+        var app = new Vue({
+            el: '#main',
+            data: {
+                mapConfig: {
+                    center: {
+                        lng: 106.51956,
+                        lat: 29.624133
+                    },
+                    zoom: 15
+                },
+
+                jgNameDialog: false,
+                show: true,
+                postionMap: { //地图坐标
+                    lng: 106.51956,
+                    lat: 29.624133
+                },
+                location: '',
+                keyword: '', //搜索框关键词
+                zoom: 12.8, //放大比例
+                address: '', //位置详细信息
+                add: {
+                    siteName: '',
+                    site: '',
+                    jd: '',
+                    wd: '',
+                    desce: '',
+                    type: '',
+                    jgName: '',
+                    jgNum: '',
+                },
+                organizationData: [],
+                jgName: '',
+                jgNum: '',
+
+            },
+            methods: {
+                getPoint: function (e) {
+                    this.show = true;
+                    this.postionMap.lng = e.point.lng; //通过  e.point.lng获取经度
+                    this.postionMap.lat = e.point.lat; //通过  e.point.lat获取纬度
+                    this.add.jd = e.point.lng;
+                    this.add.wd = e.point.lat;
+                    this.zoom = e.target.getZoom()
+
+                    let geocoder = new BMap.Geocoder(); //创建地址解析器的实例
+                    geocoder.getLocation(e.point, rs => {
+                        this.add.site = rs.address;
+                        //地址描述
+                        // console.log(rs.address);    //这里打印可以看到里面的详细地址信息，可以根据需求选择想要的
+                        // console.log(rs.addressComponents);//结构化的地址描述(object)
+                        // console.log(rs.addressComponents.province); //省
+                        // console.log(rs.addressComponents.city); //城市
+                        // console.log(rs.addressComponents.district); //区县
+                        // console.log(rs.addressComponents.street); //街道
+                        // console.log(rs.addressComponents.streetNumber); //门牌号
+                        // console.log(rs.surroundingPois); //附近的POI点(array)
+                        // console.log(rs.business); //商圈字段，代表此点所属的商圈(string)
+                    });
+                },
+                infoWindowClose() {
+                    this.show = false
+                },
+                infoWindowOpen() {
+                    //这里有个问题纠结了很久，百度的信息窗口默认有个点击其他地方就消失的事件，我没有找到
+                    //并且信息窗口点击一次显示，一次消失
+                    //于是我加了一个100毫秒的定时器，保证每次点击地图都可以展示信息窗口
+                    // setInterval(() => {
+                    //     this.show = true
+                    // }, 100)
+                },
+                mapReady: function () {
+                    // 设置mapConfig
+                }
+            }
+        })
+    </script>
+</body>
+
+</html>

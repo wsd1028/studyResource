@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link rel="stylesheet" href="./css/element.css">
+    <link rel="stylesheet" href="./css/iconfont/iconfont.css">
+    <title>湖南移动首页展示</title>
+</head>
+
+<body>
+    <div id="main" class="homeShow">
+        <div id="Ea" style="width:100%;height:800px;border:#ccc solid 1px;font-size:12px" id="map"></div>
+    </div>
+    <script src="./js/es6-shim.min.js"></script>
+    <script src="./js/vue.js"></script>
+    <script src="./js/element.js"></script>
+    <script src="./js/echarts/dist/echarts.min.js"></script>
+    <script src="./js/hunan.js"></script>
+    <script>
+        var v = new Vue({
+            el: "#main",
+            data: {},
+            methods: {},
+            mounted: function () {
+                var Ea = echarts.init(document.getElementById('Ea'));
+                var _data = {
+                    counties: ["搜狐", "京东", "方能科技", "腾讯", "淘宝双节", "上海欣诺", "葛明阳", "志金科贸", "百度（廊坊）",
+                        "京东（廊坊）", "卫计委",
+                        "北青网", "元恒信通", "idc", "新浪网", "迅通网络", "腾讯(廊坊)", "阿里巴巴（淘宝）", "信思贤"
+                    ],
+                    timeline: ["天", "周", "月", ],
+                    series: [
+                        [
+                            [1, 470.1868, 100, "志金科贸"],
+                            [2, 470.004, 451, "百度（廊坊）"],
+                            [3, 470.004, 451, "百度（廊坊）"],
+                            [4, 470.004, 451, "百度（廊坊）"],
+                            [5, 470.004, 451, "百度（廊坊）"],
+                            [6, 470.004, 451, "百度（廊坊）"],
+                            [7, 470.004, 451, "百度（廊坊）"],
+                            [8, 470.004, 451, "百度（廊坊）"],
+                            [9, 470.004, 451, "百度（廊坊）"],
+                            [10, 470.004, 451, "百度（廊坊）"],
+                        ],
+                        [
+                            [1, 370.4706, 84, "志金科贸"],
+                            [2, 369.923, 62, "百度（廊坊）"],
+
+                        ],
+                        [
+                            [1, 371.0244, 523, "志金科贸"],
+                            [2, 370.582, 32, "百度（廊坊）"],
+                        ]
+                    ]
+                };
+                var itemStyle = {
+                    normal: {
+                        opacity: 0.8,
+                        shadowBlur: 10,
+                        shadowOffsetX: 0,
+                        shadowOffsetY: 0,
+                        shadowColor: 'rgba(0, 0, 0, 0.5)'
+                    }
+                };
+
+                var sizeFunction = function (x) {
+                    return 100;
+                };
+                option = {
+                    baseOption: {
+                        timeline: {
+                            axisType: 'category',
+                            orient: 'vertical',
+                            autoPlay: true,
+                            inverse: true,
+                            playInterval: 1000,
+                            left: null,
+                            right: 0,
+                            top: 20,
+                            bottom: 20,
+                            width: 55,
+                            height: null,
+                            label: {
+                                normal: {
+                                    textStyle: {
+                                        color: '#333'
+                                    }
+                                },
+                                emphasis: {
+                                    textStyle: {
+                                        color: '#333'
+                                    }
+                                }
+                            },
+                            symbol: 'none',
+                            lineStyle: {
+                                color: '#333'
+                            },
+                            checkpointStyle: {
+                                color: '#333',
+                                borderColor: '#333',
+                                borderWidth: 2
+                            },
+                            controlStyle: {
+                                showNextBtn: false,
+                                showPrevBtn: false,
+                                normal: {
+                                    color: '#333',
+                                    borderColor: '#333'
+                                },
+                                emphasis: {
+                                    color: '#333',
+                                    borderColor: '#333'
+                                }
+                            },
+                            data: []
+                        },
+                        title: [{
+                            text: _data.timeline[0],
+                            textAlign: 'center',
+                            left: '80%',
+                            top: '3%',
+                            textStyle: {
+                                fontSize: 40,
+                                color: '#aaa'
+                            }
+                        }, {
+                            text: '24h客户能耗分析',
+                            textStyle: {
+                                fontWeight: 'bold',
+                                fontSize: 16,
+                                color: "#333"
+                            }
+                        }],
+
+                        grid: {
+                            top: 100,
+                            containLabel: true,
+                            left: 30,
+                            right: '110'
+                        },
+                        xAxis: {
+                            type: 'category',
+                            name: '功率(w)',
+                            nameGap: 25,
+                            nameLocation: 'middle',
+                            nameTextStyle: {
+                                fontSize: 18
+                            },
+                            splitLine: {
+                                show: false
+                            },
+                            axisLine: {
+                                lineStyle: {
+                                    color: '#333'
+                                }
+                            },
+                            axisLabel: {
+                                formatter: '{value}'
+                            }
+                        },
+                        yAxis: {
+                            type: 'value',
+                            name: '能耗(kw/h)',
+                            nameTextStyle: {
+                                color: '#333',
+                                fontSize: 18
+                            },
+                            axisLine: {
+                                lineStyle: {
+                                    color: '#333'
+                                }
+                            },
+                            splitLine: {
+                                show: false
+                            },
+                            axisLabel: {
+                                formatter: '{value}'
+                            }
+                        },
+                        visualMap: [{
+                            show: false,
+                            dimension: 3,
+                            categories: _data.counties,
+                            calculable: true,
+                            precision: 0.1,
+                            textGap: 30,
+                            textStyle: {
+                                color: '#ccc'
+                            },
+                            inRange: {
+                                color: (function () {
+                                    var colors = ['#bcd3bb', '#e88f70', '#edc1a5',
+                                        '#9dc5c8', '#e1e8c8',
+                                        '#7b7c68', '#e5b5b5', '#f0b489', '#928ea8',
+                                        '#bda29a'
+                                    ];
+                                    return colors.concat(colors);
+                                })()
+                            }
+                        }],
+                        series: [{
+                            type: 'scatter',
+                            itemStyle: itemStyle,
+                            data: _data.series[0],
+                            label: {
+                                normal: {
+                                    show: true,
+                                    formatter: function (param) {
+                                        console.log('param',param);
+                                        return param.data[2];
+                                    },
+                                },
+                            },
+                            symbolSize: function (val) {
+                                return sizeFunction(val[2]);
+                            }
+                        }],
+                        animationDurationUpdate: 1000,
+                        animationEasingUpdate: 'quinticInOut'
+                    },
+                    options: []
+                };
+
+                for (var n = 0; n < _data.timeline.length; n++) {
+                    option.baseOption.timeline.data.push(_data.timeline[n]);
+                    option.options.push({
+                        title: {
+                            show: true,
+                            'text': _data.timeline[n] + ''
+                        },
+                        series: {
+                            name: _data.timeline[n],
+                            type: 'scatter',
+                            itemStyle: itemStyle,
+                            data: _data.series[n],
+                            symbolSize: function (val) {
+                                return sizeFunction(val[2]);
+                            }
+                        }
+                    });
+                }
+
+                Ea.setOption(option);
+            }
+        })
+    </script>
+</body>
+
+</html>

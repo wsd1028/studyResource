@@ -1,0 +1,50 @@
+ //表单验证
+  private checkPhone(rule, value, callback){
+    if (!value) {
+      callback(new Error("手机号不能为空"));
+    } else {
+      if (/^(13[0-9]{9})|(15[89][0-9]{8})$/.test(value)) {
+        callback();
+      } else {
+        callback(new Error("手机号格式不正确"));
+      }
+    }
+  };
+
+  private checkEmail(rule, value, callback) {
+    if (!value) {
+      callback(new Error("邮箱不能为空"));
+    } else {
+      var reg = /^[A-Za-z0-9\u4e00-\u9fa5]+@[a-zA-Z0-9_-]+(\.[a-zA-Z0-9_-]+)+$/;
+      if (!reg.test(value)) {
+        callback(new Error("请输入有效的邮箱"));
+      } else {
+        callback();
+      }
+    }
+  };
+  private checkNumber(rule, value, callback) {
+      console.log("value",value)
+    if (!value) {
+      callback(new Error("输入不能为空"));
+    } else {
+      if (/^[0-9]+\.[0-9]{1,}$|^(0|\+?[1-9][0-9]*)$/.test(value)) {
+        callback();
+      } else {
+        callback(new Error("请输入数字"));
+      }s
+    }
+  }
+  
+  private formRules = {
+    empty: [{ required: true, message: "输入不能为空", trigger: "blur" }],
+    phone: [{ validator: this.checkPhone, trigger: "blur" }],
+    email: [{ validator: this.checkEmail, trigger: "blur" }],
+    number: [{validator: this.checkNumber,trigger: "blur"}]
+  };
+
+
+密码必须包含字母、数字和特殊符号(8-20)位
+/^(?=.*[a-zA-Z])(?=.*\d)(?=.*[~!@#$%^&*()_+`\-={}:";'<>?,.\/]).{8,20}$/.test("552wefdwe")
+
+formRules 的键必须与input绑定的值 名称相同

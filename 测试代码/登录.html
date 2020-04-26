@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="zn-ch">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link rel="stylesheet" href="./css/element.css">
+    <link rel="stylesheet" href="./css/iconfont/iconfont.css">
+
+    <title>登录</title>
+    <style>
+        [v-cloak] {
+            display: none !important;
+        }
+
+        .main {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .el-input {
+            width: 400px;
+        }
+
+        .el-card__body {
+            padding: 20px 40px;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="main" class="main" v-cloak >
+        <el-card class="box-card">
+            <div slot="header" class="clearfix">
+                <span>用户信息修改</span>
+            </div>
+            <el-form :model="ruleForm" status-icon :rules="rules" ref="ruleForm" label-width="100px"
+                class="demo-ruleForm">
+                <el-form-item label="登录账号:" prop="loginname">
+                    <el-input v-model="ruleForm.loginname"></el-input>
+                </el-form-item>
+                <el-form-item label="用户名:" prop="username">
+                    <el-input v-model="ruleForm.username"></el-input>
+                </el-form-item>
+                <el-form-item label="旧密码:" prop="oldpassword">
+                    <el-input v-model="ruleForm.oldpassword"></el-input>
+                </el-form-item>
+                <el-form-item label="新密码:" prop="password1">
+                    <el-input type="password" v-model="ruleForm.password1"></el-input>
+                </el-form-item>
+                <el-form-item label="确认密码:" prop="password2">
+                    <el-input type="password" v-model="ruleForm.password2"></el-input>
+                </el-form-item>
+                <el-form-item label="联系电话:" prop="worktel">
+                    <el-input v-model="ruleForm.worktel"></el-input>
+                </el-form-item>
+                <el-form-item label="移动电话:" prop="mobiletel">
+                    <el-input v-model="ruleForm.mobiletel"></el-input>
+                </el-form-item>
+                <el-form-item label="电子邮件:" prop="email">
+                    <el-input v-model="ruleForm.email"></el-input>
+                </el-form-item>
+                <el-form-item>
+                    <el-button type="primary" @click="submitForm('ruleForm')">提交</el-button>
+                    <el-button @click="resetForm('ruleForm')">重置</el-button>
+                </el-form-item>
+            </el-form>
+
+        </el-card>
+
+    </div>
+    <script src="./js/es6-shim.min.js"></script>
+    <script src="./js/vue.js"></script>
+    <script src="./js/element.js"></script>
+    <script src="./js/echarts.min.js"></script>
+    <script src="./js/v-charts.min.js"></script>
+    <script src="./js/linq.min.js"></script>
+    <script src="./test.js"></script>
+    <script>
+        var validatePass = (rule, value, callback) => {
+            if (value) {
+                let bool =
+                    /((^(?=.*[a-z])(?=.*[A-Z])(?=.*\W)[\da-zA-Z\W]{0,}$)|(^(?=.*\d)(?=.*[A-Z])(?=.*\W)[\da-zA-Z\W]{0,}$)|(^(?=.*\d)(?=.*[a-z])(?=.*\W)[\da-zA-Z\W]{0,}$)|(^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])[\da-zA-Z\W]{0,}$))/
+                    .test(value);
+                if (bool) {
+                    callback();
+                } else {
+                    callback(new Error('密码至少包括大写字母、小写字母、数字、特殊字符中的三种并且不能包含汉字！如果不修改，请留空！'));
+                }
+            } else {
+                callback();
+            }
+        };
+        var validatePass2 = (rule, value, callback) => {
+            if (value) {
+                let bool =
+                    /((^(?=.*[a-z])(?=.*[A-Z])(?=.*\W)[\da-zA-Z\W]{0,}$)|(^(?=.*\d)(?=.*[A-Z])(?=.*\W)[\da-zA-Z\W]{0,}$)|(^(?=.*\d)(?=.*[a-z])(?=.*\W)[\da-zA-Z\W]{0,}$)|(^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])[\da-zA-Z\W]{0,}$))/
+                    .test(value);
+                if (bool) {
+                    if (value !== v.ruleForm.password1) {
+                        callback(new Error('两次输入密码不一致!'));
+                    } else {
+                        callback();
+                    }
+                } else {
+                    callback(new Error('密码至少包括大写字母、小写字母、数字、特殊字符中的三种并且不能包含汉字！如果不修改，请留空！'));
+                }
+            } else {
+                callback();
+            }
+        };
+
+        var v = new Vue({
+            el: "#main",
+            data: {
+                ruleForm: {
+                    loginname: "",
+                    username: "",
+                    oldpassword: "",
+                    password1: '',
+                    password2: '',
+                    worktel: "",
+                    mobiletel: "",
+                    email: ""
+                },
+                rules: {
+                    loginname: [{
+                        required: true,
+                        message: '登录帐号不能为空',
+                        trigger: 'blur'
+                    }],
+                    username: [{
+                        required: true,
+                        message: '用户姓名不能为空',
+                        trigger: 'blur'
+                    }],
+                    oldpassword: [{
+                        required: true,
+                        message: '旧密码不能为空',
+                        trigger: 'blur'
+                    }],
+                    password1: [{
+                        validator: validatePass,
+                        trigger: 'blur'
+                    }],
+                    password2: [{
+                        validator: validatePass2,
+                        trigger: 'blur'
+                    }],
+                    worktel: [],
+                    mobiletel: [],
+                    email: []
+                }
+            },
+            methods: {
+                submitForm(formName) {
+                    this.$refs[formName].validate((valid) => {
+                        if (valid) {
+                            alert('submit!');
+                        } else {
+                            console.log('error submit!!');
+                            return false;
+                        }
+                    });
+                },
+                resetForm(formName) {
+                    this.$refs[formName].resetFields();
+                }
+            },
+            mounted: function () {
+
+            }
+        })
+    </script>
+</body>
+
+</html>

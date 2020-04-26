@@ -1,0 +1,42 @@
+{
+  "name": "smartidc",
+  "version": "1.0.0",
+  "description": "Vue.js starter kit with Parcel + Typescript",
+  "scripts": {
+    "build": "parcel build ./src/index.html --public-url .",
+    "clean": "rm -rf .cache && rm -rf dist",
+    "prestart": "npm run clean",
+    "prebuild": "npm run clean",
+    "start": "parcel ./src/index.html --log-level 3",
+    "watch": "parcel watch ./src/index.html --log-level 3 --public-url ."
+  },
+  "keywords": [
+    "vue",
+    "parcel",
+    "typescript"
+  ],
+  "author": "Devon Bellizio",
+  "license": "MIT",
+  "dependencies": {
+    "axios": "^0.18.0",
+    "babel-polyfill": "latest",
+    "element-ui": "^2.4.8",
+    "konva": "^3.2.0",
+    "linq": "^3.1.0",
+    "string": "^3.3.3",
+    "string-format": "^2.0.0",
+    "vue": "^2.5.16",
+    "vue-class-component": "^6.2.0",
+    "vue-hot-reload-api": "^2.3.0",
+    "vue-infinite-loading": "^2.4.3",
+    "vue-property-decorator": "^7.0.0"
+  },
+  "devDependencies": {
+    "@types/es6-promise": "^3.3.0",
+    "@vue/component-compiler-utils": "^2.1.0",
+    "node-sass": "^4.11.0",
+    "parcel-bundler": "^1.11.0",
+    "typescript": "^2.9.1",
+    "vue-template-compiler": "^2.5.16"
+  }
+}

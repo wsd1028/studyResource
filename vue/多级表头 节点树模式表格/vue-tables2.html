@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+  <link rel="stylesheet" href="./css/element.css" />
+  <link rel="stylesheet" href="./css/bootstrap.min.css" />
+  <title>合并列</title>
+  <style>
+    #main{
+      padding: 20px;
+    }
+    *{
+      box-sizing: border-box;
+    }
+    .cell {
+      align-items: center;
+      vertical-align: middle;
+      background: lightskyblue;
+      box-sizing: border-box;
+    }
+
+    .cell2 {
+      background: greenyellow;
+      box-sizing: border-box;
+    }
+
+    tbody * {
+      padding: 0;
+    }
+
+    .mytd:hover {
+      /*background: red;*/
+      border: 2px solid blue;
+    }
+  </style>
+</head>
+
+<body>
+  <div id="main">
+    <div>
+      <table class="table table-bordered table-striped table-sm" style="height: 100px">
+        <thead>
+          <tr>
+            <th>时间</th>
+            <th v-for="i in 7">
+              {{days[i-1]}}
+            </th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr v-for="i,index in info">
+            <th scope="row">{{index}},{{times[index]}}</th>
+            <td class="mytd" v-for="j in i" v-if="j" :rowspan="j==1? 1:j['time']"
+              :class=" {cell:j&&j!=1&&j.pass,cell2:j&&j!=1&&!j.pass}">
+              {{j?j.subject:''}}
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+  <script src="./js/es6-shim.min.js"></script>
+  <script src="./js/vue.js"></script>
+  <script src="./js/element.js"></script>
+  <script src="./js/moment.js"></script>
+  <script src="./js/linq.min.js"></script>
+  <script src="./js/echarts/dist/echarts.min.js"></script>
+
+  <script>
+    let days = "天一二三四五六"
+    let times = ['7:00', '7:30', '8:00', '8:30', '9:00', '9:30', '10:00', '10:30', '11:00', '11:30', '12:00', '12:30',
+      '13:00', '13:30', '14:00', '14:30', '15:00', '15:30', '16:00', '16:30', '17:00', '17:30', '18:00', '18:30',
+      '19:00', '19:30', '20:00', '20:30', '21:00', '21:30', '22:00', '22:30', '23:00'
+    ]
+    let meeting = [
+      // 安排的数组，开始时间和持续时间，标题
+      [{
+        subject: '秘书处',
+        start: 29,
+        time: 4,
+        pass: true,
+      }],
+      [{
+        subject: "团校",
+        start: 28,
+        time: 4
+      }],
+      [{
+          subject: "数学",
+          start: 24,
+          time: 4,
+        },
+        {
+          subject: "组织部",
+          start: 28,
+          time: 4,
+        }
+      ],
+      [{
+          subject: '信息中心',
+          start: 19,
+          time: 4,
+          pass: true,
+
+        },
+        {
+          subject: '实践部',
+          start: 28,
+          time: 4,
+          pass: false,
+        }
+      ],
+      [{
+        subject: '文艺部',
+        start: 28,
+        time: 4,
+      }],
+      [{
+          subject: '能动',
+          start: 24,
+          time: 4,
+        },
+        {
+          subject: '志工部',
+          start: 28,
+          time: 4,
+        },
+      ],
+      [{
+        subject: '辩论队',
+        start: 24,
+        time: 9,
+        pass: true,
+
+      }, ]
+    ];
+    var v = new Vue({
+      el: "#main",
+      data: {
+        info: [],
+        days: days,
+        times: times,
+      },
+      methods: {},mounted: function () {
+       // 根据预约信息数组，处理成表格可以使用的形式
+      // 预约信息是该周每天的预约情况，0-6表示星期一到星期天
+      let info = []
+      for (let i of meeting) {
+        for (let j of i)
+          console.log(j)
+      }
+      for (let i = 0; i < 33; i++) {
+        info[i] = []
+        for (let j = 0; j < 7; j++) {
+          // 1 表示空白
+          info[i].push(1)
+        }
+      }
+
+      for (let i = 0; i < 7; i++) {
+        // m 表示第i天所有活动的集合
+        // cnt 表示第i天活动数目
+        let m = meeting[i]
+        for (let k of m) {
+          info[k.start][i] = k
+          for (let p = 1; p < k.time; p++)
+            info[k.start + p][i] = null
+        }
+      }
+      console.log(info)
+      this.info = info
+      }
+    });
+  </script>
+</body>
+
+</html>

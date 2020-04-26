@@ -1,0 +1,220 @@
+//只适用于查看模式
+// 节点可拖动
+// 前后点击两个节点，可以对节点进行连接
+// 点击连线，可以删除连线
+// 动态添加、删除节点 ，还未完成
+
+
+//关系坐标
+var xydata = [
+    [0, 1],
+    [1, 2],
+    [2, 3]
+];
+//节点坐标
+var dataArr = [{
+        x: 15,
+        y: 50,
+        name: 'A',
+    },
+
+    {
+        name: 'B',
+        x: -50,
+        y: 10,
+        itemStyle: {
+            fill: "yellow",
+
+        },
+    },
+    {
+        name: 'C',
+        x: -55,
+        y: -70,
+
+    },
+    {
+        name: 'D',
+        x: 40,
+        y: -40,
+
+    },
+    {
+        x: 23,
+        y: 50,
+        name: 'warnA',
+        symbolSize: 40,
+        symbol: 'path://M30.9,53.2C16.8,53.2,5.3,41.7,5.3,27.6S16.8,2,30.9,2C45,2,56.4,13.5,56.4,27.6S45,53.2,30.9,53.2z M30.9,3.5C17.6,3.5,6.8,14.4,6.8,27.6c0,13.3,10.8,24.1,24.101,24.1C44.2,51.7,55,40.9,55,27.6C54.9,14.4,44.1,3.5,30.9,3.5z M36.9,35.8c0,0.601-0.4,1-0.9,1h-1.3c-0.5,0-0.9-0.399-0.9-1V19.5c0-0.6,0.4-1,0.9-1H36c0.5,0,0.9,0.4,0.9,1V35.8z M27.8,35.8 c0,0.601-0.4,1-0.9,1h-1.3c-0.5,0-0.9-0.399-0.9-1V19.5c0-0.6,0.4-1,0.9-1H27c0.5,0,0.9,0.4,0.9,1L27.8,35.8L27.8,35.8z',
+        itemStyle: {
+            color: "yellow",
+            borderColor: 'yellow',
+            borderWidth: 3,
+        },
+    },
+]
+
+var dataWarn = [{
+    x: 15,
+    y: 50,
+
+}];
+//设置点的大小
+var symbolSize = 70;
+
+//当0时候表示输入起点坐标，其他值输入终点坐标
+var position = 0;
+//起点
+var positionSource;
+//钟点
+var positionTarget;
+//设置判断点击线还是点击点
+var ok = 1;
+//删除数组的索引位置
+var del;
+
+var links = xydata.map(function(item, i) {
+    return {
+        source: xydata[i][0],
+        target: xydata[i][1]
+    };
+});
+
+var option = {
+    title: {
+        text: '可拖动流程图'
+    },
+    grid: {
+
+    },
+    //定义X轴 
+    xAxis: {
+        min: -100,
+        max: 100,
+        type: 'value',
+        axisLine: {
+            onZero: false
+        },
+        show: false
+    },
+    yAxis: {
+        min: -100,
+        max: 100,
+        type: 'value',
+        axisLine: {
+            onZero: false
+        },
+        show: false
+    },
+    series: [{
+        //设置id很重要 
+        id: 'a',
+        //设置为甘特图
+        type: 'graph',
+        layout: 'none',
+        roam: true, //添加缩放和移动
+        draggable: false, //注意这里设置为false，不然拖拽鼠标和节点有偏移
+        //设置球的大小
+        symbolSize: symbolSize,
+        label: {
+            show: true,
+            formatter: function(d, i) {
+                return dataArr[d.dataIndex].name;
+            }
+        },
+        itemStyle: {
+            color: "yellow",
+            borderColor: 'yellow',
+            borderWidth: 3,
+        },
+        //设置连线形式为箭头
+        edgeSymbol: ['circle', 'arrow'],
+        edgeSymbolSize: [4, 10],
+        //指定数据数组
+        data: dataArr,
+        //指定连线方式
+        edges: links,
+        //指定连线颜色
+        lineStyle: {
+            normal: {
+                color: '#22faf7'
+            }
+        },
+    }],
+
+};
+
+
+//在demo里，必须要加setTimeout ，否则执行 myChart.convertToPixel 会报错
+setTimeout(function() {
+    initGraphic();
+    //窗口大小改事件
+    window.addEventListener('resize', updatePosition);
+}, 0);
+
+//重新定位图形元素
+function updatePosition() {
+    myChart.setOption({
+        graphic: echarts.util.map(dataArr, function(item, dataIndex) {
+            return {
+                position: myChart.convertToPixel({
+                    'seriesIndex': 0
+                }, [item.x, item.y]),
+            };
+        })
+    });
+}
+
+//绘制图形元素
+function initGraphic() {
+    myChart.setOption({
+        graphic: echarts.util.map(dataArr, function(item, dataIndex) {
+            return {
+                //圆形
+                type: 'circle',
+                //将坐标转化为像素
+                position: myChart.convertToPixel({
+                    'seriesIndex': 0
+                }, [item.x, item.y]),
+                shape: {
+                    cx: 0,
+                    cy: 0,
+                    // 拖动点的大小
+                    r: symbolSize / 2 - 2
+                },
+                style: {
+                    fill: '#3FA7DC50',
+                    borderColor: '#22faf7',
+                    borderWidth: 1,
+                },
+
+                //指定虚拟圈是否可见  false 可见
+                invisible: true,
+                //指定圈被拖拽（可以与不可以）
+                draggable: true,
+                ondrag: echarts.util.curry(onPointDragging, dataIndex),
+
+                //层级
+                z: 100
+
+            };
+        })
+    });
+}
+//图形元素拖动后， 修改节点位置
+function onPointDragging(dataIndex, e) {
+    console.log("dataIndex", dataIndex)
+    console.log("e", e)
+    var tmpPos = myChart.convertFromPixel({
+        'seriesIndex': 0
+    }, this.position);
+    dataArr[dataIndex].x = tmpPos[0];
+    dataArr[dataIndex].y = tmpPos[1];
+    // Update data
+    myChart.setOption({
+        series: [{
+            id: 'a',
+            data: dataArr
+        }]
+    });
+
+}

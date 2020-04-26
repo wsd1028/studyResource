@@ -1,0 +1,397 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link rel="stylesheet" href="./css/element.css">
+    <link rel="stylesheet" href="./css/iconfont/iconfont.css">
+    <title>饼图</title>
+    <style>
+        #main {
+            display: flex;
+            flex-wrap: wrap;
+        }
+
+        .item {
+            flex-shrink: 0;
+            width: 300px;
+            height: 300px;
+            border: 1px solid #ccc;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="main">
+        <div id="pie1" class="item"></div>
+        <div id="pie2" class="item"></div>
+        <div id="pie3" class="item"></div>
+        <div id="pie4" class="item"></div>
+
+    </div>
+    <script src="./js/es6-shim.min.js"></script>
+    <script src="./js/vue.js"></script>
+    <script src="./js/element.js"></script>
+    <script src="./js/echarts/dist/echarts.min.js"></script>
+    <script>
+        var v = new Vue({
+            el: "#main",
+            data: {},
+            methods: {
+                drawPie1: function () {
+                    let myChart = echarts.init(document.getElementById("pie1"));
+                    let option = {
+                        tooltip: {
+                            trigger: 'item',
+                            formatter: '{a} <br/>{b} : {c} ({d}%)'
+                        },
+                        series: [{
+                            name: '访问来源',
+                            type: 'pie',
+                            radius: '55%',
+                            center: ['50%', '50%'],
+                            label: {
+                                normal: {
+                                    show: true,
+                                }
+                            },
+                            labelLine: {
+                                normal: {
+                                    show: true
+                                }
+                            },
+                            data: [{
+                                value: 335,
+                                name: '直接访问'
+                            },
+                            {
+                                value: 310,
+                                name: '邮件营销'
+                            },
+                            {
+                                value: 234,
+                                name: '联盟广告'
+                            },
+                            {
+                                value: 135,
+                                name: '视频广告'
+                            },
+                            {
+                                value: 1548,
+                                name: '搜索引擎'
+                            }
+                            ]
+                        }]
+                    };
+                    myChart.setOption(option, true);
+                },
+                drawPie2: function () {
+                    var myChart = echarts.init(document.getElementById("pie2"));
+                    let color = [
+                        "rgba(79,196,246,0.8)",
+                        "rgba(230,162,60,0.8)",
+                        "rgba(230,76,101,0.8)",
+                        "rgba(17,168,171,0.8)"
+                    ];
+                    let xdata = ["水土", "龙洲湾", "西永", "陈家坪"];
+                    let ydata = [{
+                        value: 335,
+                        name: "水土"
+                    },
+                    {
+                        value: 310,
+                        name: "龙洲湾"
+                    },
+                    {
+                        value: 234,
+                        name: "西永"
+                    },
+                    {
+                        value: 135,
+                        name: "陈家坪"
+                    }
+                    ];
+                    let option = {
+                        backgroundColor: "rgb(10,78,180)",
+                        color: color,
+                        title: {
+                            text: "客户统计(家)",
+                            show: false,
+                            textStyle: {
+                                color: "#fff",
+                                fontSize: "12",
+                                fontWeight: "normal"
+                            },
+                            subtextStyle: {
+                                color: "#ddd",
+                                fontSize: "14"
+                            }
+                        },
+                        tooltip: {
+                            show: false,
+                            trigger: "item",
+                            formatter: "{a} <br/>{b}: {c} ({d}%)"
+                        },
+                        legend: {
+                            bottom: "0",
+                            textStyle: {
+                                color: "white",
+                                textAlign: "center",
+                                fontSize: "14"
+                            },
+                            data: xdata
+                        },
+                        graphic: {
+                            type: "text",
+                            left: "center",
+                            top: "40%",
+                            style: {
+                                text: "客户总数",
+                                textAlign: "center",
+                                fill: "#fff",
+                                fontSize: 14,
+                                width: 30,
+                                height: 30
+                            }
+                        },
+                        series: [{
+                            name: "访问来源",
+                            type: "pie",
+                            radius: ["50%", "70%"],
+                            title: {
+                                textStyle: {
+                                    color: "#fff"
+                                },
+                                fontSize: 24,
+                                offsetCenter: [0, "200%"]
+                            },
+                            avoidLabelOverlap: false,
+                            label: {
+                                normal: {
+                                    show: false,
+                                    position: "center",
+                                    formatter: "{c|{c}家}",
+                                    rich: {
+                                        c: {
+                                            color: "#fff",
+                                            fontSize: 24,
+                                            align: "center",
+                                            verticalAlign: "middle"
+                                        }
+                                    }
+                                },
+                                emphasis: {
+                                    show: true,
+                                    textStyle: {
+                                        fontSize: "24"
+                                    }
+                                }
+                            },
+                            labelLine: {
+                                normal: {
+                                    show: true,
+                                    length: 15,
+                                    length2: 120,
+                                    lineStyle: {
+                                        color: "#d3d3d3"
+                                    },
+                                    align: "right"
+                                },
+                                color: "#000"
+                            },
+                            data: ydata
+                        }]
+                    };
+                    myChart.setOption(option, true);
+                    setTimeout(function () {
+                        myChart.on("mouseover", function (params) {
+                            if (params.name == ydata[0].name) {
+                                myChart.dispatchAction({
+                                    type: "highlight",
+                                    seriesIndex: 0,
+                                    dataIndex: 0
+                                });
+                            } else {
+                                myChart.dispatchAction({
+                                    type: "downplay",
+                                    seriesIndex: 0,
+                                    dataIndex: 0
+                                });
+                            }
+                        });
+
+                        myChart.on("mouseout", function (params) {
+                            myChart.dispatchAction({
+                                type: "highlight",
+                                seriesIndex: 0,
+                                dataIndex: 0
+                            });
+                        });
+                        myChart.dispatchAction({
+                            type: "highlight",
+                            seriesIndex: 0,
+                            dataIndex: 0
+                        });
+                    }, 1000);
+                },
+                drawPie3: function () {
+                    var myChart = echarts.init(document.getElementById("pie3"));
+                    var dataStyle = {
+                        normal: {
+                            label: {
+                                show: false
+                            },
+                            labelLine: {
+                                show: false
+                            },
+                            shadowBlur: 0,
+                            shadowColor: "#203665"
+                        }
+                    };
+                    let option = {
+                        backgroundColor: "rgb(10,78,180)",
+                        series: [{
+                            name: "第三个圆环",
+                            type: "pie",
+                            clockWise: true,
+                            radius: [40, 30],
+                            itemStyle: dataStyle,
+                            hoverAnimation: false,
+                            center: ["50%", "35%"],
+                            selectedMode: true,
+                            data: [{
+                                value: 75,
+                                label: {
+                                    normal: {
+                                        rich: {
+                                            a: {
+                                                color: "#fff",
+                                                align: "center",
+                                                fontSize: 20,
+                                                fontWeight: "bold"
+                                            },
+                                            b: {
+                                                color: "#fff",
+                                                align: "center",
+                                                fontSize: 14
+                                            }
+                                        },
+                                        formatter: function (params) {
+                                            return "{b|湿度}\n\n" + "{a|" +
+                                                params
+                                                    .value + "%}";
+                                        },
+                                        position: "center",
+                                        show: true,
+                                        textStyle: {
+                                            fontSize: "14",
+                                            fontWeight: "normal",
+                                            color: "#fff"
+                                        }
+                                    }
+                                },
+                                itemStyle: {
+                                    normal: {
+                                        color: "rgba(17,168,171,0.8)",
+                                        shadowColor: "#613fd1",
+                                        shadowBlur: 0
+                                    }
+                                }
+                            },
+                            {
+                                value: 25,
+                                name: "invisible",
+                                itemStyle: {
+                                    normal: {
+                                        color: "rgba(255,255,255,0.3)"
+                                    }
+                                }
+                            }
+                            ]
+                        }]
+                    };
+                    myChart.setOption(option, true);
+                },
+                drawPie4: function () {
+                    let myChart = echarts.init(document.getElementById("pie4"));
+                    let data1 = [];
+                    let value = 50;
+                    let max = 100;
+                    for (let i = max; i >= 0; i--) {
+                        if (i <= value) {
+                            data1.push({
+                                value: 1,
+                                itemStyle: {
+                                    color: '#29E8E9',
+                                    borderWidth: 1,
+                                    borderColor: '#fff',
+                                    margiLeft: 10
+                                }
+                            })
+                        }
+                        if (i > value && i <= 100) {
+                            data1.push({
+                                value: 1,
+                                itemStyle: {
+                                    color: "#cbcbcb",
+                                    borderWidth: 1,
+                                    borderColor: '#ffffff',
+                                }
+                            })
+                        }
+
+                    }
+                    let option = {
+                        title: [{
+                            text: "剩余",
+                            subtext: value + '天',
+                            x: '25%',
+                            y: '45%',
+                            textAlign: 'center',
+                            textStyle: {
+                                color: '#9a9a9a',
+                                fontSize: 14,
+                            },
+                            subtextStyle: {
+                                color: '#2f2f2f',
+                                fontSize: 20,
+                                fontWeight: 'bold'
+                            }
+                        }],
+                        tooltip: {
+                            show: false
+                        },
+                        series: [{
+                            type: 'pie',
+                            radius: ['400', '30%'],
+                            center: ['50%', '50%'],
+                            clockwise: false,
+                            data: data1,
+                            hoverAnimation: false,
+                            label: {
+                                show: false,
+                            },
+                            labelLine: {
+                                show: false
+                            },
+
+                        }
+
+                        ]
+                    };
+                    myChart.setOption(option, true);
+                }
+            },
+            mounted: function () {
+                this.drawPie1();
+                this.drawPie2();
+                this.drawPie3();
+                this.drawPie4();
+            }
+        })
+    </script>
+</body>
+
+</html>

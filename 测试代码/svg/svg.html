@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link rel="stylesheet" href="../css/myReset.min.css">
+    <title>SVG</title>
+    <style>
+        #main {
+            width: 100%;
+            height: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        #svg {
+            width: 600px;
+            height: 600px;
+            border: 1px solid #666;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="main">
+        <div id="svg"></div>
+    </div>
+    <script src="../js/vue.js"></script>
+    <script src="../js/svg.min.js"></script>
+    <script src="../js/svg.draggable.min.js"></script>
+
+    <script>
+        var V = new Vue({
+            el: "#main",
+            data: {
+                draw: null
+            },
+            methods: {},
+            mounted: function () {
+                let that = this;
+                that.draw = SVG("svg").size("100%", "100%");
+                let rect = that.draw
+                    .rect(100, 100) // 宽高
+                    .radius(10) // 圆角
+                    .fill("red") //填充
+                    .move(200, 20); // 位移
+                rect.draggable();
+                let drawGroup = that.draw.group();
+            }
+        })
+    </script>
+</body>
+
+</html>

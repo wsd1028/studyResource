@@ -1,0 +1,25 @@
+@font-face {font-family: "iconfont";
+  src: url('iconfont.eot?t=1582621109835'); /* IE9 */
+  src: url('iconfont.eot?t=1582621109835#iefix') format('embedded-opentype'), /* IE6-IE8 */
+  url('data:application/x-font-woff2;charset=utf-8;base64,d09GMgABAAAAAAP8AAsAAAAACOAAAAOtAAEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAHEIGVgCDBgqFTIRHATYCJAMMCwgABCAFhG0HNBuLBxHVmznJfiTYthZW1ld1Q13kFFqkb4IH/K58mWR8LOmTCyGFdivrW+KXAmBrzgEbFaFKsuc7O/aFPEGa0f8cM15pgeVf8AAbNSN1tDcajwc00O6LpgM+CpAD8ltqd2CAV/7xNATgkY8yiCbN2nTBQeFNEoDo26tHGk7NjBohCByd1bNSIeZh4hgzjYvA3PT3xQcqCQcMTIl3VofuTbvS4LV4XUDq/5pEqdHbOQGxDiRQBlAgknvdscg8XQaJZ6nVeKmFQmBsFfv/PxXbWuui/3gGCAtPHYIxJTIGvBahilRTAJsxKEp+3wIyA+9BZNngCLAIzRShwnNGhBZQynVDgs91M6TPzuL+4Wt5WXXV8wKlSAhsy8Hy7b4f3JlbrNjhxUrfiBZLskUvWer7i3UWL2pRt01FNmW7He2/8p3sK4tnbC2atjjn4lsFlt9NWJtvTa701FW3ou5FbS1+50Efvd0PD+6cuMMLC2wb4IXCetw3ImTbiCWaIoM7hT1xR2zntUpGGqNXXwvemHg9cDVKbwvsmLgzuD0OGtbbuxx1M/paTHD7mHpQn+QIY/9DtmihpsuilN42Rm/XNwS2vbjfrGimgVfDUgubtczCxcPyDexZNX/2R1blyzzOHpb9sVnLepT9TP5mRZsd/6MdoWWUitKZdCsx3Gl249I7c/OcCtHDmibnm5ptsNxQPMJqlGw1a5z8G0yZLielDKw01fYIb57cLLmgMTdTbMP836Lf7d4Vk1GR+mfDIsMKhEXmid1r9+sinYomlQnrXWHnQqayE9A0KKsmcaI6+abxJUAibJ/Qb5Nsnsj59fUgtsR4wUv12V3yFSzcwB1PAwD+v5bDZbaf42/4fD7zn5TwOr8cXwFwf4xxOB3zXyukBpxb5xHwK0iAbcqWeRapTHEodnOSWYTeaCEWSh//8fyZeLxcmxWcBIFTkwgwsMkLEociCIUpAyY+VcDCoT54lKb5ep/MDEYilAuUYioCQQR7wSCMsyCJ4BJCYR6BSTY+gUWEkOARLTLv6FNMgPrUmLBnnGD4gx5jEIGNT1ntDeXb9VSVpcQX0qxjUBdVM3fGgLTFnPkjG2YBgqKHDp2HzkVIFA2OXCjm1Jal6PugYox+caIxYc84wfAHPcYg4t58av38DeXb9TTS0mJ9Ic16cKiLCoA4qwOo5VWeMn9kwyxAUPTQISc6Px0h9Q8zOHKhFiRTW5JOAqoujtf6+9sHeHiHSGEIKRRGy8u2t5ZvvVgAAAAA') format('woff2'),
+  url('iconfont.woff?t=1582621109835') format('woff'),
+  url('iconfont.ttf?t=1582621109835') format('truetype'), /* chrome, firefox, opera, Safari, Android, iOS 4.2+ */
+  url('iconfont.svg?t=1582621109835#iconfont') format('svg'); /* iOS 4.1- */
+}
+
+.iconfont {
+  font-family: "iconfont" !important;
+  font-size: 16px;
+  font-style: normal;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+.icon-IP:before {
+  content: "\e601";
+}
+
+.icon-jigui:before {
+  content: "\e620";
+}
+

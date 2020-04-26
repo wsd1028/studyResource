@@ -1,0 +1,141 @@
+
+        drawRouteChart: function (id) {
+          let that = this;
+          var myChart = echarts.init(document.getElementById(id));
+routeNodes=[ {
+                  name: "开始",
+                  symbol: "rect",//矩形
+                  symbolSize: [rectX, rectY],//矩形宽高
+                  value: [rectX, 300]//坐标
+                }];
+routeLines=[{
+fromName:{},从哪来
+toName:{},到哪去
+coords:[]//坐标
+}]
+          var allData = {
+            citys: that.routeNodes,
+            moveLines: that.routeLines
+          };
+          let routerLineType = 0.2;
+          if (that.routerLineType == "straight") {
+            routerLineType = 0;
+          }
+          let option = {
+            geo: {
+              map: "北京市",
+              label: {
+                emphasis: {
+                  show: false
+                }
+              },
+              roam: true,
+              itemStyle: {
+                normal: {
+                  areaColor: "#323c48",
+                  borderColor: "#404a59"
+                },
+                emphasis: {
+                  areaColor: "#2a333d"
+                }
+              }
+            },
+            series: [
+              {
+                name: "数据库表",
+                type: "scatter",
+                coordinateSystem: "geo",
+                zlevel: 2,
+                rippleEffect: {
+                  brushType: "stroke",
+                  period: 7,
+                  scale: 26
+                },
+                label: {
+                  normal: {
+                    show: true,
+                    formatter: "{b}",
+                    color: "#000"
+                  },
+                  emphasis: {
+                    show: true,
+                    formatter: "{b}"
+                  }
+                },
+                symbolSize: 2,
+                showEffectOn: "render",
+                itemStyle: {
+                  normal: {
+                    color: function (item) {
+                      return "#2ec7c9";
+                    }
+                  }
+                },
+                data: allData.citys
+              },
+              {
+                name: "线路",
+                type: "lines",
+                coordinateSystem: "geo",
+                zlevel: 2,
+                large: true,
+                effect: {
+                  show: true,
+                  constantSpeed: 30,
+                  symbol: "arrow", //ECharts 提供的标记类型包括 'circle', 'rect', 'roundRect', 'triangle', 'diamond', 'pin', 'arrow'
+                  symbolSize: 6,
+                  trailLength: 0
+                },
+
+                lineStyle: {
+                  normal: {
+                    color: function (lineItem) {
+                      let max = 0;
+                      if (lineItem.data.fromName) {
+                        for (
+                          let i = 0;
+                          i < lineItem.data.fromName.rtt.length;
+                          i++
+                        ) {
+                          if (lineItem.data.fromName.rtt[i] > max) {
+                            max = lineItem.data.fromName.rtt[i];
+                          }
+                        }
+                      }
+                      if (lineItem.data.toName) {
+                        for (
+                          let i = 0;
+                          i < lineItem.data.toName.rtt.length;
+                          i++
+                        ) {
+                          if (lineItem.data.toName.rtt[i] > max) {
+                            max = lineItem.data.toName.rtt[i];
+                          }
+                        }
+                      }
+
+                      let color = "";
+                      if (max < 30) {
+                        color = that.color3;
+                      } else if (max < 80) {
+                        color = that.color4;
+                      } else if (max < 120) {
+                        color = that.color2;
+                      } else {
+                        color = that.color1;
+                      }
+                      return color;
+                    },
+                    width: 2,
+                    opacity: 0.6,
+                    curveness: routerLineType //线条弧度
+                  }
+                },
+                data: allData.moveLines
+              }
+            ]
+          };
+          myChart.setOption(option);
+          that.routeLoading = false;
+          that.routeTableLoading = false;
+        },

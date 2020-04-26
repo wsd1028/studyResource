@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link rel="stylesheet" href="./css/element.css">
+    <link rel="stylesheet" href="./css/iconfont/iconfont.css">
+    <title>湖南移动首页展示</title>
+</head>
+
+<body>
+    <div id="main">
+        <div style="margin-bottom: 20px;display: flex;">
+            <el-button type="primary" icon="el-icon-plus" style="margin-right: 20px;">新增</el-button>
+            <el-input style="width: 250px;" placeholder="请输入内容" v-on:keyup.enter.native="handelSearch"
+                v-model="searchValue" class="input-with-select">
+                <el-button slot="append" icon="el-icon-search" v-on:click="handelSearch"></el-button>
+            </el-input>
+        </div>
+        <el-table :data="tableData" border style="width: 100%">
+            <el-table-column prop="name" label="角色名">
+            </el-table-column>
+            <el-table-column prop="descr" label="描述">
+            </el-table-column>
+            <el-table-column prop="address" label="管理" width="400">
+                <template slot-scope="scope">
+                    <el-button v-on:click="handleMenu(scope.row)" type="primary" size="small">查看菜单</el-button>
+                    <el-button v-on:click="handleUser(scope.row)" type="success" size="small">用户管理</el-button>
+                    <el-button v-on:click="handleUpdate(scope.row)" type="primary" size="small">编辑</el-button>
+                    <el-button v-on:click="handleDel(scope.row)" type="danger" size="small">删除</el-button>
+                </template>
+            </el-table-column>
+        </el-table>
+        <div style="margin-top: 20px;text-align: right;">
+            <el-pagination v-on:size-change="handleSizeChange" v-on:current-change="handleIndexChange"
+                :current-page="pageIndex" :page-sizes="[5, 10, 15, 20]" :page-size="pageSize"
+                layout="total, sizes, prev, pager, next, jumper" :total="pageCount">
+            </el-pagination>
+        </div>
+    </div>
+    <script src="./js/es6-shim.min.js"></script>
+    <script src="./js/vue.js"></script>
+    <script src="./js/element.js"></script>
+    <script src="./js/echarts/dist/echarts.min.js"></script>
+    <script src="./js/hunan.js"></script>
+    <script>
+        var v = new Vue({
+            el: "#main",
+            data: {
+                mainData: [],
+                searchValue: "",
+                tableData: [],
+                pageIndex: 1,
+                pageSize: 10,
+                pageCount: 0
+            },
+            methods: {
+                handleMenu: function (row) {},
+                handleUser: function (row) {},
+                handleUpdate: function (row) {},
+                handleDel: function (row) {
+                    this.$confirm('此操作将永久删除该角色, 是否继续?', '提示', {
+                        confirmButtonText: '确定',
+                        cancelButtonText: '取消',
+                        type: 'warning'
+                    }).then(async () => {
+                        let url = baseUrl + "/Identity/DeleteRole?roleId=" + row.id + "&math=" +
+                            Math
+                            .random();
+                        let res = await axios.get(url);
+                        if (res.data.code == 100) {
+                            this.$message({
+                                showClose: true,
+                                message: '删除成功',
+                                type: 'success'
+                            });
+                            this.getMainData();
+                        } else {
+                            this.$message({
+                                showClose: true,
+                                message: '删除失败'
+                            });
+                        }
+
+                    }).catch(() => {
+                        this.$message({
+                            type: 'info',
+                            message: '已取消删除'
+                        });
+                    });
+                },
+                handelSearch: function () {
+                    let mainData = this.mySearch(this.mainData, {
+                        name: this.searchValue
+                    });
+                    this.pageIndex = 1;
+                    this.tableData = this.getPageData({
+                        data: mainData,
+                        pageIndex: this.pageIndex,
+                        pageSize: this.pageSize
+                    })
+                },
+                mySearch: function (mainData, searchRules) {
+                    let tableData = [];
+                    for (let key in searchRules) {
+                        if (searchRules[key] == null) {
+                            searchRules[key] = "";
+                        }
+                        tableData = [];
+                        for (let i = 0; i < mainData.length; i++) {
+                            if (mainData[i][key].indexOf(searchRules[key]) != -1) {
+                                tableData.push(mainData[i]);
+                            }
+                        }
+                        mainData = tableData;
+                    }
+                    return tableData;
+                },
+                getPageData: function (rule) {
+                    let data = rule.data; //总数据
+                    let pageData = []; //分页返回数据
+                    let pageIndex = rule.pageIndex - 1;
+                    let pageSize = rule.pageSize;
+                    let count = 0;
+                    for (let i = 0; i < data.length; i++) {
+                        if (data[i + pageIndex * pageSize]) {
+                            pageData.push(data[i + pageIndex * pageSize]);
+                            count++;
+                        } else {
+                            break;
+                        }
+                        if (count > pageSize - 1) {
+                            break;
+                        }
+                    }
+                    return pageData;
+                },
+                makePageData: function () {
+                    this.tableData = this.getPageData({
+                        data: this.mainData,
+                        pageIndex: this.pageIndex,
+                        pageSize: this.pageSize
+                    })
+                },
+                handleSizeChange: function (pageSize) {
+                    this.pageSize = pageSize;
+                    this.makePageData();
+                },
+                handleIndexChange: function (pageIndex) {
+                    this.pageIndex = pageIndex;
+                    this.makePageData();
+                },
+                getMainData: async function () {
+                    let that = this;
+                    //测试数据
+                    for (let i = 0; i < 30; i++) {
+                        this.mainData.push({
+                            id: i,
+                            name: "role" + i,
+                            descr: "role" + i
+                        })
+
+                    }
+                    //测试数据
+                    this.pageCount = this.mainData.length;
+                    this.makePageData();
+                }
+
+            },
+            mounted() {
+                this.getMainData();
+
+            }
+        })
+    </script>
+</body>
+
+</html>

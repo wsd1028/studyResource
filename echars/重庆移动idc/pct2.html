@@ -1,0 +1,1415 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>大屏</title>
+    <link rel="stylesheet" href="./css/element.css">
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+        }
+
+        [v-cloak] {
+            display: none;
+        }
+
+        html,
+        body {
+            height: 100%;
+        }
+
+        .w {
+            overflow: hidden;
+            height: 100%;
+            width: 100%;
+            padding: 20px;
+            box-sizing: border-box;
+            background: url(./images/new_bj.jpg);
+            background-size: cover;
+        }
+
+        .contTab {
+            width: 100%;
+            height: 100%;
+        }
+
+        /*网管监控*/
+        .wg .a,
+        .wg .b {
+            float: left;
+            height: 100%;
+            width: 49.5%;
+            margin-left: 1%;
+            box-sizing: border-box;
+        }
+
+        .wg .a {
+            margin-left: 0;
+        }
+
+        /*.wg .b{background: url(/mf/Images/boxLine.png) !important;background-size: 100% 100% !important}*/
+        .leftFirst,
+        #Eb {
+            height: 49%;
+            width: 100%;
+            background: rgba(14, 41, 128, 0.5) !important;
+            box-shadow: 0px 1px 5px rgba(0, 0, 0, 0.3);
+            margin-top: 1%;
+            margin-bottom: 2.3%;
+            padding: 20px;
+            box-sizing: border-box;
+
+        }
+
+        #Eb div:first-child {
+            height: 100% !important;
+            width: 100% !important;
+        }
+
+        canvas {
+            height: 100% !important;
+            width: 100% !important;
+        }
+
+        .leftFirst {
+            margin-top: 0;
+            overflow: hidden;
+            position: relative;
+        }
+
+        #Ea {
+            height: 100%;
+            width: 100%;
+        }
+
+        .selectBox {
+            position: absolute;
+            right: 20px;
+            top: 20px;
+        }
+
+        .selectBox .el-input__inner {
+            background-color: rgba(255, 255, 255, 0);
+            color: #fff;
+        }
+
+        .selectBox .el-input {
+            width: 100px;
+        }
+
+        .el-select-dropdown {
+            width: 100px;
+        }
+
+        .rt,
+        .rb {
+            height: 49%;
+            width: 100%;
+            margin-top: 1%;
+            margin-bottom: 2.3%;
+            background: rgba(14, 41, 128, 0.5) !important;
+            box-shadow: 0px 1px 5px rgba(0, 0, 0, 0.3);
+            border-radius: 5px;
+        }
+
+        .rb {
+            position: relative;
+            padding: 20px;
+            box-sizing: border-box;
+        }
+
+        .rb .ll_p {
+            position: absolute;
+            right: 10px;
+            top: 18px;
+            color: white;
+            font-size: 14px;
+        }
+
+        .rb .ll_p img {
+            width: 20px;
+            margin-right: 5px;
+            vertical-align: middle;
+        }
+
+        #Ec,
+        #Ed,
+        #Ee,
+        #Ef {
+            height: 49.3%;
+            width: 49.3%;
+            float: left;
+            margin-left: 0.8%;
+            margin-top: 0.8%;
+            padding: 10px;
+            box-sizing: border-box;
+        }
+
+        #Ec,
+        #Ed {
+            margin-top: 1.4%;
+        }
+
+        .rt {
+            margin-top: 0;
+            display: flex;
+    align-items: center;
+        }
+
+        #Ec,
+        #Ee {
+            margin-left: 0;
+        }
+
+        #Eg,
+        #Eh,
+        #Ei,
+        #Ej,
+        #Ek {
+            height: 100%;
+            width: 19.5%;
+            float: left;
+            margin-right: 0.5%;
+        }
+
+        .customerTop {
+            position: absolute;
+            top: 10px;
+            left: 20px;
+            color: #fff;
+            font-size: 14px;
+            font-weight: 600;
+        }
+
+        .el-tabs,
+        .el-tab-pane {
+            height: 100%;
+        }
+
+        .el-tabs__content {
+            height: 95%;
+        }
+
+        /*top5切换*/
+        .l_l,
+        .r_r {
+            float: left;
+            height: 100%;
+            position: relative;
+        }
+
+        .l_l {
+            width: 55%;
+            margin-right: 1%;
+        }
+
+        .r_r {
+            width: 44%;
+        }
+
+        .r_r {
+            margin-right: 0;
+        }
+
+        .l_top,
+        .l_down,
+        .r_top,
+        .r_down {
+            width: 100%;
+            height: 49.5%;
+            margin-top: 1%;
+            overflow: hidden;
+        }
+
+        .l_top,
+        .l_down {
+            background: #192b48 !important;
+            padding: 10px;
+            box-sizing: border-box;
+        }
+
+        .l_top,
+        .r_top {
+            margin-top: 0;
+        }
+
+        .r1,
+        .r2,
+        .r3,
+        .r4 {
+            width: 49.5%;
+            height: 100%;
+            margin-right: 1%;
+            background: #192b48 !important;
+            float: left;
+            padding: 10px;
+            box-sizing: border-box;
+        }
+
+        .r2,
+        .r4 {
+            margin-right: 0;
+        }
+
+        #Ed_d1,
+        #Ed_d2 {
+            height: 100%;
+            width: 50%;
+            float: left;
+        }
+
+        .el-tabs__item {
+            color: white;
+        }
+
+        .el-tabs__nav-wrap::after {
+            background-color: #0d4261;
+        }
+
+        #NO0,
+        #NO1,
+        #NO2,
+        #NO3,
+        #NO4,
+        #NO5,
+        #NO6 {
+            height: 100%;
+        }
+
+        .el-tabs__item:hover {
+            color: #0ca87d;
+        }
+
+        .el-tabs__item.is-active {
+            color: #0ca87d;
+        }
+
+        .el-tabs__active-bar {
+            background-color: #0ca87d;
+        }
+
+        .rb .el-tabs__header {
+            width: 85%;
+        }
+
+        .el-tabs__nav-wrap::after {
+            background-color: #1c75d1;
+        }
+
+        .el-select .el-input.is-focus .el-input__inner {
+            border-color: #fff;
+        }
+
+        .el-select .el-input__inner:focus {
+            border-color: #fff;
+        }
+
+        .rightFirst {
+            position: absolute;
+            width: 100%;
+            padding: 10px 20px;
+            box-sizing: border-box;
+            color: white;
+        }
+
+        .rightFirst .p1 {
+            font-size: 16px;
+            float: left;
+            font-weight: 600;
+        }
+
+        .rightFirst .p2 {
+            font-size: 12px;
+            float: right;
+        }
+
+        .detail {
+            color: #fff;
+            clear: both;
+            text-align: center;
+        }
+
+        .rightFirst .p2 .s1,
+        .rightFirst .p2 .s3 {
+            width: 23px;
+            height: 13px;
+            display: inline-block;
+            vertical-align: middle;
+            border-radius: 3px;
+            background: #0ca87d;
+        }
+
+        .rightFirst .p2 .s1 {
+            background: #5a6fb2;
+            margin-right: 5px;
+        }
+
+        .rightFirst .p2 .s2 {
+            margin-right: 8px;
+        }
+
+        .img {
+            height: 200px;
+        }
+
+    
+        .el-carousel__mask, .el-cascader-menu, .el-cascader-menu__item.is-disabled:hover, .el-collapse-item__header, .el-collapse-item__wrap{
+            background-color: transparent;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="w" id="app" v-cloak>
+        <div class="contTab wg">
+            <div class="a">
+                <div class="leftFirst">
+                    <div id="Ea"></div>
+                    <div class="selectBox">
+                        <el-select v-model="value" placeholder="" @change="onSelectedDrug()" size="mini">
+                            <el-option v-for="item in options" :key="item.value" :label="item.label"
+                                :value="item.value">
+                            </el-option>
+                        </el-select>
+                    </div>
+                </div>
+                <div id="Eb"></div>
+            </div>
+            <div class="b">
+                <div class="rt">
+                    <el-carousel :interval="2000" type="card" height="200px" style="width: 100%;">
+                        <el-carousel-item v-for="(item,index) in imgUrls" :key="item" style="text-align:center">
+                            <img :src="'./images/'+(index+1)+'.jpg'" alt="" class="img">
+                        </el-carousel-item>
+                    </el-carousel>
+                </div>
+                <div class="rb">
+                    <el-tabs v-model="activeName" @tab-click="handleClick">
+                        <el-tab-pane v-for="(tableList,$index) in tableDate" :key="$index" :label="tableList"
+                            :name="'index_'+$index" :lazy="true">
+                            <div :id="'NO'+$index"></div>
+                        </el-tab-pane>
+                    </el-tabs>
+                    <p class="ll_p">
+                        <!-- <img src="/mf/Images/time.png" alt="" /> -->
+                        <span>实时流量</span>
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script src="./data/data.js"></script>
+    <script src="./js/echarts/dist/echarts.min.js"></script>
+    <script src="./js/linq.min.js"></script>
+    <script src="./js/jquery.1.7.min.js"></script>
+    <script src="./js/vue.js"></script>
+    <script src="./js/element.js"></script>
+    <script src="./js/moment.js"></script>
+    <script>
+        var isFirst = true;
+        var D = {
+            echarts: function (roomid) {
+            },
+
+            selectTime: function (type) {
+                /*端口实时流量*/
+                Ea = echarts.init(document.getElementById("Ea"));
+                var _data = JSON.parse(GetGatherGroupData);
+                let str =
+                    "全省带宽流量(24h)，当前流出流量" +
+                    (
+                        _data.Data.OutData[_data.Data.OutData.length - 1].data /
+                        1000000000
+                    ).toFixed(1) +
+                    "G，当前带宽利用率" +
+                    (
+                        (_data.Data.OutData[_data.Data.OutData.length - 1].data /
+                            1000000000 /
+                            4800) *
+                        100
+                    ).toFixed(1) +
+                    "%";
+                var name = [],
+                    inData = [],
+                    outData = [],
+                    preInData = [],
+                    preOutData = [],
+                    inDataFull = [],
+                    outDataFull = [],
+                    next = [],
+                    _dis = {},
+                    time = [],
+                    InPercent = [],
+                    OutPercent = []; //加入流入流出增长率
+
+                var num = 1000000000;
+                var newNum = 100;
+                _data.Data.OutData.forEach(function (item) {
+                    next.push(item.time);
+                    outData.push((item.data / num).toFixed(2));
+                });
+                _data.Data.InData.forEach(function (item) {
+                    inData.push((item.data / num).toFixed(2));
+                });
+                _data.Data.LastOutData.forEach(function (item) {
+                    preOutData.push((item.data / num).toFixed(2));
+                });
+                _data.Data.LastInData.forEach(function (item) {
+                    preInData.push((item.data / num).toFixed(2));
+                });
+                //  增长率处理
+                _data.Data.percentData.forEach(function (item) {
+                    InPercent.push((item.inPercent * newNum).toFixed(2));
+                });
+
+                _data.Data.percentData.forEach(function (item) {
+                    OutPercent.push((item.outPercent * newNum).toFixed(2));
+                });
+
+                //增长率的隔行取值 替换
+                var cutNum = 28; //隔num行取一次值
+                var newInPercent = []; //用来接收的新数组
+                for (let i in InPercent) {
+                    //处理的方法
+                    if (i % cutNum === 0) {
+                        newInPercent.push(InPercent[i]);
+                    } else {
+                        newInPercent.push("");
+                    }
+                }
+                //
+                var newOutPercent = []; //用来接收的新数组
+                for (let i in OutPercent) {
+                    //处理的方法
+                    if (i % cutNum === 0) {
+
+                        newOutPercent.push(OutPercent[i]);
+                    } else {
+                        newOutPercent.push("");
+                    }
+                }
+                option = {
+                    // 鼠标滑过阴影
+                    axisPointer: {
+                        type: "shadow"
+                    },
+
+                    title: {
+                        text: str,
+                        textStyle: {
+                            fontSize: 16,
+                            color: "#fff"
+                        },
+                        x: "center",
+                        y: "top",
+                        //  yuanlai
+                        subtextStyle: {
+                            color: "#ddd",
+                            fontSize: "12"
+                        }
+                    },
+                    tooltip: {
+                        trigger: "axis",
+                        axisPointer: {
+                            type: "cross",
+                            label: {
+                                backgroundColor: "#6a7985"
+                            }
+                        }
+                    },
+                    legend: {
+                        top: "6%",
+                        itemWidth: 23,
+                        itemHeight: 13,
+                        itemGap: 10,
+                        data: [
+                            "流入流量(G)",
+                            "流出流量(G)",
+                            "同期流入(G)",
+                            "同期流出(G)",
+                            "流入流量增长率",
+                            "流出流量增长率"
+                        ],
+                        textStyle: {
+                            color: "white"
+                        }
+                    },
+                    color: [
+                        "#12A87F",
+                        "#2196F3",
+                        "#F154B1",
+                        "#ffffff",
+                        "#1f8ae6",
+                        "#12a87f"
+                    ],
+                    toolbox: {
+                        feature: {}
+                    },
+                    grid: {
+                        left: "3%",
+                        right: "4%",
+                        bottom: "3%",
+                        containLabel: true
+                    },
+                    xAxis: [
+                        {
+                            splitLine: { show: false }, //去除网格线
+
+                            type: "category",
+
+                            data: next,
+                            axisLine: {
+                                lineStyle: {
+                                    color: "#fff"
+                                }
+                            },
+                            axisLabel: {
+                                textStyle: {
+                                    color: "#fff"
+                                }
+                            }
+                        }
+                    ],
+                    yAxis: [
+                        {
+                            name: "单位(G)",
+                            splitLine: { show: false }, //去除网格线
+                            type: "value",
+                            offset: 10,
+                            axisLine: {
+                                lineStyle: {
+                                    color: "#fff",
+                                    zIndex: 100
+                                }
+                            },
+                            axisLabel: {
+                                textStyle: {
+                                    color: "#fff"
+                                }
+                            }
+                        },
+                        //
+                        {
+                            splitLine: { show: false }, //去除网格线
+                            type: "value",
+                            name: "百分比",
+                            nameLocation: "end",
+
+                            axisLine: {
+                                lineStyle: {
+                                    color: "#fff",
+                                    zIndex: 100
+                                }
+                            },
+                            axisLabel: {
+                                formatter: "{value} %",
+                                textStyle: {
+                                    color: "#fff"
+                                }
+                            }
+                        }
+                        //
+                    ],
+                    series: [
+                        {
+                            name: "流出流量(G)",
+                            type: "line",
+
+                            data: outData,
+                            lineStyle: {
+                                normal: {
+                                    color: "#12A87F",
+                                    width: 2,
+                                    opacity: "1"
+                                }
+                            }
+                        },
+                        {
+                            name: "流入流量(G)",
+                            type: "line",
+                            stack: "总量",
+                            data: inData,
+                            lineStyle: {
+                                normal: {
+                                    color: "#2196F3",
+                                    width: 2,
+                                    opacity: "1"
+                                }
+                            }
+                        },
+                        {
+                            name: "同期流入(G)",
+                            type: "line",
+                            data: preInData,
+                            lineStyle: {
+                                normal: {
+                                    color: "#F154B1",
+                                    width: 2,
+                                    opacity: "1"
+                                }
+                            }
+                        },
+                        {
+                            name: "同期流出(G)",
+                            type: "line",
+                            data: preOutData,
+                            lineStyle: {
+                                normal: {
+                                    color: "#ffffff",
+                                    width: 2,
+                                    opacity: "1"
+                                }
+                            }
+                        },
+                        //
+                        {
+                            name: "流入流量增长率",
+                            type: "bar",
+                            barGap: 0,
+                            yAxisIndex: 1,
+                            barWidth: 10,
+                            data: newInPercent
+                        },
+                        {
+                            name: "流出流量增长率",
+                            type: "bar",
+                            yAxisIndex: 1,
+                            barWidth: 10, //柱图宽度
+                            data: newOutPercent
+                        }
+                    ]
+                };
+                Ea.setOption(option);
+            },
+
+            /*客户流量*/
+            customer: function (node, label) {
+                var now = new Date();
+                var et = now.valueOf();
+                var st = new Date(
+                    new Date().getTime() - 24 * 60 * 60 * 1000
+                ).valueOf();
+                data = getgatherflux;
+                var _data = JSON.parse(getgatherflux);
+                var name = [],
+                    inData = [],
+                    outData = [],
+                    inDataFull = [],
+                    outDataFull = [],
+                    next = [],
+                    _dis = {},
+                    time = [];
+                var num = 1000000000;
+                /*客户名数组，流量数据字典*/
+                _data.Data.forEach(function (item, i) {
+                    name.push(item.ClientName);
+                    _dis[item.ClientName] = {
+                        InData: item.InData,
+                        OutData: item.OutData
+                    };
+                });
+                if (isFirst) {
+                    isFirst = false;
+                    app.handleClick({
+                        $el: {
+                            children: [{ id: "NO0" }]
+                        },
+                        label: name[0]
+                    });
+                }
+                _dis[label].InData.forEach(function (item) {
+                    next.push(moment(item.Time).format("HH:mm:ss"));
+                    inData.push((item.Flux / num).toFixed(2));
+                });
+                _dis[label].OutData.forEach(function (item) {
+                    outData.push((item.Flux / num).toFixed(2));
+                });
+                NO1 = echarts.init(node);
+                option = {
+                    title: {
+                        text: label,
+                        textStyle: {
+                            fontSize: 16,
+                            color: "#fff"
+                        },
+                        x: "left",
+                        y: "top",
+                        subtext: "单位(G)",
+                        subtextStyle: {
+                            color: "#ddd",
+                            fontSize: "12"
+                        }
+                    },
+                    tooltip: {
+                        trigger: "axis",
+                        axisPointer: {
+                            type: "cross",
+                            label: {
+                                backgroundColor: "#6a7985"
+                            }
+                        }
+                    },
+                    legend: {
+                        right: 0,
+                        icon: "rect",
+                        itemWidth: 23,
+                        itemHeight: 13,
+                        barBorderRadius: 3,
+                        itemGap: 10,
+                        data: ["流入流量", "流出流量"],
+                        textStyle: {
+                            color: "white",
+                            barBorderRadius: "3"
+                        }
+                    },
+                    color: ["#0ca87d", "#1c9aee"],
+                    toolbox: {
+                        feature: {}
+                    },
+                    grid: {
+                        left: "3%",
+                        right: "4%",
+                        bottom: "10%",
+                        containLabel: true
+                    },
+                    xAxis: [
+                        {
+                            type: "category",
+                            boundaryGap: false,
+                            data: next,
+                            axisLine: {
+                                lineStyle: {
+                                    color: "#fff"
+                                }
+                            },
+                            axisLabel: {
+                                textStyle: {
+                                    color: "#fff"
+                                }
+                            }
+                        }
+                    ],
+                    yAxis: [
+                        {
+                            type: "value",
+                            axisLine: {
+                                lineStyle: {
+                                    color: "#fff",
+                                    zIndex: 100
+                                }
+                            },
+                            axisLabel: {
+                                textStyle: {
+                                    color: "#fff"
+                                }
+                            }
+                        }
+                    ],
+                    series: [
+                        {
+                            name: "流入流量",
+                            type: "line",
+                            stack: "总量",
+                            areaStyle: { normal: { opacity: "0.9", color: "#0ca87d" } },
+                            data: inData,
+                            lineStyle: {
+                                normal: {
+                                    color: "#03e2e2",
+                                    width: 2,
+                                    opacity: "1"
+                                }
+                            }
+                        },
+                        {
+                            name: "流出流量",
+                            type: "line",
+                            areaStyle: { normal: { opacity: "0.9", color: "#1c9aee" } },
+                            data: outData,
+                            lineStyle: {
+                                normal: {
+                                    color: "blue",
+                                    width: 2,
+                                    opacity: "1"
+                                }
+                            }
+                        }
+                    ]
+                };console.log('0',outData);
+                NO1.setOption(option);
+            },
+            firstCust: function () {
+                var now = new Date();
+                var et = now.valueOf();
+                var st = new Date(
+                    new Date().getTime() - 24 * 60 * 60 * 1000
+                ).valueOf();
+                var _data = JSON.parse(getgatherflux);
+                var name = [];
+                _data.Data.forEach(function (item, i) {
+                    name.push(item.ClientName);
+                });
+                setTimeout(function () {
+                    app.tableDate = name;
+                    setTimeout(function () {
+                        D.customer(document.getElementById("NO0"), name[0]);
+                    }, 10)
+                }, 10);
+            },
+            switch: function () {
+                window.onresize = function () {
+                    Ea.resize();
+                    Eb.resize();
+                    NO1.resize();
+                };
+            },
+            run: function () {
+                D.switch();
+                D.firstCust();
+            }
+        };
+        // setInterval(function () {
+        //     D.run();
+        // }, 300000);
+        var app = new Vue({
+            el: "#app",
+            data: {
+                imgUrls: ["./images/1.jpg", "./images/2.jpg", "./images/3.jpg", "./images/4.jpg", "./images/5.jpg", "./images/6.jpg", "./images/7.jpg", "./images/8.jpg", "./images/9.jpg", "./images/10.jpg", "./images/11.jpg", "./images/12.jpg", "./images/13.jpg", "./images/14.jpg", "./images/15.jpg", "./images/16.jpg", "./images/17.jpg"],
+                activeName: "index_0",
+                tableDate: [],
+                options: [
+                    {
+                        value: "1",
+                        label: "年同期"
+                    },
+                    {
+                        value: "2",
+                        label: "月同期"
+                    },
+                    {
+                        value: "3",
+                        label: "周同期"
+                    }
+                ],
+                value: "1"
+            },
+            methods: {
+                chartSelectime: function () {
+                    /*端口实时流量*/
+                    Ea = echarts.init(document.getElementById("Ea"));
+                    var _data = JSON.parse(GetGatherGroupData);
+                    let str =
+                        "全省带宽流量(24h)，当前流出流量" +
+                        (
+                            _data.Data.OutData[_data.Data.OutData.length - 1].data /
+                            1000000000
+                        ).toFixed(1) +
+                        "G，当前带宽利用率" +
+                        (
+                            (_data.Data.OutData[_data.Data.OutData.length - 1].data /
+                                1000000000 /
+                                4800) *
+                            100
+                        ).toFixed(1) +
+                        "%";
+                    var name = [],
+                        inData = [],
+                        outData = [],
+                        preInData = [],
+                        preOutData = [],
+                        inDataFull = [],
+                        outDataFull = [],
+                        next = [],
+                        _dis = {},
+                        time = [],
+                        InPercent = [],
+                        OutPercent = []; //加入流入流出增长率
+
+                    var num = 1000000000;
+                    var newNum = 100;
+                    _data.Data.OutData.forEach(function (item) {
+                        next.push(item.time);
+                        outData.push((item.data / num).toFixed(2));
+                    });
+                    _data.Data.InData.forEach(function (item) {
+                        inData.push((item.data / num).toFixed(2));
+                    });
+                    _data.Data.LastOutData.forEach(function (item) {
+                        preOutData.push((item.data / num).toFixed(2));
+                    });
+                    _data.Data.LastInData.forEach(function (item) {
+                        preInData.push((item.data / num).toFixed(2));
+                    });
+                    //  增长率处理
+                    _data.Data.percentData.forEach(function (item) {
+                        InPercent.push((item.inPercent * newNum).toFixed(2));
+                    });
+
+                    _data.Data.percentData.forEach(function (item) {
+                        OutPercent.push((item.outPercent * newNum).toFixed(2));
+                    });
+
+                    //增长率的隔行取值 替换
+                    var cutNum = 28; //隔num行取一次值
+                    var newInPercent = []; //用来接收的新数组
+                    for (let i in InPercent) {
+                        //处理的方法
+                        if (i % cutNum === 0) {
+                            newInPercent.push(InPercent[i]);
+                        } else {
+                            newInPercent.push("");
+                        }
+                    }
+                    //
+                    var newOutPercent = []; //用来接收的新数组
+                    for (let i in OutPercent) {
+                        //处理的方法
+                        if (i % cutNum === 0) {
+
+                            newOutPercent.push(OutPercent[i]);
+                        } else {
+                            newOutPercent.push("");
+                        }
+                    }
+                    option = {
+                        // 鼠标滑过阴影
+                        axisPointer: {
+                            type: "shadow"
+                        },
+
+                        title: {
+                            text: str,
+                            textStyle: {
+                                fontSize: 16,
+                                color: "#fff"
+                            },
+                            x: "center",
+                            y: "top",
+                            //  yuanlai
+                            subtextStyle: {
+                                color: "#ddd",
+                                fontSize: "12"
+                            }
+                        },
+                        tooltip: {
+                            trigger: "axis",
+                            axisPointer: {
+                                type: "cross",
+                                label: {
+                                    backgroundColor: "#6a7985"
+                                }
+                            }
+                        },
+                        legend: {
+                            top: "6%",
+                            itemWidth: 23,
+                            itemHeight: 13,
+                            itemGap: 10,
+                            data: [
+                                "流入流量(G)",
+                                "流出流量(G)",
+                                "同期流入(G)",
+                                "同期流出(G)",
+                                "流入流量增长率",
+                                "流出流量增长率"
+                            ],
+                            textStyle: {
+                                color: "white"
+                            }
+                        },
+                        color: [
+                            "#12A87F",
+                            "#2196F3",
+                            "#F154B1",
+                            "#ffffff",
+                            "#1f8ae6",
+                            "#12a87f"
+                        ],
+                        toolbox: {
+                            feature: {}
+                        },
+                        grid: {
+                            left: "3%",
+                            right: "4%",
+                            bottom: "3%",
+                            containLabel: true
+                        },
+                        xAxis: [
+                            {
+                                splitLine: { show: false }, //去除网格线
+
+                                type: "category",
+
+                                data: next,
+                                axisLine: {
+                                    lineStyle: {
+                                        color: "#fff"
+                                    }
+                                },
+                                axisLabel: {
+                                    textStyle: {
+                                        color: "#fff"
+                                    }
+                                }
+                            }
+                        ],
+                        yAxis: [
+                            {
+                                name: "单位(G)",
+                                splitLine: { show: false }, //去除网格线
+                                type: "value",
+                                offset: 10,
+                                axisLine: {
+                                    lineStyle: {
+                                        color: "#fff",
+                                        zIndex: 100
+                                    }
+                                },
+                                axisLabel: {
+                                    textStyle: {
+                                        color: "#fff"
+                                    }
+                                }
+                            },
+                            //
+                            {
+                                splitLine: { show: false }, //去除网格线
+                                type: "value",
+                                name: "百分比",
+                                nameLocation: "end",
+
+                                axisLine: {
+                                    lineStyle: {
+                                        color: "#fff",
+                                        zIndex: 100
+                                    }
+                                },
+                                axisLabel: {
+                                    formatter: "{value} %",
+                                    textStyle: {
+                                        color: "#fff"
+                                    }
+                                }
+                            }
+                            //
+                        ],
+                        series: [
+                            {
+                                name: "流出流量(G)",
+                                type: "line",
+
+                                data: outData,
+                                lineStyle: {
+                                    normal: {
+                                        color: "#12A87F",
+                                        width: 2,
+                                        opacity: "1"
+                                    }
+                                }
+                            },
+                            {
+                                name: "流入流量(G)",
+                                type: "line",
+                                stack: "总量",
+                                data: inData,
+                                lineStyle: {
+                                    normal: {
+                                        color: "#2196F3",
+                                        width: 2,
+                                        opacity: "1"
+                                    }
+                                }
+                            },
+                            {
+                                name: "同期流入(G)",
+                                type: "line",
+                                data: preInData,
+                                lineStyle: {
+                                    normal: {
+                                        color: "#F154B1",
+                                        width: 2,
+                                        opacity: "1"
+                                    }
+                                }
+                            },
+                            {
+                                name: "同期流出(G)",
+                                type: "line",
+                                data: preOutData,
+                                lineStyle: {
+                                    normal: {
+                                        color: "#ffffff",
+                                        width: 2,
+                                        opacity: "1"
+                                    }
+                                }
+                            },
+                            //
+                            {
+                                name: "流入流量增长率",
+                                type: "bar",
+                                barGap: 0,
+                                yAxisIndex: 1,
+                                barWidth: 10,
+                                data: newInPercent
+                            },
+                            {
+                                name: "流出流量增长率",
+                                type: "bar",
+                                yAxisIndex: 1,
+                                barWidth: 10, //柱图宽度
+                                data: newOutPercent
+                            }
+                        ]
+                    };
+                    Ea.setOption(option);
+                },
+                /*汇总流量top5*/
+                chartEb: function () {
+                    var _data = JSON.parse(getgathermaxfluxtopn);
+                    var name = [],
+                        now = [],
+                        all = [],
+                        left = [],
+                        per = [],
+                        time = [],
+                        s = 1000000000;
+                    _data.Data.forEach(function (item) {
+                        let GatherName = item.GatherName.replace(/\（[^\)]*\）/g, "");
+                        GatherName = GatherName.replace(/\([^\)]*\)/g, "");
+                        name.push(GatherName.substring(0, 6));
+                        now.push((item.MaxFlux / s).toFixed(0));
+                        all.push((item.BandWidth / s).toFixed(0));
+                        time.push((item.ChainRatio * 100).toFixed(0));
+                        left.push(((item.BandWidth - item.MaxFlux) / s).toFixed(0));
+                    });
+                   Eb   = echarts.init(document.getElementById("Eb"));
+                     optionTop = {
+                        title: {
+                            text: "汇总流量",
+                            textStyle: {
+                                color: "#fff",
+                                fontSize: "16"
+                            }
+                        },
+                        grid: {
+                            left: "3%",
+                            right: "4%",
+                            bottom: "3%",
+                            containLabel: true
+                        },
+                        tooltip: {
+                            trigger: "axis",
+                            axisPointer: {
+                                type: "shadow",
+                                textStyle: {
+                                    color: "#fff"
+                                }
+                            }
+                        },
+                        legend: {
+                            // right: "15%",
+                            top: "5%",
+                            textStyle: {
+                                color: "white"
+                            },
+                            data: [
+                                "空闲带宽(G)",
+                                "计费流量(G)",
+                                "带宽总量(G)",
+                                "增减幅度(%)"
+                            ]
+                        },
+                        calculable: true,
+                        xAxis: [
+                            {
+                                type: "category",
+                                axisLine: {
+                                    lineStyle: {
+                                        color: "white"
+                                    }
+                                },
+                                splitLine: {
+                                    show: false
+                                },
+                                axisTick: {
+                                    show: true
+                                },
+                                splitArea: {
+                                    show: false
+                                },
+                                axisLabel: {
+                                    interval: 0
+                                },
+                                data: name
+                            }
+                        ],
+                        yAxis: [
+                            {
+                                type: "value",
+                                splitLine: {
+                                    show: true
+                                },
+                                axisLine: {
+                                    lineStyle: {
+                                        color: "white"
+                                    }
+                                },
+                                axisTick: {
+                                    show: true
+                                },
+                                axisLabel: {
+                                    interval: 0
+                                },
+                                splitArea: {
+                                    show: false
+                                }
+                            },
+                            {
+                                type: "value",
+                                name: "增减幅度",
+                                nameTextStyle: {
+                                    color: "#fff"
+                                },
+                                position: "right",
+                                splitLine: {
+                                    show: false
+                                },
+                                splitLine: {
+                                    show: false
+                                },
+                                axisTick: {
+                                    show: false
+                                },
+                                axisLine: {
+                                    show: false
+                                },
+                                axisLabel: {
+                                    show: true,
+                                    formatter: "{value}%", //右侧Y轴文字显示
+                                    textStyle: {
+                                        color: "#fff"
+                                    }
+                                }
+                            }
+                        ],
+                        series: [
+                            {
+                                name: "增减幅度(%)",
+                                type: "line",
+                                yAxisIndex: 1, //使用的 y 轴的 index，在单个图表实例中存在多个 y轴的时候有用
+                                smooth: true, //平滑曲线显示
+                                showAllSymbol: true, //显示所有图形。
+                                //标记的图形为实心圆
+                                symbolSize: 3, //标记的大小
+                                itemStyle: {
+                                    //折线拐点标志的样式
+                                    color: "#0ca87d"
+                                },
+                                lineStyle: {
+                                    color: "#0ca87d"
+                                },
+                                areaStyle: {
+                                    color: "rgba(5,140,255, 0.2)"
+                                },
+                                data: time
+                            },
+                            {
+                                name: "计费流量(G)",
+                                type: "bar",
+                                stack: "总量",
+                                barMaxWidth: 50,
+                                // symbolSize:10,
+                                // symbol:'circle',
+                                itemStyle: {
+                                    normal: {
+                                        color: "#12a87f",
+                                        barBorderRadius: 0,
+                                        label: {
+                                            show: true,
+                                            position: "inside",
+                                            textStyle: {
+                                                color: "white"
+                                            },
+                                            formatter: function (p) {
+                                                return p.value > 0 ? p.value : "";
+                                            }
+                                        }
+                                    }
+                                },
+                                data: now
+                            },
+                            {
+                                name: "空闲带宽(G)",
+                                type: "bar",
+                                stack: "总量",
+                                barMaxWidth: 50,
+                                itemStyle: {
+                                    normal: {
+                                        color: "#1f8ae6",
+                                        barBorderRadius: 0,
+                                        label: {
+                                            show: true,
+                                            position: "inside",
+                                            textStyle: {
+                                                color: "white"
+                                            },
+                                            formatter: function (p) {
+                                                return p.value > 0 ? p.value : "";
+                                            }
+                                        }
+                                    }
+                                },
+                                data: left
+                            },
+                            {
+                                name: "带宽总量(G)",
+                                type: "scatter",
+                                symbolSize: 10,
+                                symbol: "circle",
+                                itemStyle: {
+                                    normal: {
+                                        color: "white",
+                                        barBorderRadius: 0,
+                                        label: {
+                                            show: true,
+                                            position: "top",
+                                            formatter: function (p) {
+                                                return p.value > 0 ? p.value : "";
+                                            }
+                                        }
+                                    }
+                                },
+                                data: all
+                            }
+                        ]
+                    };
+                    Eb.setOption(optionTop);
+                },
+
+                handleClick: function (tab) {
+                    setTimeout(function () {
+                        D.customer(
+                            document.getElementById(tab.$el.children[0].id),
+                            tab.label
+                        );
+                    }, 300);
+                },
+                onSelectedDrug: function () {
+                    var self = this;
+                    // D.selectTime(self.value);
+                }
+            },
+            mounted: function () {
+                let that = this;
+                that.chartEb();
+                that.chartSelectime();
+                D.run();
+            }
+        });
+    </script>
+</body>
+
+</html>

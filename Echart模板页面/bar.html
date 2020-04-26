@@ -1,0 +1,317 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link rel="stylesheet" href="./css/element.css">
+    <link rel="stylesheet" href="./css/iconfont/iconfont.css">
+    <title>柱状图</title>
+    <style>
+        #main {
+            display: flex;
+            flex-wrap: wrap;
+        }
+
+        .item {
+            flex-shrink: 0;
+            width: 300px;
+            height: 300px;
+            border: 1px solid #ccc;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="main">
+        <div id="bar1" class="item"></div>
+        <div id="bar2" class="item"></div>
+
+    </div>
+    <script src="./js/es6-shim.min.js"></script>
+    <script src="./js/vue.js"></script>
+    <script src="./js/element.js"></script>
+    <script src="./js/echarts/dist/echarts.min.js"></script>
+    <script>
+        var v = new Vue({
+            el: "#main",
+            data: {},
+            methods: {
+                drawBar1: function () {
+                    let myChart = echarts.init(document.getElementById("bar1"));
+                    let _data = {
+                        Count: 10,
+                        List: [{
+                                AllCount: 140,
+                                SelledCount: 37,
+                                WaitSellCount: 103,
+                                ShowName: "西",
+                                Id: 10
+                            },
+                            {
+                                AllCount: 215,
+                                SelledCount: 171,
+                                WaitSellCount: 44,
+                                ShowName: "机房",
+                                Id: 11
+                            },
+                            {
+                                AllCount: 0,
+                                WaitSellCount: 0,
+                                ShowName: "岳阳",
+                                SelledCount: 5,
+                                Id: 12
+                            },
+                            {
+                                AllCount: 60,
+                                SelledCount: 0,
+                                WaitSellCount: 60,
+                                ShowName: "二楼",
+                                Id: 13
+                            },
+                            {
+                                AllCount: 56,
+                                SelledCount: 0,
+                                WaitSellCount: 56,
+                                ShowName: "益",
+                                Id: 14
+                            }
+                        ]
+                    };
+                    var name = ["西", "机房", "岳阳", "二楼", "益"],
+                        SelledCount = [37, 171, 5, 0, 0],
+                        WaitSellCount = [103, 44, 0, 60, 56];
+                    let option = {
+                        backgroundColor: "rgb(10,78,180)",
+                        title: {
+                            text: "机柜规模(个)",
+                            show: false,
+                            textStyle: {
+                                color: "#fff",
+                                fontSize: "12",
+                                fontWeight: "normal"
+                            },
+                            subtextStyle: {
+                                color: "#ddd",
+                                fontSize: "14"
+                            }
+                        },
+                        grid: {
+                            top: "20%",
+                            left: 0,
+                            right: 0,
+                            bottom: "0",
+                            containLabel: true
+                        },
+                        tooltip: {
+                            trigger: "axis",
+                            axisPointer: {
+                                type: "shadow",
+                                textStyle: {
+                                    color: "#fff"
+                                }
+                            }
+                        },
+                        legend: {
+                            right: "20%",
+                            top: "10%",
+                            textStyle: {
+                                color: "white"
+                            },
+                            data: ["未用(个)", "已用(个)"]
+                        },
+                        calculable: true,
+                        xAxis: [{
+                            type: "category",
+                            axisLine: {
+                                show: false,
+                                lineStyle: {
+                                    color: "white"
+                                }
+                            },
+                            splitLine: {
+                                show: false
+                            },
+                            axisTick: {
+                                show: false
+                            },
+                            splitArea: {
+                                show: false
+                            },
+                            axisLabel: {
+                                interval: 0
+                            },
+                            data: name
+                        }],
+                        yAxis: [{
+                            show: false,
+                            type: "value",
+                            splitLine: {
+                                show: false
+                            },
+                            axisLine: {
+                                show: false,
+                                lineStyle: {
+                                    color: "white"
+                                }
+                            },
+                            axisTick: {
+                                show: false
+                            },
+                            axisLabel: {
+                                interval: 0
+                            },
+                            splitArea: {
+                                show: false
+                            }
+                        }],
+                        series: [{
+                                name: "已用(个)",
+                                type: "bar",
+                                stack: "总量",
+                                barMaxWidth: 50,
+                                itemStyle: {
+                                    normal: {
+                                        color: "#11a8ab",
+                                        barBorderRadius: 0,
+                                        label: {
+                                            show: true,
+                                            position: "inside",
+                                            textStyle: {
+                                                color: "white"
+                                            },
+                                            formatter: function (p) {
+                                                return p.value > 0 ? p.value : "";
+                                            }
+                                        }
+                                    }
+                                },
+                                data: SelledCount
+                            },
+                            {
+                                name: "未用(个)",
+                                type: "bar",
+                                stack: "总量",
+                                barMaxWidth: 50,
+                                itemStyle: {
+                                    normal: {
+                                        color: "rgba(255,255,255,0.3)",
+                                        barBorderRadius: 0,
+                                        label: {
+                                            show: true,
+                                            position: "inside",
+                                            textStyle: {
+                                                color: "white"
+                                            },
+                                            formatter: function (p) {
+                                                return p.value > 0 ? p.value : "";
+                                            }
+                                        }
+                                    }
+                                },
+                                data: WaitSellCount
+                            }
+                        ]
+                    };
+                    myChart.setOption(option, true);
+                },
+                drawBar2: function () {
+                    let myChart = echarts.init(document.getElementById("bar2"));
+
+                    let option = {
+                        title: {
+                            text: 'TOPN用户机架',
+                            x: "center",
+                            top: 10,
+                            textStyle: {
+                                color: "#666",
+                                fontSize: "14"
+                            }
+                        },
+                        tooltip: {
+                            trigger: 'axis',
+                            axisPointer: {
+                                type: 'shadow'
+                            }
+                        },
+                        color: ["#12A87F"],
+                        grid: {
+                            left: 30,
+                            right: 20,
+                            bottom: 20,
+                            top: 40,
+                            containLabel: true
+                        },
+                        xAxis: {
+                            type: 'value',
+                            boundaryGap: [0, 0.01],
+                            name: "单位(个)",
+                            nameGap: 10,
+                            nameLocation: "start",
+                            splitLine: {
+                                show: false,
+                                lineStyle: {
+                                    color: 'red'
+                                }
+                            },
+                        },
+                        yAxis: {
+                            type: 'category',
+                            data: ['巴西', '印尼', '美国', '印度', '中国'],
+                            splitLine: {
+                                show: true,
+                            },
+                        },
+                        series: [{
+                                name: '',
+                                type: 'bar',
+                                // data: [183, 239, 855, 104, 174]
+                                data: [{
+                                        value: 10,
+                                        detail:{
+                                            //随便写参数
+                                            name:"b哥"
+                                        }
+
+                                    },
+                                    {
+                                        value: 10,
+                                        detail:{
+                                            //随便写参数
+                                            name:"bfd哥"
+                                        }
+                                    },
+                                    {
+                                        value: 10
+                                    },
+                                    {
+                                        value: 10
+                                    },
+                                    {
+                                        value: 10
+                                    },
+
+                                ]
+                            },
+
+                        ]
+                    };
+                    myChart.setOption(option, true);
+                    myChart.on("click", function (params) {
+                        console.log(params)
+                        //参数在params的data里
+                    })
+                },
+
+            },
+            mounted: function () {
+                this.drawBar1();
+                this.drawBar2();
+
+            }
+        })
+    </script>
+</body>
+
+</html>

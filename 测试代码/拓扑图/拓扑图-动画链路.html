@@ -1,0 +1,480 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link rel="stylesheet" href="../css/element.css">
+    <link rel="stylesheet" href="../css/iconfont/iconfont.css">
+    <title>拓扑图-动画链路</title>
+    <style>
+        #chart {
+            width: 100%;
+            height: 800px;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="main">
+        <div id="chart"></div>
+    </div>
+    <script src="../js/es6-shim.min.js"></script>
+    <script src="../js/vue.js"></script>
+    <script src="../js/element.js"></script>
+    <script src="../js/echarts/dist/echarts.min.js"></script>
+    <script src="./topoData.js"></script>
+    <script>
+        var v = new Vue({
+            el: "#main",
+            data: {
+                iconList: {
+                    "0": {
+                        value: 0,
+                        label: "其他",
+                        path: "M911.102515 579.936557C414.155513 579.936557 9.903288 449.80735 9.903288 289.968279S414.155513 0 911.102515 0s901.199226 130.129207 901.199226 289.968279S1408.049516 579.936557 911.102515 579.936557zM0 281.253385v0z m911.102515 308.58646C407.817408 589.839845 0 455.551257 0 289.968279V736.804642h2.178723C32.482785 897.039845 427.623985 1024 911.102515 1024s878.619729-126.960155 908.923791-287.195358H1822.205029V289.968279C1822.205029 455.551257 1414.387621 589.839845 911.102515 589.839845zM1822.205029 281.253385v8.714894-8.714894z",
+
+                    },
+                    "1": {
+                        value: 1,
+                        label: "客户设备",
+                        path: "M1014.659844 123.586207h-935.838042c-42.941935 0-78.024472-27.56485-78.024472-61.394438s35.082536-61.394438 78.024472-61.394439h935.838042c42.941935 0 78.024472 27.56485 78.024472 61.394439 0 33.715684-35.082536 61.394438-78.024472 61.394438zM906.10901 176.210011h-718.736374c-30.868076 0.113904-55.813126 19.705451-55.92703 44.080979v759.058509c0 24.261624 25.172859 44.080979 55.92703 44.080979h718.850278c30.754171 0 55.92703-19.819355 55.92703-44.080979V220.177086c-0.227809-24.261624-25.172859-43.85317-56.040934-43.967075zM546.740823 338.295884c77.113237 0 139.760623 62.533482 139.760623 139.760623S623.85406 617.703226 546.740823 617.703226s-139.760623-62.533482-139.760623-139.760623 62.647386-139.646719 139.760623-139.646719z m209.583982 487.282759c0 35.310345-70.962403 36.677197-158.440934 36.677197h-102.286096c-87.478532 0-158.440934 0-158.440934-36.677197v-10.479199c0-89.756618 70.962403-162.427586 158.440934-162.427586h102.286096c87.478532 0 158.440934 72.670968 158.440934 162.427586v10.479199z"
+                    },
+                    "2": {
+                        value: 2,
+                        label: "自用设备",
+                        path: "M0 56.888889h1024v512H0V56.888889z m348.103111 210.147555l282.510222 197.745778 205.937778-240.298666-43.235555-37.034667-172.373334 201.102222-286.378666-200.476444-175.104 245.191111 46.250666 33.052444L348.16 267.036444zM0 625.777778h1024v341.333333H0v-341.333333z m853.333333 284.444444a113.777778 113.777778 0 1 0 0-227.555555 113.777778 113.777778 0 0 0 0 227.555555zM170.666667 739.555556a56.888889 56.888889 0 1 0 0 113.777777 56.888889 56.888889 0 0 0 0-113.777777z m170.666666 0a56.888889 56.888889 0 1 0 0 113.777777 56.888889 56.888889 0 0 0 0-113.777777z m170.666667 0a56.888889 56.888889 0 1 0 0 113.777777 56.888889 56.888889 0 0 0 0-113.777777z"
+                    },
+                    "3": {
+                        value: 3,
+                        label: "网络设备端口",
+                        path: "M512 498.70769188m-392.12307656-1e-8a392.12307656 392.12307656 0 1 0 784.24615312 0 392.12307656 392.12307656 0 1 0-784.24615312 0Z"
+                    },
+                    "4": {
+                        value: 4,
+                        label: "ODF/DDF端口",
+                        path: "M512 512m-451.930903 0a441.638 441.638 0 1 0 903.861806 0 441.638 441.638 0 1 0-903.861806 0Z"
+
+                    },
+                    "5": {
+                        value: 5,
+                        label: "客户",
+                        path: "M593.92 630.329s-34.133-9.102-43.236-13.653c-18.204-11.378-29.582-34.134-29.582-56.89 0-25.03 20.48-45.51 34.134-61.44 34.133-40.96 52.337-95.573 52.337-157.013 0-127.43-91.022-229.83-202.524-229.83S202.524 216.177 202.524 343.608c0 61.44 20.48 116.053 52.338 157.013 20.48 11.378 34.134 36.41 34.134 61.44 0 22.756-11.378 43.236-29.583 56.89v2.275c-2.275 0-4.55 2.275-4.55 2.275-11.379 6.827-22.756 11.378-36.41 11.378-86.47 29.582-159.289 75.093-202.524 131.982h2.275C6.827 782.792 2.276 800.996 2.276 819.2c0 54.613 45.51 100.124 102.4 100.124h600.746c59.165 0 104.676-43.235 104.676-100.124 0-22.756-9.102-43.236-20.48-61.44-43.236-56.889-111.502-100.124-195.698-127.431z m407.324 100.124c-38.684-47.786-97.848-88.746-172.942-111.502 0 0-29.582-6.827-38.684-11.378-15.93-11.377-25.031-29.582-25.031-50.062 0-22.755 18.204-40.96 29.582-52.338 29.582-36.409 47.787-84.195 47.787-138.809 0-111.502-79.645-204.8-179.77-204.8-15.928 0-31.857 2.276-45.51 6.827 34.133 50.062 52.337 109.227 52.337 175.218 0 70.542-25.03 138.809-68.266 195.698l-4.551 4.55v2.276c-4.552 4.551-11.378 11.378-13.654 18.205 0 2.275 0 2.275 2.276 2.275 4.55 2.276 11.378 4.551 18.204 4.551h2.276l9.102 4.552c93.298 29.582 172.942 81.92 225.28 147.91 22.756 29.583 36.409 63.716 36.409 100.125 0 20.48-4.551 36.409-11.378 54.613h65.991c52.338 0 93.298-38.684 93.298-88.746-2.276-25.031-9.102-43.236-22.756-59.165z m0 0"
+
+                    },
+                    "6": {
+                        value: 6,
+                        label: "网络设备",
+                        path: "M911.102515 579.936557C414.155513 579.936557 9.903288 449.80735 9.903288 289.968279S414.155513 0 911.102515 0s901.199226 130.129207 901.199226 289.968279S1408.049516 579.936557 911.102515 579.936557zM0 281.253385v0z m911.102515 308.58646C407.817408 589.839845 0 455.551257 0 289.968279V736.804642h2.178723C32.482785 897.039845 427.623985 1024 911.102515 1024s878.619729-126.960155 908.923791-287.195358H1822.205029V289.968279C1822.205029 455.551257 1414.387621 589.839845 911.102515 589.839845zM1822.205029 281.253385v8.714894-8.714894z",
+                    },
+                    "7": {
+                        value: 7,
+                        label: "ODF/DDF模块",
+                        path: "M860.491 916.184c0 59.273-48.032 107.816-107.816 107.816H269.29c-59.274 0-107.817-48.032-107.817-107.816H0.004V2.044H1021.96v914.14H860.491zM968.307 55.697H53.657V862.53h914.14c0.51 0 0.51-806.834 0.51-806.834z m-53.652 483.896H107.82V109.349h806.835v430.244z m0 269.285H107.82V593.756h806.835v215.122zM215.125 647.41c-29.636 0-53.652 24.016-53.652 53.653s24.016 53.653 53.653 53.653 53.653-24.016 53.653-53.653-24.016-53.653-53.653-53.653z m645.366 0H537.553v107.817h-53.142V647.409H376.595v107.817H860.49V647.409z"
+                    }
+                },
+                mainData: [{
+                    type: 5,
+                    name: "客户",
+                    src: "客户",
+                    warn: [],
+                    tar: ["客户设备"],
+                    x: 100,
+                    y: 20
+                }, {
+                    type: 1,
+                    name: "客户设备",
+                    src: "客户设备",
+                    warn: [{
+                        type: "告警",
+                        name: "告警",
+                        count: 10
+                    }],
+                    tar: ["odf"],
+                    x: 30,
+                    y: 50
+                }, {
+                    type: 7,
+                    name: "odf",
+                    src: "odf",
+                    warn: [],
+                    tar: ["网络设备1","网络设备2"],
+                    x: 40,
+                    y: 30
+                }, {
+                    type: 6,
+                    name: "网络设备1",
+                    src: "网络设备1",
+                    warn: [],
+                    tar: ["网络设备3"],
+                    x: 40,
+                    y: 30
+                }, {
+                    type: 6,
+                    name: "网络设备2",
+                    src: "网络设备2",
+                    warn: [{
+                        type: "告警",
+                        name: "告警",
+                        count: 10
+                    }],
+                    tar: ["网络设备4"],
+                    x: 40,
+                    y: 30
+                }, {
+                    type: 6,
+                    name: "网络设备3",
+                    src: "网络设备3",
+                    warn: [],
+                    tar: ["网络设备4"],
+                    x: 40,
+                    y: 30
+                }, {
+                    type: 6,
+                    name: "网络设备4",
+                    src: "网络设备4",
+                    warn: [],
+                    tar: [],
+                    x: 40,
+                    y: 30
+                }]
+            },
+            methods: {
+                drawChart: function () {
+                    let that = this;
+                    let myChart = echarts.init(document.getElementById("chart"));
+                    let mainData = this.mainData;
+                    let symbolSize = 50;
+                    let biaoqian =
+                        "path://M2088.520038 127.63648c-14.88896-14.88384-34.67776-23.17824-55.59808-23.17824-7.9104 0-1541.0432-1.32096-1586.08384-1.5104-58.4192 0-99.12832 28.6464-142.47424 71.61344-41.6512 41.6512-281.37472 280.62208-281.37472 280.62208-14.88384 14.6944-22.9888 34.48832-22.9888 55.40352a78.1312 78.1312 0 0 0 22.9888 55.59296s252.91776 253.48096 287.96928 288.53248c41.08288 41.08288 76.32896 65.01888 135.31648 65.01888 87.82336 0 1578.55232 1.32096 1586.08896 1.32096 20.91008 0 40.69888-8.10496 55.3984-22.80448 14.88896-14.69952 22.9888-34.48832 22.9888-55.40352l0.56832-659.79904c0.19456-20.92544-7.90528-40.51968-22.79936-55.40864z m-1696.6144 483.68128c-54.84032 0-99.31264-44.48256-99.31264-99.31776s44.47744-99.31776 99.31264-99.31776c54.85056 0 99.31776 44.48256 99.31776 99.31776s-44.4672 99.31776-99.31776 99.31776z";
+                    let fuwuqi =
+                        "path://M827.4 112.2H196.2c-31.1 0.1-56.3 25.2-56.4 56.3v169h743.9v-169c0-31.1-25.2-56.2-56.3-56.3zM432.3 258.5H248.4v-75.6h184l-0.1 75.6z m193.7 0c-13.8 0.7-26.9-6.1-34.2-17.8-7.3-11.7-7.6-26.5-0.9-38.6 6.8-12 19.6-19.5 33.4-19.3 20.5 0.2 37.1 16.6 37.5 37 0.4 20.5-15.4 37.6-35.8 38.7z m109.1 0c-20.9 0.4-38.2-16.1-38.6-37-0.4-20.9 16.1-38.2 37-38.6 20.9-0.4 38.2 16.1 38.6 37 0.5 20.9-16.1 38.2-37 38.6zM139.9 625.3h743.9V400.1H139.9v225.2z m595.2-150.4c20.9-0.5 38.2 16.1 38.7 37s-16.1 38.2-37 38.7-38.2-16.1-38.7-37c-0.5-21 16.1-38.3 37-38.7z m-109.1 0c15.4-0.3 29.5 8.7 35.7 22.8 6.1 14.1 3.1 30.6-7.7 41.6s-27.2 14.4-41.5 8.6c-14.3-5.8-23.6-19.7-23.6-35.2 0-20.5 16.5-37.4 37.1-37.8z m-377.6 0h184v75.6h-184v-75.6z m-52.2 210.6h-56.4v169c0.2 31.1 25.3 56.2 56.4 56.4h631.2c31.1-0.1 56.2-25.3 56.3-56.4v-169H196.2z m236.1 155.8H248.4v-75.7h184l-0.1 75.7z m193.7 0c-15.4 0.3-29.4-8.7-35.5-22.8-6.1-14.1-3-30.5 7.7-41.5 10.8-11 27.1-14.3 41.3-8.5 14.2 5.8 23.5 19.6 23.5 35 0 20.6-16.4 37.4-37 37.8z m109.1 0c-13.7 0.3-26.4-6.8-33.3-18.7-6.9-11.8-6.8-26.4 0.1-38.2 6.9-11.8 19.6-19 33.3-18.8 20.3 0.8 36.4 17.5 36.4 37.8-0.1 20.4-16.2 37.1-36.5 37.9z m0 0";
+                    let zhuji =
+                        "path://M911.102515 579.936557C414.155513 579.936557 9.903288 449.80735 9.903288 289.968279S414.155513 0 911.102515 0s901.199226 130.129207 901.199226 289.968279S1408.049516 579.936557 911.102515 579.936557zM0 281.253385v0z m911.102515 308.58646C407.817408 589.839845 0 455.551257 0 289.968279V736.804642h2.178723C32.482785 897.039845 427.623985 1024 911.102515 1024s878.619729-126.960155 908.923791-287.195358H1822.205029V289.968279C1822.205029 455.551257 1414.387621 589.839845 911.102515 589.839845zM1822.205029 281.253385v8.714894-8.714894z";
+                    let nodes = [],
+                        warnNodes = [],
+                        links = [];
+
+                    function findNode(data, src) {
+                        for (let i = 0; i < data.length; i++) {
+                            if (data[i].src == src) {
+                                return data[i]
+                            }
+                        }
+                        return;
+                    }
+
+                    function makeData() {
+                        nodes = [];
+                        warnNodes = [];
+                        links = [];
+                        //生成节点元素
+                        for (let i = 0; i < mainData.length; i++) {
+                            let nodeItem = {
+                                type: "node",
+                                name: "",
+                                value: [],
+                                symbol: "",
+                                detail: {},
+                                itemStyle: {}
+                            };
+                            let item = mainData[i];
+                            nodeItem.name = item.src; //必须是唯一标识
+                            //生成坐标
+                            if (!item.x || item.x == 0) {
+                                nodeItem.value = [Math.round(Math.random() * 100), Math.round(Math
+                                    .random() *
+                                    100)]
+                            } else {
+                                nodeItem.value = [item.x, item.y];
+                            }
+                            //生成节点图标
+                            nodeItem.symbol = "path://" + that.iconList[mainData[i].type].path;
+                            //保存详细数据
+                            nodeItem.detail = item;
+                            nodes.push(nodeItem)
+                        }
+
+                        //生成线条
+                        for (let i = 0; i < mainData.length; i++) {
+                            for (let j = 0; j < mainData[i].tar.length; j++) {
+                                let node = findNode(mainData, mainData[i].tar[j])
+                                links.push([{
+                                        coord: [mainData[i].x, mainData[i].y]
+                                    },
+                                    {
+                                        coord: [node.x, node.y]
+                                    },
+                                ])
+                            }
+                        }
+                        //生成告警
+                        for (let i = 0; i < mainData.length; i++) {
+                            for (let j = 0; j < mainData[i].warn.length; j++) {
+                                let nodeItem = {
+                                    type: "warn",
+                                    name: "",
+                                    value: [],
+                                    symbol: "",
+                                    detail: {},
+                                    itemStyle: {}
+                                };
+                                let item = mainData[i].warn[j];
+                                nodeItem.symbol = biaoqian;
+                                nodeItem.itemStyle = {
+                                    color: "red",
+                                };
+                                nodeItem.label = {
+                                    fontSize: 10,
+                                    formatter: function (parmas) {
+                                        return parmas.data.detail.type + parmas.data.detail.count
+                                    }
+                                }
+                                nodeItem.symbolSize = [40, 20],
+                                    nodeItem.name = nodes[i].name + "-" + item.type;
+                                nodeItem.detail = item;
+                                nodeItem.value = [nodes[i].value[0], nodes[i].value[1]]; //只适用于一种告警的时候
+                                nodeItem.symbolOffset = ["110%", 0] //查看模式时使用
+                                warnNodes.push(nodeItem);
+                            }
+                        }
+                        nodes = [...nodes, ...warnNodes];
+                    }
+                    makeData(); //处理数据,使数据格式达到echart的要求
+                    let option = {
+                        title: {
+                            text: ''
+                        },
+                        grid: {
+                            left: 0,
+                            right: 0,
+                            bottom: 0,
+                            top: 0
+                        },
+                        dataZoom: [{
+                                type: 'slider',
+                                xAxisIndex: 0,
+                                filterMode: 'empty',
+                                show: false
+                            },
+                            {
+                                type: 'slider',
+                                yAxisIndex: 0,
+                                filterMode: 'empty',
+                                show: false
+                            },
+                            {
+                                type: 'inside',
+                                xAxisIndex: 0,
+                                filterMode: 'empty',
+                                show: false
+                            },
+                            {
+                                type: 'inside',
+                                yAxisIndex: 0,
+                                filterMode: 'empty',
+                                show: false
+                            }
+                        ],
+                        //定义X轴 
+                        xAxis: {
+                            min: -300,
+                            max: 300,
+                            type: 'value',
+                            axisLine: {
+                                onZero: false
+                            },
+                            show: false
+                        },
+                        yAxis: {
+                            min: -300,
+                            max: 300,
+                            type: 'value',
+                            axisLine: {
+                                onZero: false
+                            },
+                            show: false
+                        },
+                        series: [{
+                            //设置id很重要 
+                            id: 'main',
+                            //设置为甘特图
+                            type: 'graph',
+                            layout: 'none',
+                            coordinateSystem: 'cartesian2d',
+                            //设置球的大小
+                            symbolSize: symbolSize,
+                            label: {
+                                show: true,
+                                formatter: function (parmas) {
+                                    return parmas.data.name
+                                }
+                            },
+                            itemStyle: {
+                                color: '#666',
+                            },
+                            //设置连线形式为箭头
+                            edgeSymbol: ['', ''],
+                            edgeSymbolSize: [4, 10],
+                            //指定数据数组
+                            data: nodes,
+                            //指定连线颜色
+                            lineStyle: {
+                                normal: {
+                                    color: '#333'
+                                }
+                            },
+                        }, {
+                            id: 'lineId',
+                            type: 'lines',
+                            coordinateSystem: 'cartesian2d',
+                            effect: {
+                                show: true,
+                                period: 4, //箭头指向速度，值越小速度越快
+                                trailLength: 0.02,
+                                symbol: 'pin',
+                                color: '#ffaa5f',
+                                symbolSize: 10
+                            },
+                            lineStyle: {
+                            normal: {
+                                color: new echarts.graphic.LinearGradient(
+                                    0,
+                                    0,
+                                    0,
+                                    1,
+                                    [{
+                                            offset: 0,
+                                            color: "#03E2E2"
+                                        },
+                                        {
+                                            offset: 1,
+                                            color: "#03E2E2"
+                                        }
+                                    ],
+                                    false
+                                ),
+                                width: 2,
+                                opacity: 0.6,
+                                curveness: 0
+                            }
+                        },
+                            data: links
+                        }],
+                    };
+                    myChart.setOption(option, true);
+                    myChart.on('dataZoom', function (param) {
+                        updatePosition();
+                        myChart.setOption({
+                            series: [{
+                                id: 'main',
+                                data: nodes,
+                            }, {
+                                id: "lineId",
+                                data: links
+                            }]
+                        });
+                    })
+                    //在demo里，必须要加setTimeout ，否则执行 myChart.convertToPixel 会报错
+                    setTimeout(function () {
+                        initGraphic();
+                        window.addEventListener('resize', updatePosition);
+                        myChart.setOption({
+                            series: [{
+                                id: 'main',
+                                data: nodes,
+                            }, {
+                                id: "lineId",
+                                data: links
+                            }]
+                        });
+                    }, 50);
+
+                    //重新定位图形元素
+                    function updatePosition() {
+                        myChart.setOption({
+                            graphic: echarts.util.map(nodes, function (item, dataIndex) {
+                                if (item.type == "node")
+                                    return {
+                                        position: myChart.convertToPixel('grid', item
+                                            .value),
+                                    };
+                            })
+                        });
+                        myChart.setOption({
+                            series: [{
+                                id: 'main',
+                                data: nodes,
+                            }, {
+                                id: "lineId",
+                                data: links
+                            }]
+                        });
+                    }
+
+                    //绘制图形元素
+                    function initGraphic() {
+                        let graphicNode = [];
+                        echarts.util.map(nodes, function (item, dataIndex) {
+                            if (item.type == "node")
+                                graphicNode.push({
+                                    //圆形
+                                    type: 'circle',
+                                    //将坐标转化为像素
+                                    position: myChart.convertToPixel('grid', item
+                                        .value),
+                                    shape: {
+                                        // 拖动点的大小
+                                        r: symbolSize / 2 - 2
+                                    },
+                                    style: {
+                                        fill: '#3FA7DC50',
+                                        borderColor: '#22faf7',
+                                        borderWidth: 1,
+                                    },
+
+                                    //指定虚拟圈是否可见  false 可见
+                                    invisible: true,
+                                    //指定圈被拖拽（可以与不可以）
+                                    draggable: true,
+                                    onmouseup: echarts.util.curry(onPointDragging,
+                                        dataIndex),
+                                    //层级
+                                    z: 100
+                                })
+                        });
+                        myChart.setOption({
+                            graphic: graphicNode
+                        });
+                    }
+                    //图形元素拖动后， 修改节点位置
+                    function onPointDragging(dataIndex, e) {
+                        if (dataIndex < mainData.length) {
+                            let value = myChart.convertFromPixel('grid', this.position);
+                            mainData[dataIndex].x = value[0];
+                            mainData[dataIndex].y = value[1];
+                            makeData();
+                            // Update data
+                            myChart.setOption({
+                                series: [{
+                                    id: 'main',
+                                    data: nodes,
+                                }, {
+                                    id: "lineId",
+                                    data: links
+                                }]
+                            });
+                        }
+
+                    };
+                }
+            },
+            mounted: function () {
+                this.drawChart();
+            }
+        })
+    </script>
+</body>
+
+</html>

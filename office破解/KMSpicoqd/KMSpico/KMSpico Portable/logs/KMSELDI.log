@@ -1,0 +1,354 @@
+15:18:28:400 2020.04.16 KMS GUI ELDI 37.1.0.0
+Official Site: 
+http://forums.mydigitallife.info/forums/51-KMS-tools
+KMSpico v10.2.0
+Windows Detected: Windows 10 Education : Education : 6.3 : 17134
+
+15:18:28:994 Loading SECOH-QAD...
+15:18:39:921 Set Registry : Image File Execution Options\SppExtComObj.exe:Debugger
+15:18:39:921 Using host Forward: 10.191.51.45:1688
+15:18:39:921 Using host Local: 127.73.109.248:1688
+15:18:39:921 Using method: SECOH-QAD
+15:18:40:031 Time Start: 2020/4/16 15:18:27
+15:18:40:031 Checking Internet Connection...
+15:18:41:031 Internet Connection Detected
+15:18:41:031 Synchronizing Time...
+15:18:41:929 Windows Detected: Windows 10 Education : Education : 6.3 : 17134
+15:18:41:939 Using host Forward: 10.191.51.45:1688
+15:18:41:939 Using host Local: 127.73.109.248:1688
+15:18:41:939 Using method: SECOH-QAD
+15:18:39:260 Time synchronized
+15:18:40:248 Opening Firewall Port...
+15:18:43:996 Opening Firewall App...
+15:18:47:066 KMSEmulator Port: 1688
+15:18:47:069 Get Registry : SYSTEM\CurrentControlSet\Services\sppsvc:Start
+15:18:47:445 KMSEmulator running port: 1688
+15:18:48:586 Office 2010 Skipped
+15:18:48:587 Office 2013 Found: D:\Visio\Office15\
+15:18:48:589 Loading OEM Key Dumper...
+15:18:48:611 Office 2016 Found: C:\Program Files (x86)\Microsoft Office\root\Office16
+15:18:48:634 Key found on MSDM: -7H4X7
+15:18:55:050 Installing Key: -7H4X7
+15:18:56:944 Error: C004E016 InstallProductKey
+15:19:03:447 Found Windows Products: 1
+15:19:03:459 Name: Windows(R), Education edition
+Description: Windows(R) Operating System, RETAIL channel
+GracePeriodRemaining: 0
+LicenseStatus: 1
+PartialProductKey: 7CFBY
+GenuineStatus: 0
+
+15:19:03:472 Version Windows Skipped
+15:19:07:369 Found Office 2013 Products: 2
+15:19:07:370 Name: Office 15, OfficeVisioProR_Grace edition
+Description: Office 15, RETAIL(Grace) channel
+GracePeriodRemaining: 0
+LicenseStatus: 5
+PartialProductKey: 29VV8
+GenuineStatus: 1
+
+15:19:07:401 Folder Found: C:\Users\DELL\Desktop\资料\office破解\KMSpicoqd\KMSpico\KMSpico Portable\cert\kmscert2013\VisioPro
+15:19:07:494 Name: Office 15, OfficeVisioProMSDNR_Retail edition
+Description: Office 15, RETAIL channel
+GracePeriodRemaining: 0
+LicenseStatus: 5
+PartialProductKey: 7T7V3
+GenuineStatus: 1
+
+15:19:07:498 Folder Found: C:\Users\DELL\Desktop\资料\office破解\KMSpicoqd\KMSpico\KMSpico Portable\cert\kmscert2013\VisioPro
+15:19:07:501 Converting Office 2013 products: 2
+15:19:08:477 DisableKeyManagementServiceHostCaching 0
+15:19:08:523 Set Registry : SoftwareProtectionPlatform\0ff1ce15-a989-479d-af46-f275c6370663\4a5d124a-e620-44ba-b6ff-658961b33b9a:KeyManagementServiceName
+15:19:08:538 Set Registry : SoftwareProtectionPlatform\0ff1ce15-a989-479d-af46-f275c6370663\4a5d124a-e620-44ba-b6ff-658961b33b9a:KeyManagementServicePort
+15:19:08:539 Set Registry : SoftwareProtectionPlatform\0ff1ce15-a989-479d-af46-f275c6370663\b322da9c-a2e2-4058-9e4e-f59a6970bd69:KeyManagementServiceName
+15:19:08:543 Set Registry : SoftwareProtectionPlatform\0ff1ce15-a989-479d-af46-f275c6370663\b322da9c-a2e2-4058-9e4e-f59a6970bd69:KeyManagementServicePort
+15:19:08:545 Set Registry : SoftwareProtectionPlatform\0ff1ce15-a989-479d-af46-f275c6370663\e13ac10e-75d0-4aff-a0cd-764982cf541c:KeyManagementServiceName
+15:19:08:548 Set Registry : SoftwareProtectionPlatform\0ff1ce15-a989-479d-af46-f275c6370663\e13ac10e-75d0-4aff-a0cd-764982cf541c:KeyManagementServicePort
+15:19:08:555 Folder Found: C:\Users\DELL\Desktop\资料\office破解\KMSpicoqd\KMSpico\KMSpico Portable\cert\kmscert2013\VisioPro
+15:19:08:556 Converting Office 15, OfficeVisioProR_Grace edition ...
+15:19:08:683 Installing License 1 for :VisioPro
+15:19:10:379 InstallLicense 0
+15:19:10:395 Installing License 2 for :VisioPro
+15:19:15:031 InstallLicense 0
+15:19:15:059 Installing License 3 for :VisioPro
+15:19:19:775 InstallLicense 0
+15:19:19:824 Installing License 4 for :VisioPro
+15:19:25:309 InstallLicense 0
+15:19:25:344 Installing License 5 for :VisioPro
+15:19:25:354 Found Office 2016 Products: 11
+15:19:25:372 Name: Office 16, Office16PublisherVL_KMS_Client edition
+Description: Office 16, VOLUME_KMSCLIENT channel
+GracePeriodRemaining: 0
+LicenseStatus: 5
+PartialProductKey: 8K837
+GenuineStatus: 1
+
+15:19:25:399 Name: Office 16, Office16ProjectProVL_KMS_Client edition
+Description: Office 16, VOLUME_KMSCLIENT channel
+GracePeriodRemaining: 0
+LicenseStatus: 5
+PartialProductKey: G83KT
+GenuineStatus: 1
+
+15:19:25:412 Name: Office 16, Office16AccessVL_KMS_Client edition
+Description: Office 16, VOLUME_KMSCLIENT channel
+GracePeriodRemaining: 0
+LicenseStatus: 5
+PartialProductKey: QPFDW
+GenuineStatus: 1
+
+15:19:25:416 Name: Office 16, Office16VisioProVL_KMS_Client edition
+Description: Office 16, VOLUME_KMSCLIENT channel
+GracePeriodRemaining: 0
+LicenseStatus: 5
+PartialProductKey: RJRJK
+GenuineStatus: 1
+
+15:19:25:431 Name: Office 16, Office16WordVL_KMS_Client edition
+Description: Office 16, VOLUME_KMSCLIENT channel
+GracePeriodRemaining: 0
+LicenseStatus: 5
+PartialProductKey: 3PFJ6
+GenuineStatus: 1
+
+15:19:25:446 Name: Office 16, Office16ExcelVL_KMS_Client edition
+Description: Office 16, VOLUME_KMSCLIENT channel
+GracePeriodRemaining: 0
+LicenseStatus: 5
+PartialProductKey: 7FTBF
+GenuineStatus: 1
+
+15:19:25:470 Name: Office 16, Office16ProPlusVL_KMS_Client edition
+Description: Office 16, VOLUME_KMSCLIENT channel
+GracePeriodRemaining: 0
+LicenseStatus: 5
+PartialProductKey: WFG99
+GenuineStatus: 1
+
+15:19:25:476 Name: Office 16, Office16PowerPointVL_KMS_Client edition
+Description: Office 16, VOLUME_KMSCLIENT channel
+GracePeriodRemaining: 0
+LicenseStatus: 5
+PartialProductKey: BY6C6
+GenuineStatus: 1
+
+15:19:25:478 Name: Office 16, Office16OneNoteVL_KMS_Client edition
+Description: Office 16, VOLUME_KMSCLIENT channel
+GracePeriodRemaining: 0
+LicenseStatus: 5
+PartialProductKey: XW3J6
+GenuineStatus: 1
+
+15:19:25:502 Name: Office 16, Office16ProjectStdVL_KMS_Client edition
+Description: Office 16, VOLUME_KMSCLIENT channel
+GracePeriodRemaining: 0
+LicenseStatus: 5
+PartialProductKey: KQBVC
+GenuineStatus: 1
+
+15:19:25:504 Name: Office 16, Office16OutlookVL_KMS_Client edition
+Description: Office 16, VOLUME_KMSCLIENT channel
+GracePeriodRemaining: 0
+LicenseStatus: 5
+PartialProductKey: 6MT9B
+GenuineStatus: 1
+
+15:19:25:804 InstallLicense 0
+15:19:25:831 Installing License 6 for :VisioPro
+15:19:26:034 InstallLicense 0
+15:19:26:127 Installing License 7 for :VisioPro
+15:19:26:551 InstallLicense 0
+15:19:26:560 Installing .reg files
+15:19:26:652 Installing License 8 for :VisioPro
+15:19:26:686 DisableKeyManagementServiceHostCaching 0
+15:19:26:696 Set Registry : SoftwareProtectionPlatform\0ff1ce15-a989-479d-af46-f275c6370663\4f414197-0fc2-4c01-b68a-86cbb9ac254c:KeyManagementServiceName
+15:19:26:697 Set Registry : SoftwareProtectionPlatform\0ff1ce15-a989-479d-af46-f275c6370663\4f414197-0fc2-4c01-b68a-86cbb9ac254c:KeyManagementServicePort
+15:19:26:699 Set Registry : SoftwareProtectionPlatform\0ff1ce15-a989-479d-af46-f275c6370663\6bf301c1-b94a-43e9-ba31-d494598c47fb:KeyManagementServiceName
+15:19:26:701 Set Registry : SoftwareProtectionPlatform\0ff1ce15-a989-479d-af46-f275c6370663\6bf301c1-b94a-43e9-ba31-d494598c47fb:KeyManagementServicePort
+15:19:26:703 Set Registry : SoftwareProtectionPlatform\0ff1ce15-a989-479d-af46-f275c6370663\b322da9c-a2e2-4058-9e4e-f59a6970bd69:KeyManagementServiceName
+15:19:26:705 Set Registry : SoftwareProtectionPlatform\0ff1ce15-a989-479d-af46-f275c6370663\b322da9c-a2e2-4058-9e4e-f59a6970bd69:KeyManagementServicePort
+15:19:26:759 Set Registry : SoftwareProtectionPlatform\0ff1ce15-a989-479d-af46-f275c6370663\d450596f-894d-49e0-966a-fd39ed4c4c64:KeyManagementServiceName
+15:19:26:761 Set Registry : SoftwareProtectionPlatform\0ff1ce15-a989-479d-af46-f275c6370663\d450596f-894d-49e0-966a-fd39ed4c4c64:KeyManagementServicePort
+15:19:26:878 InstallLicense 0
+15:19:26:892 Installing License 9 for :VisioPro
+15:19:27:085 InstallLicense 0
+15:19:27:103 Installing License 10 for :VisioPro
+15:19:27:283 InstallLicense 0
+15:19:27:285 Installing .reg files
+15:19:30:482 Installing Key: -RM3B3
+15:19:33:518 InstallProductKey -RM3B3 0
+15:19:36:146 RefreshLicenseStatus 0
+15:19:36:761 Converting: Office 15, OfficeVisioProR_Grace edition
+15:19:36:762 UnInstalling Key
+15:19:37:321 29VV8 UninstallProductKey 0
+15:19:37:322 Folder Found: C:\Users\DELL\Desktop\资料\office破解\KMSpicoqd\KMSpico\KMSpico Portable\cert\kmscert2013\VisioPro
+15:19:37:324 Converting Office 15, OfficeVisioProMSDNR_Retail edition ...
+15:19:37:329 Installing License 1 for :VisioPro
+15:19:37:540 InstallLicense 0
+15:19:37:543 Installing License 2 for :VisioPro
+15:19:37:989 InstallLicense 0
+15:19:37:990 Installing License 3 for :VisioPro
+15:19:38:159 InstallLicense 0
+15:19:38:162 Installing License 4 for :VisioPro
+15:19:38:345 InstallLicense 0
+15:19:38:346 Installing License 5 for :VisioPro
+15:19:38:562 InstallLicense 0
+15:19:38:564 Installing License 6 for :VisioPro
+15:19:38:737 InstallLicense 0
+15:19:38:765 Installing License 7 for :VisioPro
+15:19:39:109 InstallLicense 0
+15:19:39:111 Installing .reg files
+15:19:39:115 Installing License 8 for :VisioPro
+15:19:39:324 InstallLicense 0
+15:19:39:326 Installing License 9 for :VisioPro
+15:19:39:541 InstallLicense 0
+15:19:39:542 Installing License 10 for :VisioPro
+15:19:39:780 InstallLicense 0
+15:19:39:782 Installing .reg files
+15:19:39:949 Installing Key: -RM3B3
+15:19:41:922 InstallProductKey -RM3B3 0
+15:19:43:887 RefreshLicenseStatus 0
+15:19:44:501 Converting: Office 15, OfficeVisioProMSDNR_Retail edition
+15:19:44:502 UnInstalling Key
+15:19:44:932 7T7V3 UninstallProductKey 0
+15:19:45:586 Office 2013 Found: D:\Visio\Office15\
+15:19:59:988 Found Office 2013 Products: 1
+15:19:59:989 Name: Office 15, OfficeVisioProVL_KMS_Client edition
+Description: Office 15, VOLUME_KMSCLIENT channel
+GracePeriodRemaining: 0
+LicenseStatus: 5
+PartialProductKey: RM3B3
+GenuineStatus: 1
+
+15:20:00:996 DisableKeyManagementServiceHostCaching 0
+15:20:01:009 Set Registry : SoftwareProtectionPlatform\0ff1ce15-a989-479d-af46-f275c6370663\4a5d124a-e620-44ba-b6ff-658961b33b9a:KeyManagementServiceName
+15:20:01:013 Set Registry : SoftwareProtectionPlatform\0ff1ce15-a989-479d-af46-f275c6370663\4a5d124a-e620-44ba-b6ff-658961b33b9a:KeyManagementServicePort
+15:20:01:016 Set Registry : SoftwareProtectionPlatform\0ff1ce15-a989-479d-af46-f275c6370663\b322da9c-a2e2-4058-9e4e-f59a6970bd69:KeyManagementServiceName
+15:20:01:018 Set Registry : SoftwareProtectionPlatform\0ff1ce15-a989-479d-af46-f275c6370663\b322da9c-a2e2-4058-9e4e-f59a6970bd69:KeyManagementServicePort
+15:20:01:020 Set Registry : SoftwareProtectionPlatform\0ff1ce15-a989-479d-af46-f275c6370663\e13ac10e-75d0-4aff-a0cd-764982cf541c:KeyManagementServiceName
+15:20:01:026 Set Registry : SoftwareProtectionPlatform\0ff1ce15-a989-479d-af46-f275c6370663\e13ac10e-75d0-4aff-a0cd-764982cf541c:KeyManagementServicePort
+15:20:01:999 DisableKeyManagementServiceHostCaching 0
+15:20:02:000 Set Registry : SoftwareProtectionPlatform\0ff1ce15-a989-479d-af46-f275c6370663\4a5d124a-e620-44ba-b6ff-658961b33b9a:KeyManagementServiceName
+15:20:02:000 Set Registry : SoftwareProtectionPlatform\0ff1ce15-a989-479d-af46-f275c6370663\4a5d124a-e620-44ba-b6ff-658961b33b9a:KeyManagementServicePort
+15:20:02:003 Set Registry : SoftwareProtectionPlatform\0ff1ce15-a989-479d-af46-f275c6370663\b322da9c-a2e2-4058-9e4e-f59a6970bd69:KeyManagementServiceName
+15:20:02:004 Set Registry : SoftwareProtectionPlatform\0ff1ce15-a989-479d-af46-f275c6370663\b322da9c-a2e2-4058-9e4e-f59a6970bd69:KeyManagementServicePort
+15:20:02:005 Set Registry : SoftwareProtectionPlatform\0ff1ce15-a989-479d-af46-f275c6370663\e13ac10e-75d0-4aff-a0cd-764982cf541c:KeyManagementServiceName
+15:20:02:008 Set Registry : SoftwareProtectionPlatform\0ff1ce15-a989-479d-af46-f275c6370663\e13ac10e-75d0-4aff-a0cd-764982cf541c:KeyManagementServicePort
+15:20:21:534 Connection accepted from [::ffff:127.0.0.1]:54326
+15:20:22:139 Received request: v6, AppID: 0ff1ce15-a989-479d-af46-f275c6370663, Machine: DESKTOP-PU1UFCR
+15:20:22:567 Sending response: v6, PID: 05426-00206-234-680917-03-2052-9200.0000-2792018, HwID: 268F732B3B2FE791
+15:20:22:611 Connection closed
+15:21:00:861 Activating Office 2016
+15:21:00:865 Activating Office 2013
+15:21:01:409 Connection accepted from [::ffff:127.0.0.1]:54409
+15:21:01:411 Received request: v6, AppID: 0ff1ce15-a989-479d-af46-f275c6370663, Machine: DESKTOP-PU1UFCR
+15:21:01:414 Sending response: v6, PID: 06401-00206-234-374327-03-2052-9600.0000-0652018, HwID: 3E99350509A3D1C7
+15:21:01:415 Connection closed
+15:21:04:580 Office 15, OfficeVisioProVL_KMS_Client edition Activated 0
+15:21:04:587 Set Registry : HKEY_USERS\S-1-5-20\SoftwareProtectionPlatform\0ff1ce15-a989-479d-af46-f275c6370663\e13ac10e-75d0-4aff-a0cd-764982cf541c:DiscoveredKeyManagementServiceIpAddress
+15:21:04:599 SetKeyManagementServiceMachine: 0: 10.191.51.45
+15:21:07:642 ClearKeyManagementServiceMachine 0
+15:21:08:083 Connection accepted from [::ffff:127.0.0.1]:54422
+15:21:08:084 Received request: v6, AppID: 0ff1ce15-a989-479d-af46-f275c6370663, Machine: DESKTOP-PU1UFCR
+15:21:08:086 Sending response: v6, PID: 05426-00206-234-029783-03-2052-9200.0000-3272016, HwID: B488F95694A7351E
+15:21:08:087 Connection closed
+15:21:10:277 Office 16, Office16PublisherVL_KMS_Client edition Activated 0
+15:21:10:281 Set Registry : HKEY_USERS\S-1-5-20\SoftwareProtectionPlatform\0ff1ce15-a989-479d-af46-f275c6370663\041a06cb-c5b8-4772-809f-416d03d16654:DiscoveredKeyManagementServiceIpAddress
+15:21:10:289 ClearKeyManagementServicePort 0
+15:21:11:267 SetKeyManagementServiceMachine: 0: 10.191.51.45
+15:21:11:284 SetKeyManagementServicePort: 0: 1688
+15:21:14:498 Connection accepted from [::ffff:127.0.0.1]:54438
+15:21:14:499 Received request: v6, AppID: 0ff1ce15-a989-479d-af46-f275c6370663, Machine: DESKTOP-PU1UFCR
+15:21:14:500 Sending response: v6, PID: 55041-00206-234-359509-03-2052-7601.0000-0402015, HwID: 633BF8DB59347901
+15:21:14:502 Connection closed
+15:21:16:787 Office 16, Office16ProjectProVL_KMS_Client edition Activated 0
+15:21:16:788 Set Registry : HKEY_USERS\S-1-5-20\SoftwareProtectionPlatform\0ff1ce15-a989-479d-af46-f275c6370663\4f414197-0fc2-4c01-b68a-86cbb9ac254c:DiscoveredKeyManagementServiceIpAddress
+15:21:17:672 SetKeyManagementServiceMachine: 0: 10.191.51.45
+15:21:20:846 Connection accepted from [::ffff:127.0.0.1]:54451
+15:21:20:847 Received request: v6, AppID: 0ff1ce15-a989-479d-af46-f275c6370663, Machine: DESKTOP-PU1UFCR
+15:21:20:849 Sending response: v6, PID: 55041-00206-234-721015-03-2052-7601.0000-1012016, HwID: FBABA8E0148AE453
+15:21:20:850 Connection closed
+15:21:23:047 Office 16, Office16AccessVL_KMS_Client edition Activated 0
+15:21:23:050 Set Registry : HKEY_USERS\S-1-5-20\SoftwareProtectionPlatform\0ff1ce15-a989-479d-af46-f275c6370663\67c0fc0c-deba-401b-bf8b-9c8ad8395804:DiscoveredKeyManagementServiceIpAddress
+15:21:24:056 SetKeyManagementServiceMachine: 0: 10.191.51.45
+15:21:24:086 SetKeyManagementServicePort: 0: 1688
+15:21:27:174 Received request: v6, AppID: 0ff1ce15-a989-479d-af46-f275c6370663, Machine: DESKTOP-PU1UFCR
+15:21:27:175 Connection accepted from [::ffff:127.0.0.1]:54464
+15:21:27:179 Sending response: v6, PID: 55041-00206-234-574472-03-2052-7601.0000-0322020, HwID: 3FE7D8B976B23714
+15:21:27:180 Connection closed
+15:21:29:782 Office 16, Office16VisioProVL_KMS_Client edition Activated 0
+15:21:29:787 Set Registry : HKEY_USERS\S-1-5-20\SoftwareProtectionPlatform\0ff1ce15-a989-479d-af46-f275c6370663\6bf301c1-b94a-43e9-ba31-d494598c47fb:DiscoveredKeyManagementServiceIpAddress
+15:21:30:777 SetKeyManagementServiceMachine: 0: 10.191.51.45
+15:21:33:998 Connection accepted from [::ffff:127.0.0.1]:54478
+15:21:33:999 Received request: v6, AppID: 0ff1ce15-a989-479d-af46-f275c6370663, Machine: DESKTOP-PU1UFCR
+15:21:34:000 Sending response: v6, PID: 06401-00206-234-859102-03-2052-9600.0000-3482016, HwID: BDBCC02E585E7AD3
+15:21:34:002 Connection closed
+15:21:36:176 Office 16, Office16WordVL_KMS_Client edition Activated 0
+15:21:36:178 Set Registry : HKEY_USERS\S-1-5-20\SoftwareProtectionPlatform\0ff1ce15-a989-479d-af46-f275c6370663\bb11badf-d8aa-470e-9311-20eaf80fe5cc:DiscoveredKeyManagementServiceIpAddress
+15:21:37:127 SetKeyManagementServiceMachine: 0: 10.191.51.45
+15:21:40:344 Connection accepted from [::ffff:127.0.0.1]:54493
+15:21:40:345 Received request: v6, AppID: 0ff1ce15-a989-479d-af46-f275c6370663, Machine: DESKTOP-PU1UFCR
+15:21:40:346 Sending response: v6, PID: 06401-00206-234-335163-03-2052-9600.0000-0512019, HwID: EB0D15F40A9431C1
+15:21:40:348 Connection closed
+15:21:42:532 Office 16, Office16ExcelVL_KMS_Client edition Activated 0
+15:21:42:533 Set Registry : HKEY_USERS\S-1-5-20\SoftwareProtectionPlatform\0ff1ce15-a989-479d-af46-f275c6370663\c3e65d36-141f-4d2f-a303-a842ee756a29:DiscoveredKeyManagementServiceIpAddress
+15:21:43:718 SetKeyManagementServiceMachine: 0: 10.191.51.45
+15:21:46:904 Connection accepted from [::ffff:127.0.0.1]:54507
+15:21:46:905 Received request: v6, AppID: 0ff1ce15-a989-479d-af46-f275c6370663, Machine: DESKTOP-PU1UFCR
+15:21:46:907 Sending response: v6, PID: 05426-00206-234-422865-03-2052-9200.0000-0612013, HwID: D5066A98FF19EFCE
+15:21:46:928 Connection closed
+15:21:49:127 Office 16, Office16ProPlusVL_KMS_Client edition Activated 0
+15:21:49:128 Set Registry : HKEY_USERS\S-1-5-20\SoftwareProtectionPlatform\0ff1ce15-a989-479d-af46-f275c6370663\d450596f-894d-49e0-966a-fd39ed4c4c64:DiscoveredKeyManagementServiceIpAddress
+15:21:50:135 SetKeyManagementServiceMachine: 0: 10.191.51.45
+15:21:53:526 Connection accepted from [::ffff:127.0.0.1]:54520
+15:21:53:527 Received request: v6, AppID: 0ff1ce15-a989-479d-af46-f275c6370663, Machine: DESKTOP-PU1UFCR
+15:21:53:528 Sending response: v6, PID: 55041-00206-234-983374-03-2052-7601.0000-2372017, HwID: 437B798A151CEADA
+15:21:53:530 Connection closed
+15:21:55:915 Office 16, Office16PowerPointVL_KMS_Client edition Activated 0
+15:21:55:917 Set Registry : HKEY_USERS\S-1-5-20\SoftwareProtectionPlatform\0ff1ce15-a989-479d-af46-f275c6370663\d70b1bba-b893-4544-96e2-b7a318091c33:DiscoveredKeyManagementServiceIpAddress
+15:21:57:135 SetKeyManagementServiceMachine: 0: 10.191.51.45
+15:22:00:305 Connection accepted from [::ffff:127.0.0.1]:54536
+15:22:00:305 Received request: v6, AppID: 0ff1ce15-a989-479d-af46-f275c6370663, Machine: DESKTOP-PU1UFCR
+15:22:00:308 Sending response: v6, PID: 06401-00206-234-692075-03-2052-9600.0000-2382018, HwID: 293C4DC88FA20CFB
+15:22:00:309 Connection closed
+15:22:02:528 Office 16, Office16OneNoteVL_KMS_Client edition Activated 0
+15:22:02:530 Set Registry : HKEY_USERS\S-1-5-20\SoftwareProtectionPlatform\0ff1ce15-a989-479d-af46-f275c6370663\d8cace59-33d2-4ac7-9b1b-9b72339c51c8:DiscoveredKeyManagementServiceIpAddress
+15:22:03:498 SetKeyManagementServiceMachine: 0: 10.191.51.45
+15:22:06:686 Connection accepted from [::ffff:127.0.0.1]:54550
+15:22:06:689 Received request: v6, AppID: 0ff1ce15-a989-479d-af46-f275c6370663, Machine: DESKTOP-PU1UFCR
+15:22:06:691 Sending response: v6, PID: 55041-00206-234-988787-03-2052-7601.0000-2772019, HwID: 721113FB60EA0D8B
+15:22:06:693 Connection closed
+15:22:08:865 Office 16, Office16ProjectStdVL_KMS_Client edition Activated 0
+15:22:08:867 Set Registry : HKEY_USERS\S-1-5-20\SoftwareProtectionPlatform\0ff1ce15-a989-479d-af46-f275c6370663\da7ddabc-3fbe-4447-9e01-6ab7440b4cd4:DiscoveredKeyManagementServiceIpAddress
+15:22:09:794 SetKeyManagementServiceMachine: 0: 10.191.51.45
+15:22:13:039 Connection accepted from [::ffff:127.0.0.1]:54562
+15:22:13:041 Received request: v6, AppID: 0ff1ce15-a989-479d-af46-f275c6370663, Machine: DESKTOP-PU1UFCR
+15:22:13:043 Sending response: v6, PID: 05426-00206-234-849421-03-2052-9200.0000-0522019, HwID: 1BA0B21B76C620A3
+15:22:13:044 Connection closed
+15:22:15:210 Office 16, Office16OutlookVL_KMS_Client edition Activated 0
+15:22:15:211 Set Registry : HKEY_USERS\S-1-5-20\SoftwareProtectionPlatform\0ff1ce15-a989-479d-af46-f275c6370663\ec9d9265-9d1e-4ed0-838a-cdc20f2551a1:DiscoveredKeyManagementServiceIpAddress
+15:22:15:343 Set Registry : SoftwareProtectionPlatform\0ff1ce15-a989-479d-af46-f275c6370663\4f414197-0fc2-4c01-b68a-86cbb9ac254c:KeyManagementServiceName
+15:22:15:344 Set Registry : SoftwareProtectionPlatform\0ff1ce15-a989-479d-af46-f275c6370663\4f414197-0fc2-4c01-b68a-86cbb9ac254c:KeyManagementServicePort
+15:22:15:346 Set Registry : SoftwareProtectionPlatform\0ff1ce15-a989-479d-af46-f275c6370663\6bf301c1-b94a-43e9-ba31-d494598c47fb:KeyManagementServiceName
+15:22:15:349 Set Registry : SoftwareProtectionPlatform\0ff1ce15-a989-479d-af46-f275c6370663\6bf301c1-b94a-43e9-ba31-d494598c47fb:KeyManagementServicePort
+15:22:15:350 Set Registry : SoftwareProtectionPlatform\0ff1ce15-a989-479d-af46-f275c6370663\b322da9c-a2e2-4058-9e4e-f59a6970bd69:KeyManagementServiceName
+15:22:15:353 Set Registry : SoftwareProtectionPlatform\0ff1ce15-a989-479d-af46-f275c6370663\b322da9c-a2e2-4058-9e4e-f59a6970bd69:KeyManagementServicePort
+15:22:15:355 Set Registry : SoftwareProtectionPlatform\0ff1ce15-a989-479d-af46-f275c6370663\d450596f-894d-49e0-966a-fd39ed4c4c64:KeyManagementServiceName
+15:22:15:365 Set Registry : SoftwareProtectionPlatform\0ff1ce15-a989-479d-af46-f275c6370663\d450596f-894d-49e0-966a-fd39ed4c4c64:KeyManagementServicePort
+15:22:15:367 Set Registry : SoftwareProtectionPlatform\0ff1ce15-a989-479d-af46-f275c6370663\4a5d124a-e620-44ba-b6ff-658961b33b9a:KeyManagementServiceName
+15:22:15:369 Set Registry : SoftwareProtectionPlatform\0ff1ce15-a989-479d-af46-f275c6370663\4a5d124a-e620-44ba-b6ff-658961b33b9a:KeyManagementServicePort
+15:22:15:370 Set Registry : SoftwareProtectionPlatform\0ff1ce15-a989-479d-af46-f275c6370663\b322da9c-a2e2-4058-9e4e-f59a6970bd69:KeyManagementServiceName
+15:22:15:372 Set Registry : SoftwareProtectionPlatform\0ff1ce15-a989-479d-af46-f275c6370663\b322da9c-a2e2-4058-9e4e-f59a6970bd69:KeyManagementServicePort
+15:22:15:373 Set Registry : SoftwareProtectionPlatform\0ff1ce15-a989-479d-af46-f275c6370663\e13ac10e-75d0-4aff-a0cd-764982cf541c:KeyManagementServiceName
+15:22:15:375 Set Registry : SoftwareProtectionPlatform\0ff1ce15-a989-479d-af46-f275c6370663\e13ac10e-75d0-4aff-a0cd-764982cf541c:KeyManagementServicePort
+15:22:15:410 ClearKeyManagementServiceMachine 0
+15:22:15:436 ClearKeyManagementServicePort 0
+15:22:15:444 Closing Firewall Port...
+15:22:15:765 Closing Firewall App...
+15:22:16:092 Set Registry : HKEY_CURRENT_USER\Control Panel\Desktop:PaintDesktopVersion
+15:22:18:486 Unloading SECOH-QAD...
+15:22:18:523 Del Registry : SOFTWARE\Microsoft\Windows NT\CurrentVersion\Image File Execution Options\SppExtComObj.exe:
+15:22:18:642 Client listener shut down
+15:22:18:654 Killing: SECOH-QAD
+15:22:18:673 Time Finish: 2020/4/16 15:22:18
+15:22:18:676 Total Time: 231 seconds

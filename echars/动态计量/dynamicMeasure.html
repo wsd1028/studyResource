@@ -1,0 +1,405 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <link rel="stylesheet" href="./css/element.css" />
+    <link rel="stylesheet" href="./css/iconfont/iconfont.css" />
+    <link rel="stylesheet" href="./css/dynamicMeasure.min.css" />
+    <title>动态计量</title>
+</head>
+
+<body>
+    <div id="main" class="dynamicMeasure">
+        <el-row :gutter="20" type="flex">
+            <el-col :span="12">
+                <el-col :span="12">
+                    <div class="allCustomer radius">
+                        <div class="top">
+                            <i class="iconfont icon-renqun1 myIcon violet" style="color:#fff"></i>
+                            <div class="msg">
+                                <h4 class="text">动态计量客户总数<span class="count">24家</span></h4>
+                            </div>
+                        </div>
+                        <p class="text mt">ISP客户数：20 非ISP客户数：4</p>
+                    </div>
+                </el-col>
+                <el-col :span="12" style="padding-right: 0;">
+                    <div class="allCustomer radius">
+                        <div class="top">
+                            <i class="iconfont icon-wenjiansousuo myIcon red" style="color:#fff"></i>
+                            <div class="msg">
+                                <h4 class="text">提取完成客户数量
+                                    <span class="count">10家</span>
+                                </h4>
+                            </div>
+                        </div>
+                        <p class="text mt">总耗时：0小时 平均耗时：2小时</p>
+                    </div>
+                </el-col>
+                <el-col :span="24" style="margin-top: 20px;padding-right: 0;">
+                    <div class="allCustomer radius">
+                        <div class="top">
+                            <i class="iconfont icon-daochu myIcon blue" style="color:#fff"></i>
+                            <div class="msg">
+                                <h4 class="text">结算书完成客户数<span class="count">10家</span></h4>
+                            </div>
+                        </div>
+                        <p class="text mt">总耗时：0小时 平均耗时：2小时</p>
+                    </div>
+                </el-col>
+            </el-col>
+            <el-col :span="6">
+                <div id="customer" class="radius"></div>
+            </el-col>
+            <el-col :span="6">
+                <div style="position: relative;height: 100%;">
+                    <el-date-picker format="yyyyMM" v-model="date" type="month" class="month" placeholder="选择月">
+                    </el-date-picker>
+                    <div id="customerManager" class="radius"></div>
+                </div>
+
+            </el-col>
+        </el-row>
+        <el-row :gutter="40" type="flex" class="saearchDiv">
+            <el-col :span="24" class="search radius">
+                <el-col :span="6">
+                    <el-select class="searchItem" clearable v-model="selectValue1" placeholder="提取完成">
+                        <el-option v-for="item in options" :key="item.value" :label="item.label" :value="item.value">
+                        </el-option>
+                    </el-select>
+                </el-col>
+                <el-col :span="6">
+                    <el-select class="searchItem" clearable v-model="selectValue2" placeholder="动态计量流程完成">
+                        <el-option v-for="item in options" :key="item.value" :label="item.label" :value="item.value">
+                        </el-option>
+                    </el-select>
+                </el-col>
+                <el-col :span="6">
+                    <el-input placeholder="请输入客户名称" v-model="searchValue" class="input-with-select">
+                        <el-button slot="append" icon="el-icon-search"></el-button>
+                    </el-input>
+                </el-col>
+                <el-col :span="6">
+                    <el-select class="searchItem" clearable v-model="selectValue3" placeholder="客户经理">
+                        <el-option v-for="item in options" :key="item.value" :label="item.label" :value="item.value">
+                        </el-option>
+                    </el-select>
+                </el-col>
+            </el-col>
+        </el-row>
+        <div class="performances">
+            <div class="performanceItem">
+                <el-row :gutter="40" type="flex" style="padding-left: 10px;">
+                    <el-col :span="24">
+                        <div class="performance radius" style="width: 100%;">
+                            <h3 class="performanceName" style="width: 20%;text-align: center;">网宿科技 动态计量完成情况</h3>
+                            <div class="right" style="width: 80%;">
+                                <div class="time">
+                                    <el-progress :text-inside="true" :stroke-width="26" :percentage="70"
+                                        style="width: 70%;margin-right: 40px;">
+                                    </el-progress>
+                                    <span class="count">当前总耗时：3小时26分钟48秒</span>
+                                </div>
+                                <div class="top">
+                                    <div class="item">
+                                        <span class="chooseLabel">预效验</span>
+                                        <el-radio-group v-model="radio1" size="small">
+                                            <el-radio-button label="通过">通过</el-radio-button>
+                                            <el-radio-button label="未通过">未通过</el-radio-button>
+                                        </el-radio-group>
+                                        <span class="chooseLabel" style="margin-left:20px">耗时：3小时</span>
+
+                                    </div>
+                                    <div class="item">
+                                        <span class="chooseLabel">资源用量核对</span>
+                                        <el-radio-group v-model="radio2" size="small">
+                                            <el-radio-button label="通过">通过</el-radio-button>
+                                            <el-radio-button label="未通过">未通过</el-radio-button>
+                                        </el-radio-group>
+                                        <span class="chooseLabel" style="margin-left:20px">耗时：3小时</span>
+                                    </div>
+                                    <div class="item">
+                                        <span class="chooseLabel">结算书生成</span>
+                                        <el-radio-group v-model="radio3" size="small">
+                                            <el-radio-button label="通过">通过</el-radio-button>
+                                            <el-radio-button label="未通过">未通过</el-radio-button>
+                                        </el-radio-group>
+                                        <span class="chooseLabel" style="margin-left:20px">耗时：3小时</span>
+
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </el-col>
+                </el-row>
+                <el-row :gutter="20" type="flex" class="performanceMsg">
+                    <el-col :span="8" class="performanceMsgItem">
+                        <div class="item radius">
+                            <div class="header">
+                                <h4 class="text">问题区域</h4>
+                                <p>
+                                    <span class="text">问题数：</span>
+                                    <span class="text" style="font-size: 18px;">76</span>
+                                </p>
+                            </div>
+                            <div class="content">
+                                <div class="item">
+                                    <div class="left">
+                                        <div class="button blue">机架</div>
+                                        <p class="text">问题:1条</p>
+                                    </div>
+                                </div>
+                                <div class="item">
+                                    <div class="left">
+                                        <div class="button green">端口</div>
+                                        <p class="text">问题:1条</p>
+                                    </div>
+                                </div>
+                                <div class="item">
+                                    <div class="left">
+                                        <div class="button red">流量</div>
+                                        <p class="text">问题:1条</p>
+                                    </div>
+                                </div>
+                                <div class="item">
+                                    <div class="left">
+                                        <div class="button gary"><span class="text">其它</span></div>
+                                        <p class="text">问题:1条</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                    </el-col>
+                    <el-col :span="10" class="performanceMsgItem">
+                        <div class="item radius">
+                            <div class="header">
+                                <h4 class="text">客户资源分布</h4>
+                            </div>
+                            <div class="content">
+                                <div class="item">
+                                    <div class="left">
+                                        <div class="text">光华机房：</div>
+                                        <p class="text">机架3个,端口26个,IP256个,提取流量2365M</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </el-col>
+                    <el-col :span="6" class="performanceMsgItem">
+                        <div class="item radius">
+                            <div class="header">
+                                <h4 class="text">结果下载</h4>
+                            </div>
+                            <div class="content">
+                                <div class="item">
+                                    <div class="left">
+                                        <div class="text">结算书下载</div>
+                                    </div>
+                                    <div class="button2 blue radius">点击下载</div>
+                                </div>
+                                <div class="item">
+                                    <div class="left">
+                                        <div class="text">合并流量下载</div>
+                                    </div>
+                                    <div class="button2 blue radius">点击下载</div>
+                                </div>
+                                <div class="item">
+                                    <div class="left">
+                                        <div class="text">分端口流量下载</div>
+                                    </div>
+                                    <div class="button2 blue radius">点击下载</div>
+                                </div>
+                            </div>
+                        </div>
+                    </el-col>
+
+                </el-row>
+            </div>
+            <el-pagination class="pagination radius" align="right" @size-change="handleSizeChange"
+                @current-change="handleIndexChange" :current-page="pageIndex" :page-sizes="[5, 10, 15, 20]"
+                :page-size="pageSize" layout="total, sizes, prev, pager, next, jumper" :total="dataCount">
+            </el-pagination>
+        </div>
+        </el-row>
+    </div>
+    <script src="./js/es6-shim.min.js"></script>
+    <script src="./js/vue.js"></script>
+    <script src="./js/element.js"></script>
+    <script src="./js/echarts/dist/echarts.min.js"></script>
+    <script>
+        let that = this;
+        var v = new Vue({
+            el: "#main",
+            data: {
+                //chart
+                customer: null,
+                date: "",
+                customerManager: null,
+                //单选框
+                radio1: "通过",
+                radio2: "通过",
+                radio3: "通过",
+                //搜索
+                options: [{
+                    value: 'true',
+                    label: '完成'
+                }, {
+                    value: 'false',
+                    label: '未完成'
+                }, {
+                    value: 'all',
+                    label: '全部'
+                },],
+                selectValue1: "",
+                selectValue2: "",
+                selectValue3: "",
+                searchValue: "",
+                //分页
+                pageIndex: 0,
+                pageSize: 10,
+                dataCount: 80,
+            },
+            methods: {
+                //分页
+                handleSizeChange: function (pageSize) { },
+                handleIndexChange: function (pageIndex) { },
+                //chart
+                gaugeCharts: function (id, min, max, color, content, use, name, tittle) {
+                    // let { id, min, max, color, content, use, name, tittle } = obj;
+                    this[id] = echarts.init(document.getElementById(id));
+                    let data = [
+                        {
+                            use: 50,
+                            all: 100,
+                            name: "湘潭",
+                            Id: 5
+                        }
+                    ];
+                    let all = max;
+                    let option = {
+                        title: {
+                            text: tittle,
+                            left: 20,
+                            top: 20,
+                            textStyle: {
+                                fontSize: "14",
+                                fontWeight: "normal",
+                                color: "#999999"
+                            }
+                        },
+
+                        series: {
+                            title: {
+                                textStyle: {
+                                    color: "black"
+                                },
+                                fontSize: 24,
+                                offsetCenter: [0, "10%"]
+                            },
+                            type: "gauge",
+                            splitNumber: 1, //刻度数量
+                            min: min,
+                            max: max,
+                            padding: 0,
+                            center: ["50%", "60%"],
+                            radius: "80%",
+                            detail: {
+                                offsetCenter: [0, "8%"],
+                                formatter: content + "\n\n{value|{value}}{unit|%}",
+                                textStyle: {
+                                    fontSize: 16,
+                                    color: "#666666"
+                                },
+                                rich: {
+                                    value: {
+                                        fontSize: 28,
+                                        color: "#12A87F"
+                                    },
+                                    unit: {
+                                        fontSize: 14,
+                                        color: "#666666"
+                                    }
+                                }
+                            },
+                            axisLine: {
+                                show: false,
+                                lineStyle: {
+                                    // 属性lineStyle控制线条样式
+                                    color: [[use / all, color], [1, "#ECF0F5"]],
+                                    width: 12
+                                }
+                            },
+                            axisTick: {
+                                show: false,
+                                lineStyle: {
+                                    color: "#ddd",
+                                    width: 1
+                                },
+                                length: -2,
+                                splitNumber: 3
+                            },
+                            pointer: {
+                                show: false
+                            },
+                            splitLine: {
+                                show: false,
+                                length: 12,
+                                lineStyle: {
+                                    color: "red"
+                                }
+                            },
+                            axisLabel: {
+                                distance: -40,
+                                textStyle: {
+                                    color: "#999999",
+                                    fontSize: "14"
+                                }
+                            },
+                            data: [
+                                {
+                                    value: (use / all) * 100
+                                }
+                            ]
+                        }
+                    };
+                    
+                    this[id].setOption(option, true);
+                }
+            },
+            mounted: function () {
+                that = this;
+                this.gaugeCharts(
+                    "customer",
+                    0,
+                    5000,
+                    "#12A87F",
+                    "占全省",
+                    1100,
+                    "",
+                    "提取完成客户占比"
+                );
+                this.gaugeCharts(
+                    "customerManager",
+                    0,
+                    100,
+                    "#12A87F",
+                    "已完成",
+                    10,
+                    "",
+                    "结算书完成客户占比"
+                );
+
+                window.addEventListener("resize", function () {
+                    that.customer.resize();
+                    that.customerManager.resize();
+                });
+            }
+        });
+    </script>
+</body>
+
+</html>

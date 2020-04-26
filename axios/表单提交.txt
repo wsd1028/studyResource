@@ -1,4 +1,4 @@
-  var fd = new FormData();
+ 1. var fd = new FormData();
             fd.append("group_ids", data);
             let url =
               "/v5/NewHome/DataProvider.aspx?m=SaveGroupInfoIndexPermission";
@@ -10,3 +10,32 @@
               that.getLimitData();
               that.mainLoading = false;
             });
+
+2.axios转换    import qs from "qs";
+
+Axios.post(
+      "/BigScreen/BS/UpdateConfig",
+      // 2、将请求数据转换为form-data格式
+      qs.stringify({
+        name: "BS_DATAINFO",
+        config: JSON.stringify(this.mainData)
+      }),
+      // 3、设置请求头Content-Type
+      { headers: { "Content-Type": "application/x-www-form-urlencoded" } }
+    )
+      .then(res => {
+        this.getMainData();
+        this.$message({
+          type: "success",
+          showClose: true,
+          message: "操作成功"
+        });
+      })
+      .catch(error => {
+        this.mainLoading = false;
+        this.$message({
+          type: "info",
+          showClose: true,
+          message: "操作失败"
+        });
+      });

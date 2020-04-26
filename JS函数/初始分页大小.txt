@@ -1,0 +1,7 @@
+function getPageSize(height = 50) {
+          let pageSize = parseInt(screen.height / 50 / 5) * 5;
+          localStorage.setItem("pageSize", pageSize);
+}
+
+
+          console.log('', localStorage.getItem("pageSize"));

@@ -1,0 +1,648 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link rel="stylesheet" href="./css/element.css">
+    <link rel="stylesheet" href="./css/iconfont/iconfont.css">
+    <title>折线图</title>
+    <style>
+        #main {
+            display: flex;
+            flex-wrap: wrap;
+        }
+
+        .item {
+            flex-shrink: 0;
+            width: 500px;
+            height: 300px;
+            border: 1px solid #ccc;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="main">
+        <div id="line1" class="item"></div>
+        <div id="line2" class="item"></div>
+        <div id="line3" class="item"></div>
+        <div id="line4" class="item"></div>
+    </div>
+    <script src="./js/es6-shim.min.js"></script>
+    <script src="./js/vue.js"></script>
+    <script src="./js/element.js"></script>
+    <script src="./js/echarts/dist/echarts.min.js"></script>
+    <script src="./data/lineData.js"></script>
+
+    <script>
+        let {
+            time,
+            fluxIn,
+            fluxOut
+        } = lineData;
+        var v = new Vue({
+            el: "#main",
+            data: {},
+            methods: {
+                drawLine1: function () {
+                    var myChart = echarts.init(document.getElementById("line1"));
+                    let option = {
+                        backgroundColor: "rgb(10,78,180)",
+                        tooltip: {},
+                        grid: {
+                            top: "8%",
+                            left: "1%",
+                            bottom: "8%",
+                            containLabel: true
+                        },
+                        xAxis: [{
+                            type: "category",
+                            boundaryGap: false,
+                            data: ["14", "15", "16", "17", "18", "19"],
+                            axisLabel: {
+                                margin: 10,
+                                color: "#fff",
+                                fontSize: 14
+                            },
+                            axisLine: {
+                                show: false
+                            },
+                            axisTick: {
+                                show: true,
+                                length: 0,
+                                lineStyle: {
+                                    color: "#ffffff1f"
+                                }
+                            },
+                            splitLine: {
+                                show: true,
+                                lineStyle: {
+                                    color: "#ffffff1f"
+                                }
+                            }
+                        }],
+                        yAxis: [{
+                            type: "value",
+                            splitNumber: 7,
+                            splitLine: {
+                                show: false,
+                                lineStyle: {
+                                    color: "red"
+                                }
+                            },
+                            axisLine: {
+                                show: false
+                            },
+                            axisLabel: {
+                                margin: 20,
+                                textStyle: {
+                                    color: "#fff",
+                                    fontSize: 14
+                                }
+                            },
+                            axisTick: {
+                                show: false
+                            }
+                        }],
+                        series: [{
+                            name: "异常流量",
+                            type: "line",
+                            smooth: true, //是否平滑曲线显示
+                            symbol: "circle", // 默认是空心圆（中间是白色的），改成实心圆
+                            symbolSize: 6,
+                            itemStyle: {
+                                normal: {
+                                    color: "#12A87F",
+                                    label: {
+                                        show: false,
+                                        position: "top",
+                                        textStyle: {
+                                            fontSize: "8"
+                                        }
+                                    }
+                                }
+                            },
+                            lineStyle: {
+                                normal: {
+                                    color: "#12A87F" // 线条颜色
+                                }
+                            },
+                            areaStyle: {
+                                //区域填充样式
+                                normal: {
+                                    //线性渐变，前4个参数分别是x0,y0,x2,y2(范围0~1);相当于图形包围盒中的百分比。如果最后一个参数是‘true’，则该四个值是绝对像素位置。
+                                    color: new echarts.graphic.LinearGradient(
+                                        0,
+                                        0,
+                                        0,
+                                        1,
+                                        [{
+                                                offset: 0,
+                                                color: "rgba(18,168,127,0.5)"
+                                            },
+                                            {
+                                                offset: 1,
+                                                color: "rgba(18,168,127,0)"
+                                            }
+                                        ],
+                                        false
+                                    )
+                                }
+                            },
+                            data: [90, 105, 84, 15, 110, 92]
+                        }]
+                    };
+                    myChart.setOption(option, true);
+                },
+                drawLine2: function () {
+                    var myChart = echarts.init(document.getElementById("line2"));
+                    let option = {
+                        backgroundColor: "rgb(10,78,180)",
+                        title: {
+                            text: "名称",
+                            textStyle: {
+                                fontSize: 16,
+                                color: "#fff"
+                            },
+                            x: "left",
+                            y: "top",
+                            subtext: "单位(G)",
+                            subtextStyle: {
+                                color: "#ddd",
+                                fontSize: "12"
+                            }
+                        },
+                        tooltip: {
+                            trigger: "axis",
+                            axisPointer: {
+                                type: "cross",
+                                label: {
+                                    backgroundColor: "#6a7985"
+                                }
+                            }
+                        },
+                        legend: {
+                            right: 0,
+                            icon: "rect",
+                            itemWidth: 23,
+                            itemHeight: 13,
+                            barBorderRadius: 3,
+                            itemGap: 10,
+                            data: ["流入流量", "流出流量"],
+                            textStyle: {
+                                color: "white",
+                                barBorderRadius: "3"
+                            }
+                        },
+                        color: ["#0ca87d", "#1c9aee"],
+                        toolbox: {
+                            feature: {}
+                        },
+                        grid: {
+                            left: "3%",
+                            right: "4%",
+                            bottom: "10%",
+                            containLabel: true
+                        },
+                        xAxis: [{
+                            type: "category",
+                            boundaryGap: false,
+                            data: time,
+                            axisLine: {
+                                lineStyle: {
+                                    color: "#fff"
+                                }
+                            },
+                            axisLabel: {
+                                textStyle: {
+                                    color: "#fff"
+                                }
+                            }
+                        }],
+                        yAxis: [{
+                            type: "value",
+                            axisLine: {
+                                lineStyle: {
+                                    color: "#fff",
+                                    zIndex: 100
+                                }
+                            },
+                            axisLabel: {
+                                textStyle: {
+                                    color: "#fff"
+                                }
+                            }
+                        }],
+                        series: [{
+                                name: "流入流量",
+                                type: "line",
+                                // stack: "总量",
+                                areaStyle: {
+                                    normal: {
+                                        opacity: "0.9",
+                                        color: "#0ca87d"
+                                    }
+                                },
+                                data: fluxIn,
+                                lineStyle: {
+                                    normal: {
+                                        color: "#03e2e2",
+                                        width: 2,
+                                        opacity: "1"
+                                    }
+                                }
+                            },
+                            {
+                                name: "流出流量",
+                                type: "line",
+                                areaStyle: {
+                                    normal: {
+                                        opacity: "0.9",
+                                        color: "#1c9aee"
+                                    }
+                                },
+                                data: fluxOut,
+                                lineStyle: {
+                                    normal: {
+                                        color: "blue",
+                                        width: 2,
+                                        opacity: "1"
+                                    }
+                                }
+                            }
+                        ]
+                    };
+                    myChart.setOption(option, true);
+                },
+                drawLine3: function () {
+                    var myChart = echarts.init(document.getElementById("line3"));
+                    let option = {
+                        backgroundColor: "rgb(10,78,180)",
+                        // 鼠标滑过阴影
+                        axisPointer: {
+                            type: "shadow"
+                        },
+                        title: {
+                            text: "全省出口流量",
+                            textStyle: {
+                                fontSize: 16,
+                                color: "#fff"
+                            },
+                            x: "left",
+                            y: "top",
+                            subtextStyle: {
+                                color: "#ddd",
+                                fontSize: "12"
+                            }
+                        },
+                        tooltip: {
+                            trigger: "axis",
+                            axisPointer: {
+                                type: "none"
+                            },
+                            showContent: false,
+                        },
+                        legend: {
+                            top: 0,
+                            itemWidth: 23,
+                            itemHeight: 13,
+                            itemGap: 10,
+                            data: [
+                                "流入流量(G)",
+                                "流出流量(G)",
+                            ],
+                            textStyle: {
+                                color: "white"
+                            }
+                        },
+                        color: [
+                            "#12A87F",
+                            "#2196F3",
+                            "#F154B1",
+                            "#ffffff",
+                            "#1f8ae6",
+                            "#12a87f"
+                        ],
+                        toolbox: {
+                            feature: {}
+                        },
+                        grid: {
+                            left: "3%",
+                            right: "4%",
+                            bottom: "3%",
+                            containLabel: true
+                        },
+                        xAxis: [{
+                            splitLine: {
+                                show: false
+                            }, //去除网格线
+
+                            type: "category",
+                            data: time,
+                            axisLine: {
+                                lineStyle: {
+                                    color: "#fff"
+                                }
+                            },
+                            axisLabel: {
+                                textStyle: {
+                                    color: "#fff"
+                                }
+                            }
+                        }],
+                        yAxis: [{
+                            name: "单位(G)",
+                            splitLine: {
+                                show: false
+                            }, //去除网格线
+                            type: "value",
+                            axisLine: {
+                                lineStyle: {
+                                    color: "#fff",
+                                    zIndex: 100
+                                }
+                            },
+                            axisLabel: {
+                                textStyle: {
+                                    color: "#fff"
+                                }
+                            }
+                        }],
+                        series: [{
+                                name: "流出流量(G)",
+                                type: "line",
+                                data: fluxOut,
+                                lineStyle: {
+                                    normal: {
+                                        color: "#12A87F",
+                                        width: 2,
+                                        opacity: "1"
+                                    }
+                                }
+                            },
+                            {
+                                name: "流入流量(G)",
+                                type: "line",
+                                stack: "总量",
+                                data: fluxIn,
+                                lineStyle: {
+                                    normal: {
+                                        color: "#2196F3",
+                                        width: 2,
+                                        opacity: "1"
+                                    }
+                                }
+                            },
+                        ]
+                    };
+                    myChart.setOption(option, true);
+                    var index = 0; //播放所在下标
+                    var mTime = setInterval(() => {
+                        myChart.dispatchAction({
+                            type: 'showTip',
+                            seriesIndex: 0,
+                            dataIndex: index
+                        });
+                        index += 15;
+                        if (index > time.length) {
+                            index = 0;
+                        }
+                    }, 500);
+                },
+                drawLine4: function () {
+                    var myChart = echarts.init(document.getElementById("line4"));
+                    var lcData = [1.9, 15, 14, 17, 83, 87];
+                    var lrData = [13.9, 15.9, 11.1, 18.27, 48.3, 75];
+                    var XData = ["1月", "2月", "3月", "4月", "5月", "6月"];
+                    let option = {
+                        title: {
+                            text: "省公司机房流量 (单位/Gbps)",
+                            left: 0,
+                            textStyle: {
+                                fontSize: 14,
+                                fontWeight: "normal",
+                                color: "#666666"
+                            },
+                        },
+                        tooltip: {
+                            trigger: 'axis',
+                            backgroundColor: 'white',
+                            textStyle: {
+                                color: '#000'
+                            },
+                            formatter: function (value) {
+                                const a0 = value[0] ? value[0].seriesName : '';
+                                const a1 = value[1] ? value[1].seriesName : '';
+                                const c0 = value[0] ? parseFloat(value[0].data) : '';
+                                const c1 = value[1] ? parseFloat(value[1].data) : '';
+                                let sum = c0 + c1;
+                                if (c0 != '' && c1 != '') {
+                                    sum = sum.toFixed(2); //保留两位小数 
+                                }
+                                const b = value[0] ? value[0].name : '';
+                                var atext = '';
+                                var btext = '';
+                                if (c0 != '') {
+                                    atext = '<span style="color: #BDBEC3">' + a0 +
+                                        '&nbsp;&nbsp;&nbsp;</span><span style="font-size:20px;color: #0a080b"><strong>' +
+                                        c0 +
+                                        '</strong></span><span style="color: #0a080b">次&nbsp;&nbsp;&nbsp;</span><span style="color: red">2.85%</span><span class="test1" >&#9650<style>\n' +
+                                        '.test1{color:red }\n' +
+                                        '</style></span></br>';
+                                };
+                                if (c1 != '') {
+                                    btext = '<span style="color: #BDBEC3">' + a1 +
+                                        '&nbsp;&nbsp;&nbsp;</span><span style="font-size:20px;color: #0a080b"><strong>' +
+                                        c1 +
+                                        '</strong></span><span style="color: #0a080b">次&nbsp;&nbsp;&nbsp;</span><span style="color: #00a854">2.85%</span><span class="test2" >&#9660<style>\n' +
+                                        '.test2{color:green }\n' +
+                                        '</style></span></br>';
+                                };
+                                return '<span style="color: #0a080b">全部&nbsp;&nbsp;&nbsp;<span style="font-size:20px;color: #0a080b"><strong>' +
+                                    sum +
+                                    '</strong></span><span style="color: #0a080b">次&nbsp;&nbsp;&nbsp;</span><span style="color: red">2.85%</span><span class="test" >&#9650<style>\n' +
+                                    '.test{color:red }\n' +
+                                    '</style></span></br>' +
+                                    atext + ' ' + btext +
+                                    '<span style="color: #0a080b">' + b + '</span>';
+                            }
+                        },
+                        legend: {
+                            data: ['cpu', '内存'],
+                            icon: 'roundRect',
+                            righr: "center",
+                            top: "10%",
+                            itemGap: 40
+                        },
+                        grid: {
+                            left: '10%',
+                            bottom: "3%",
+                            containLabel: true,
+                        },
+                        xAxis: [{
+                            type: 'category',
+                            splitLine: {
+                                show: true,
+                                lineStyle: {
+                                    type: 'solid',
+                                    color: "#f2f2f2"
+                                }
+
+                            },
+                            axisPointer: {
+                                type: "shadow",
+                                shadowStyle: {
+                                    color: "blue",
+                                    opacity: 0.05
+                                }
+                            },
+                            boundaryGap: false,
+                            data: XData
+                        }],
+                        yAxis: [{
+                            type: 'value',
+                            splitLine: {
+                                show: false,
+                                lineStyle: {
+                                    type: 'dashed'
+                                }
+                            },
+                        }],
+                        series: [{
+                                id: 'y0',
+                                name: '流出',
+                                type: 'line',
+                                smooth: true,
+                                color: "rgb(253,93,147)",
+                                symbol: 'circle',
+                                areaStyle: {
+                                    opacity: 0.3,
+                                    color: {
+                                        type: "linear",
+                                        x: 1,
+                                        y: 0,
+                                        x: 1,
+                                        y2: 1,
+                                        colorStops: [{
+                                                "offset": 0,
+                                                "color": "rgba(253,93,147,.5)" //0% 处的颜色
+                                            },
+                                            {
+                                                "offset": 1,
+                                                "color": "rgba(253,93,147,0)" // 100% 处的颜色
+                                            }
+                                        ],
+                                        "globalCoord": false // 缺省为 false
+                                    }
+                                },
+                                data: lcData
+                            },
+                            {
+                                name: '流出',
+                                type: 'effectScatter',
+                                coordinateSystem: 'cartesian2d',
+                                data: lcData, //2d坐标系
+                                symbolSize: 10,
+                                showEffectOn: 'emphasis',
+                                rippleEffect: {
+                                    brushType: 'stroke'
+                                },
+                                itemStyle: {
+                                    normal: {
+                                        color: 'rgb(253,93,147)',
+                                        borderColor: 'white'
+                                    }
+                                },
+                                tooltip: {
+                                    trigger: 'item',
+                                    backgroundColor: 'white',
+                                    textStyle: {
+                                        color: '#000'
+                                    },
+                                    formatter: '<span style="font-size:20px;color: #0a080b"><strong>{c0}</strong></span><span style="color: #0a080b">次&nbsp;&nbsp;&nbsp;</span><span style="color: red">2.85%</span><span class="test1" >&#9650<style>\n' +
+                                        '.test1{color:red }\n' +
+                                        '</style></span></br>' +
+                                        '<span style="color: #0a080b">{b0}</span>'
+
+                                },
+                                zlevel: 1
+                            },
+                            {
+                                id: 'y1',
+                                name: '流入',
+                                type: 'line',
+                                smooth: true,
+                                color: "rgb(17,168,171)",
+                                // hoverAnimation:true,
+                                symbol: 'circle',
+                                areaStyle: {
+                                    opacity: 0.3,
+                                    color: {
+                                        type: "linear",
+                                        x: 1,
+                                        y: 0,
+                                        x: 1,
+                                        y2: 1,
+                                        colorStops: [{
+                                                "offset": 0,
+                                                "color": "rgba(17,168,171,.5)"
+                                            },
+                                            {
+                                                "offset": 1,
+                                                "color": "rgba(17,168,171,0)"
+                                            }
+                                        ],
+                                        "globalCoord": false
+                                    }
+                                },
+                                data: lrData
+                            },
+                            {
+                                name: '流入',
+                                type: 'effectScatter',
+                                coordinateSystem: 'cartesian2d',
+                                data: lrData, //2d坐标系
+                                symbol: 'circle',
+                                symbolSize: 10,
+                                showEffectOn: 'emphasis',
+                                rippleEffect: {
+                                    brushType: 'stroke'
+                                },
+                                itemStyle: {
+                                    normal: {
+                                        color: 'rgb(17,168,171)',
+                                        borderColor: 'white'
+                                    }
+                                },
+                                zlevel: 1,
+                                tooltip: {
+                                    trigger: 'item',
+                                    backgroundColor: 'white',
+                                    textStyle: {
+                                        color: '#000'
+                                    },
+                                    formatter: '<span style="font-size:20px;color: #0a080b"><strong>{c0}</strong></span><span style="color: #0a080b">次&nbsp;&nbsp;&nbsp;</span><span style="color: green">2.85%</span><span class="test1" >&#9660<style>\n' +
+                                        '.test1{color:green }\n' +
+                                        '</style></span></br>' +
+                                        '<span style="color: #0a080b">{b0}</span>'
+                                }
+                            },
+                        ]
+                    };
+                    myChart.setOption(option, true);
+                }
+
+            },
+            mounted: function () {
+                this.drawLine1();
+                this.drawLine2();
+                this.drawLine3();
+                this.drawLine4();
+            }
+        })
+    </script>
+</body>
+
+</html>

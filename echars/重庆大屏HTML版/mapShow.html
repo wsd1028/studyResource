@@ -199,7 +199,6 @@
                     }]
                 }
             };
-
             myChart.setOption(option, true);
         }
         //机柜规模
@@ -208,40 +207,40 @@
             let _data = {
                 Count: 10,
                 List: [{
-                        AllCount: 140,
-                        SelledCount: 37,
-                        WaitSellCount: 103,
-                        ShowName: "西",
-                        Id: 10
-                    },
-                    {
-                        AllCount: 215,
-                        SelledCount: 171,
-                        WaitSellCount: 44,
-                        ShowName: "机房",
-                        Id: 11
-                    },
-                    {
-                        AllCount: 0,
-                        WaitSellCount: 0,
-                        ShowName: "岳阳",
-                        SelledCount: 5,
-                        Id: 12
-                    },
-                    {
-                        AllCount: 60,
-                        SelledCount: 0,
-                        WaitSellCount: 60,
-                        ShowName: "二楼",
-                        Id: 13
-                    },
-                    {
-                        AllCount: 56,
-                        SelledCount: 0,
-                        WaitSellCount: 56,
-                        ShowName: "益",
-                        Id: 14
-                    }
+                    AllCount: 140,
+                    SelledCount: 37,
+                    WaitSellCount: 103,
+                    ShowName: "西",
+                    Id: 10
+                },
+                {
+                    AllCount: 215,
+                    SelledCount: 171,
+                    WaitSellCount: 44,
+                    ShowName: "机房",
+                    Id: 11
+                },
+                {
+                    AllCount: 0,
+                    WaitSellCount: 0,
+                    ShowName: "岳阳",
+                    SelledCount: 5,
+                    Id: 12
+                },
+                {
+                    AllCount: 60,
+                    SelledCount: 0,
+                    WaitSellCount: 60,
+                    ShowName: "二楼",
+                    Id: 13
+                },
+                {
+                    AllCount: 56,
+                    SelledCount: 0,
+                    WaitSellCount: 56,
+                    ShowName: "益",
+                    Id: 14
+                }
                 ]
             };
             var name = [],
@@ -342,54 +341,53 @@
                     }
                 }],
                 series: [{
-                        name: "已用(个)",
-                        type: "bar",
-                        stack: "总量",
-                        barMaxWidth: 50,
-                        itemStyle: {
-                            normal: {
-                                color: "#11a8ab",
-                                barBorderRadius: 0,
-                                label: {
-                                    show: true,
-                                    position: "inside",
-                                    textStyle: {
-                                        color: "white"
-                                    },
-                                    formatter: function (p) {
-                                        return p.value > 0 ? p.value : "";
-                                    }
+                    name: "已用(个)",
+                    type: "bar",
+                    stack: "总量",
+                    barMaxWidth: 50,
+                    itemStyle: {
+                        normal: {
+                            color: "#11a8ab",
+                            barBorderRadius: 0,
+                            label: {
+                                show: true,
+                                position: "inside",
+                                textStyle: {
+                                    color: "white"
+                                },
+                                formatter: function (p) {
+                                    return p.value > 0 ? p.value : "";
                                 }
                             }
-                        },
-                        data: SelledCount
+                        }
                     },
-                    {
-                        name: "未用(个)",
-                        type: "bar",
-                        stack: "总量",
-                        barMaxWidth: 50,
-                        itemStyle: {
-                            normal: {
-                                color: "rgba(255,255,255,0.3)",
-                                barBorderRadius: 0,
-                                label: {
-                                    show: true,
-                                    position: "inside",
-                                    textStyle: {
-                                        color: "white"
-                                    },
-                                    formatter: function (p) {
-                                        return p.value > 0 ? p.value : "";
-                                    }
+                    data: SelledCount
+                },
+                {
+                    name: "未用(个)",
+                    type: "bar",
+                    stack: "总量",
+                    barMaxWidth: 50,
+                    itemStyle: {
+                        normal: {
+                            color: "rgba(255,255,255,0.3)",
+                            barBorderRadius: 0,
+                            label: {
+                                show: true,
+                                position: "inside",
+                                textStyle: {
+                                    color: "white"
+                                },
+                                formatter: function (p) {
+                                    return p.value > 0 ? p.value : "";
                                 }
                             }
-                        },
-                        data: WaitSellCount
-                    }
+                        }
+                    },
+                    data: WaitSellCount
+                }
                 ]
             };
-
             myChart.setOption(option, true);
         }
         //客户统计(家)
@@ -403,21 +401,21 @@
             ];
             let xdata = ["水土", "龙洲湾", "西永", "陈家坪"];
             let ydata = [{
-                    value: 335,
-                    name: "水土"
-                },
-                {
-                    value: 310,
-                    name: "龙洲湾"
-                },
-                {
-                    value: 234,
-                    name: "西永"
-                },
-                {
-                    value: 135,
-                    name: "陈家坪"
-                }
+                value: 335,
+                name: "水土"
+            },
+            {
+                value: 310,
+                name: "龙洲湾"
+            },
+            {
+                value: 234,
+                name: "西永"
+            },
+            {
+                value: 135,
+                name: "陈家坪"
+            }
             ];
             let option = {
                 color: color,
@@ -496,8 +494,15 @@
                     },
                     labelLine: {
                         normal: {
-                            show: false
-                        }
+                            show: true,
+                            length: 15,
+                            length2: 120,
+                            lineStyle: {
+                                color: "#d3d3d3"
+                            },
+                            align: "right"
+                        },
+                        color: "#000"
                     },
                     data: ydata
                 }]
@@ -538,35 +543,35 @@
         let bandwidthCharts = function (id, min, max) {
             var myChart = echarts.init(document.getElementById(id));
             let _data = [{
-                    ShowValue: "0.6",
-                    ShowName: "湘潭",
-                    Id: 5
-                },
-                {
-                    ShowValue: "0.95",
-                    ShowName: "云谷",
-                    Id: 4
-                },
-                {
-                    ShowValue: "1.22",
-                    ShowName: "东片区",
-                    Id: 1
-                },
-                {
-                    ShowValue: "1.7",
-                    ShowName: "西片区",
-                    Id: 2
-                },
-                {
-                    ShowValue: "1.8",
-                    ShowName: "分公司",
-                    Id: 6
-                },
-                {
-                    ShowValue: "2.6",
-                    ShowName: "星沙",
-                    Id: 3
-                }
+                ShowValue: "0.6",
+                ShowName: "湘潭",
+                Id: 5
+            },
+            {
+                ShowValue: "0.95",
+                ShowName: "云谷",
+                Id: 4
+            },
+            {
+                ShowValue: "1.22",
+                ShowName: "东片区",
+                Id: 1
+            },
+            {
+                ShowValue: "1.7",
+                ShowName: "西片区",
+                Id: 2
+            },
+            {
+                ShowValue: "1.8",
+                ShowName: "分公司",
+                Id: 6
+            },
+            {
+                ShowValue: "2.6",
+                ShowName: "星沙",
+                Id: 3
+            }
             ];
             var name = [],
                 arr = [],
@@ -695,94 +700,94 @@
                 台湾: [121.4648, 25.563]
             };
             var defaultP = [{
-                    name: "重庆",
-                    value: 1
-                },
-                {
-                    name: "四川",
-                    value: 2
-                },
-                {
-                    name: "贵州",
-                    value: 3
-                },
-                {
-                    name: "云南",
-                    value: 4
-                },
-                {
-                    name: "广西",
-                    value: 5
-                },
-                {
-                    name: "广东",
-                    value: 6
-                },
-                {
-                    name: "北京",
-                    value: 7
-                },
-                {
-                    name: "上海",
-                    value: 8
-                }
+                name: "重庆",
+                value: 1
+            },
+            {
+                name: "四川",
+                value: 2
+            },
+            {
+                name: "贵州",
+                value: 3
+            },
+            {
+                name: "云南",
+                value: 4
+            },
+            {
+                name: "广西",
+                value: 5
+            },
+            {
+                name: "广东",
+                value: 6
+            },
+            {
+                name: "北京",
+                value: 7
+            },
+            {
+                name: "上海",
+                value: 8
+            }
             ];
             let moveLines = [{
-                    fromName: "重庆",
-                    toName: "北京",
-                    coords: [
-                        [108.384366, 30.439702],
-                        [116.4551, 40.2539]
-                    ]
-                },
-                {
-                    fromName: "重庆",
-                    toName: "四川",
-                    coords: [
-                        [108.384366, 30.439702],
-                        [103.9526, 30.7617]
-                    ]
-                },
-                {
-                    fromName: "重庆",
-                    toName: "贵州",
-                    coords: [
-                        [108.384366, 30.439702],
-                        [106.6992, 26.7682]
-                    ]
-                },
-                {
-                    fromName: "重庆",
-                    toName: "云南",
-                    coords: [
-                        [108.384366, 30.439702],
-                        [102.9199, 25.4663]
-                    ]
-                },
-                {
-                    fromName: "重庆",
-                    toName: "广西",
-                    coords: [
-                        [108.384366, 30.439702],
-                        [108.479, 23.1152]
-                    ]
-                },
-                {
-                    fromName: "重庆",
-                    toName: "广东",
-                    coords: [
-                        [108.384366, 30.439702],
-                        [113.12244, 23.009505]
-                    ]
-                },
-                {
-                    fromName: "重庆",
-                    toName: "上海",
-                    coords: [
-                        [108.384366, 30.439702],
-                        [119.1803, 31.2891]
-                    ]
-                }
+                fromName: "重庆",
+                toName: "北京",
+                coords: [
+                    [108.384366, 30.439702],
+                    [116.4551, 40.2539]
+                ]
+            },
+            {
+                fromName: "重庆",
+                toName: "四川",
+                coords: [
+                    [108.384366, 30.439702],
+                    [103.9526, 30.7617]
+                ]
+            },
+            {
+                fromName: "重庆",
+                toName: "贵州",
+                coords: [
+                    [108.384366, 30.439702],
+                    [106.6992, 26.7682]
+                ]
+            },
+            {
+                fromName: "重庆",
+                toName: "云南",
+                coords: [
+                    [108.384366, 30.439702],
+                    [102.9199, 25.4663]
+                ]
+            },
+            {
+                fromName: "重庆",
+                toName: "广西",
+                coords: [
+                    [108.384366, 30.439702],
+                    [108.479, 23.1152]
+                ]
+            },
+            {
+                fromName: "重庆",
+                toName: "广东",
+                coords: [
+                    [108.384366, 30.439702],
+                    [113.12244, 23.009505]
+                ]
+            },
+            {
+                fromName: "重庆",
+                toName: "上海",
+                coords: [
+                    [108.384366, 30.439702],
+                    [119.1803, 31.2891]
+                ]
+            }
             ];
             var convertData = function (data) {
                 var res = [];
@@ -795,7 +800,6 @@
                         });
                     }
                 }
-                console.log(res, "///");
                 return res;
             };
 
@@ -829,187 +833,191 @@
                         }
                     },
                     regions: [{
-                            name: "重庆市",
-                            itemStyle: {
-                                normal: {
-                                    areaColor: "rgba(225, 78, 202, 0.8)"
-                                }
-                            },
-                            label: {
-                                show: true
+                        name: "重庆市",
+                        itemStyle: {
+                            normal: {
+                                areaColor: "rgba(225, 78, 202, 0.8)"
                             }
                         },
-                        {
-                            name: "贵州省",
-                            itemStyle: {
-                                normal: {
-                                    areaColor: "rgba(230, 162, 60, 0.8)"
-                                }
-                            },
-                            label: {
-                                show: true
-                            }
-                        },
-                        {
-                            name: "广东省",
-                            itemStyle: {
-                                normal: {
-                                    areaColor: "blue"
-                                }
-                            },
-                            label: {
-                                show: true
-                            }
-                        },
-                        {
-                            name: "四川省",
-                            itemStyle: {
-                                normal: {
-                                    areaColor: "rgba(29, 140, 248, 0.8)"
-                                }
-                            },
-                            label: {
-                                show: true
-                            }
-                        },
-                        {
-                            name: "云南省",
-                            itemStyle: {
-                                normal: {
-                                    areaColor: "rgba(79, 196, 246, 0.8)"
-                                }
-                            },
-                            label: {
-                                show: true
-                            }
-                        },
-                        {
-                            name: "北京市",
-                            itemStyle: {
-                                normal: {
-                                    areaColor: "rgba(225, 78, 202, 0.8)"
-                                }
-                            },
-                            label: {
-                                show: true
-                            }
-                        },
-                        {
-                            name: "广西壮族自治区",
-                            itemStyle: {
-                                normal: {
-                                    areaColor: "rgba(245, 108, 108, 0.8)"
-                                }
-                            },
-                            label: {
-                                show: true
-                            }
-                        },
-                        {
-                            name: "上海市",
-                            itemStyle: {
-                                normal: {
-                                    areaColor: "rgba(245, 108, 108, 0.8)"
-                                }
-                            },
-                            label: {
-                                show: true
-                            }
+                        label: {
+                            show: true
                         }
+                    },
+                    {
+                        name: "贵州省",
+                        itemStyle: {
+                            normal: {
+                                areaColor: "rgba(230, 162, 60, 0.8)"
+                            }
+                        },
+                        label: {
+                            show: true
+                        }
+                    },
+                    {
+                        name: "广东省",
+                        itemStyle: {
+                            normal: {
+                                areaColor: "blue"
+                            }
+                        },
+                        label: {
+                            show: true
+                        }
+                    },
+                    {
+                        name: "四川省",
+                        itemStyle: {
+                            normal: {
+                                areaColor: "rgba(29, 140, 248, 0.8)"
+                            }
+                        },
+                        label: {
+                            show: true
+                        },
+                        formatter: function () {
+                                            return "广州市"
+                                        }
+                    },
+                    {
+                        name: "云南省",
+                        itemStyle: {
+                            normal: {
+                                areaColor: "rgba(79, 196, 246, 0.8)"
+                            }
+                        },
+                        label: {
+                            show: true
+                        }
+                    },
+                    {
+                        name: "北京市",
+                        itemStyle: {
+                            normal: {
+                                areaColor: "rgba(225, 78, 202, 0.8)"
+                            }
+                        },
+                        label: {
+                            show: true
+                        }
+                    },
+                    {
+                        name: "广西壮族自治区",
+                        itemStyle: {
+                            normal: {
+                                areaColor: "rgba(245, 108, 108, 0.8)"
+                            }
+                        },
+                        label: {
+                            show: true
+                        }
+                    },
+                    {
+                        name: "上海市",
+                        itemStyle: {
+                            normal: {
+                                areaColor: "rgba(245, 108, 108, 0.8)"
+                            }
+                        },
+                        label: {
+                            show: true
+                        }
+                    }
                     ],
                     tooltip: {
                         show: false
                     }
                 },
                 series: [{
-                        type: "scatter",
-                        coordinateSystem: "geo",
-                        z: 1,
-                        effectType: "ripple",
-                        symbolSize: 14,
-                        itemStyle: {
-                            color: "#fff",
-                            borderColor: "#03E2E2",
-                            borderWidth: 2,
-                            borderType: "solid"
-                        },
-                        tooltip: {
-                            show: true
-                        },
-                        data: convertData(defaultP)
+                    type: "scatter",
+                    coordinateSystem: "geo",
+                    z: 1,
+                    effectType: "ripple",
+                    symbolSize: 14,
+                    itemStyle: {
+                        color: "#fff",
+                        borderColor: "#03E2E2",
+                        borderWidth: 2,
+                        borderType: "solid"
                     },
-                    {
-                        name: "中心",
-                        type: "effectScatter",
-                        coordinateSystem: "geo",
-                        data: convertData([{
-                            name: "重庆",
-                            value: 1
-                        }]),
-                        symbolSize: 30,
-                        showEffectOn: "render",
-                        rippleEffect: {
-                            brushType: "stroke"
-                        },
-                        hoverAnimation: true,
-                        label: {
-                            normal: {
-                                position: ["15%", "40%"],
-                                formatter: "500",
-                                show: true,
-                                color: "#03E2E2"
-                            }
-                        },
-                        itemStyle: {
-                            normal: {
-                                color: "#fff",
-                                shadowBlur: 4,
-                                shadowColor: "#03E2E2"
-                            }
-                        },
-                        zlevel: 8
+                    tooltip: {
+                        show: true
                     },
-                    {
-                        name: "线路",
-                        type: "lines",
-                        coordinateSystem: "geo",
-                        zlevel: 2,
-                        large: true,
-                        effect: {
+                    data: convertData(defaultP)
+                },
+                {
+                    name: "中心",
+                    type: "effectScatter",
+                    coordinateSystem: "geo",
+                    data: convertData([{
+                        name: "重庆",
+                        value: 1
+                    }]),
+                    symbolSize: 30,
+                    showEffectOn: "render",
+                    rippleEffect: {
+                        brushType: "stroke"
+                    },
+                    hoverAnimation: true,
+                    label: {
+                        normal: {
+                            position: ["15%", "40%"],
+                            formatter: "500",
                             show: true,
-                            constantSpeed: 50,
-                            symbol: "pin",
-                            symbolSize: 10,
-                            trailLength: 0.5,
-                            color: "#fff"
-                        },
-                        lineStyle: {
-                            normal: {
-                                color: new echarts.graphic.LinearGradient(
-                                    0,
-                                    0,
-                                    0,
-                                    1,
-                                    [{
-                                            offset: 0,
-                                            color: "#03E2E2"
-                                        },
-                                        {
-                                            offset: 1,
-                                            color: "#03E2E2"
-                                        }
-                                    ],
-                                    false
-                                ),
-                                width: 2,
-                                opacity: 0.6,
-                                curveness: 0.2
-                            }
-                        },
-                        data: moveLines
-                    }
+                            color: "#03E2E2"
+                        }
+                    },
+                    itemStyle: {
+                        normal: {
+                            color: "#fff",
+                            shadowBlur: 4,
+                            shadowColor: "#03E2E2"
+                        }
+                    },
+                    zlevel: 8
+                },
+                {
+                    name: "线路",
+                    type: "lines",
+                    coordinateSystem: "geo",
+                    zlevel: 2,
+                    large: true,
+                    effect: {
+                        show: true,
+                        constantSpeed: 50,
+                        symbol: "pin",
+                        symbolSize: 10,
+                        trailLength: 0.5,
+                        color: "#fff"
+                    },
+                    lineStyle: {
+                        normal: {
+                            color: new echarts.graphic.LinearGradient(
+                                0,
+                                0,
+                                0,
+                                1,
+                                [{
+                                    offset: 0,
+                                    color: "#03E2E2"
+                                },
+                                {
+                                    offset: 1,
+                                    color: "#03E2E2"
+                                }
+                                ],
+                                false
+                            ),
+                            width: 2,
+                            opacity: 0.6,
+                            curveness: 0.2
+                        }
+                    },
+                    data: moveLines
+                }
                 ]
             };
+            console.log('0',moveLines);
             myChart.setOption(option);
         }
         informationCharts("info1", {

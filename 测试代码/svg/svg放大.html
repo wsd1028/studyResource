@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link rel="stylesheet" href="../css/myReset.min.css">
+    <title>SVG</title>
+    <style>
+        #main {
+            width: 100%;
+            height: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        #svg {
+            width: 600px;
+            height: 600px;
+            border: 1px solid #666;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="main">
+        <!DOCTYPE html>
+        <html>
+
+        <head>
+            <title>js操作svg实现整体缩放</title>
+            <meta charset="utf-8">
+        </head>
+
+        <body>
+            <svg id="svg" style="background:#FAFAFA;">
+                <g id="svgPanel">
+                    <g id="grid"></g>
+                    <circle fill="red" r="50" cx="100" cy="100"></circle>
+                </g>
+            </svg>
+            <button onclick="zoom(1.1)">放大</button>
+            <button onclick="zoom(0.9)">缩小</button>
+        </body>
+
+        </html>
+    </div>
+    <script src="../js/vue.js"></script>
+    <script src="../js/svg/svg.min.js"></script>
+    <script src="../js/svg/svg.draggable.min.js"></script>
+
+    <script>
+        var svg = document.getElementById("svg");
+        var svgPanel = document.getElementById("svgPanel");
+        var gridSvg = document.getElementById("grid");
+        var width = 800; //设置svg整体的宽和高
+        var height = 400;
+        var gridLength = 20; //定义网格的大小
+
+        svg.setAttribute("width", width);
+        svg.setAttribute("height", height);
+
+        //绘制网格
+        drawGrid(gridSvg, width, height, gridLength);
+
+        /**
+         * 绘制网格     
+         * @param {Object} svgBackground 绘制网格对象
+         * @param {Int} winWidth 区域宽度
+         * @param {Int} winHeigth 区域高度
+         * @param {Int} gridLength 网格大小
+         */
+        function drawGrid(svgBackground, winWidth, winHeight, gridLength) {
+            var childs = gridSvg.childNodes;
+            //删除之前的网格节点，便于重绘
+            for (var i = childs.length - 1; i >= 0; i--) {
+                svgBackground.removeChild(childs.item(i));
+            }
+            for (var i = 0, len = Math.ceil(winWidth / gridLength); i <= len; i++) {
+                var attrs = {
+                    x1: i * gridLength,
+                    y1: 0,
+                    x2: i * gridLength,
+                    y2: winHeight,
+                    stroke: "#ddd"
+                };
+                var line = resetSVG("line", attrs);
+                svgBackground.appendChild(line);
+            };
+            for (var i = 0, len = Math.ceil(winHeight / gridLength); i <= len; i++) {
+                var attrs = {
+                    x1: 0,
+                    y1: i * gridLength,
+                    x2: winWidth,
+                    y2: i * gridLength,
+                    stroke: "#ddd"
+                };
+                var line = resetSVG("line", attrs);
+                svgBackground.appendChild(line);
+            };
+        }
+
+        /**
+         * js创建svg元素        
+         * @param {String} tag svg的标签名
+         * @param {Object} svg元素的属性
+         */
+        function resetSVG(tag, attrs) {
+            var element = document.createElementNS('http://www.w3.org/2000/svg', tag);
+            for (var k in attrs) {
+                element.setAttribute(k, attrs[k]);
+            }
+            return element;
+        }
+
+        /**
+         * svg放缩
+         * {Float} num 放缩的倍数
+         */
+        function zoom(num) {
+            scale = num;
+            svgPanel.setAttribute("transform", "scale(" + scale + ")");
+        }
+    </script>
+</body>
+
+</html>

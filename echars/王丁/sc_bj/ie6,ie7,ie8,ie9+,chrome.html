@@ -1,0 +1,59 @@
+<!--入口式hack方式（推荐）-->
+<!DOCTYPE html>
+<!--[if lt IE 7 ]><html class="ie ie6" dir="ltr" lang="zh-CN"><![endif]-->
+<!--[if IE 7 ]><html class="ie ie7" dir="ltr" lang="zh-CN"><![endif]-->
+<!--[if IE 8 ]><html class="ie ie8" dir="ltr" lang="zh-CN"><![endif]-->
+<!--[if IE 9 ]><html class="ie ie9" dir="ltr" lang="zh-CN"><![endif]-->
+<!--[if (gt IE 9)|!(IE)]><!--><html dir="ltr" lang="zh-CN"><!--<![endif]-->
+<!-- /入口式hack方式（推荐）-->
+<head>
+	<meta charset="utf-8">
+	<title>ie兼容</title>
+	<style>
+	/*针对IE的CSS hack 全面 实用*/
+	.all IE{property:value\9;}
+	.gte IE 8{property:value\0;}
+	.lte IE 7{*property:value;}
+	.IE 8/9{property:value\0;}
+	.IE 9{property:value\9\0;}
+	.IE 7{+property:value;}
+	.IE 6{_property:value;}
+	.not IE{property//:value;}	
+	/*
+	lte：就是Less than or equal to的简写，也就是小于或等于的意思。
+	lt ：就是Less than的简写，也就是小于的意思。
+	gte：就是Greater than or equal to的简写，也就是大于或等于的意思。
+	gt ：就是Greater than的简写，也就是大于的意思。
+	!  ：就是不等于的意思，跟javascript里的不等于判断符相同
+	*/
+	/*嵌入式hack方式（不推荐）*/
+	.hack { 
+			min-height:400px; /*（解决ie8.9.ff.chrome）*/
+			*+height:100%;  /*（解决ie7）*/
+			_height:400px; /*（解决ie6） ie6超出自动溢出*/
+			_width: 100px;     /*ie6*/  
+			*+width: 100px;    /*ie7*/
+			*width: 100px;    /*ie6、ie7*/
+			width: 100px\0;    /*ie8*/ 
+			width: 100px\9;    /*ie6、ie7、ie8*//* 不建议这种hack */	
+	}
+	.box { background-color: white;    /*所有浏览器*/ }
+	.ie6 .box { background-color: brown;    /*ie6浏览器*/ }
+	.ie7 .box { background-color: green;    /*ie7浏览器*/ }
+	.ie8 .box { background-color: blue;     /*ie8浏览器*/ }
+	.ie9 .box { background-color: pink;     /*ie9浏览器*/ }
+	.ie .box { background-color: #CAF4ED； /*所有ie浏览器*/ }
+	@media all and (min-width:0) {
+		background-color: black;/*非ie6、7、8的其余高级浏览器*/
+	}
+	@media all and (-webkit-min-device-pixel-ratio:0) {
+		background-color: red; /*Google Chrome、Safari等一票webkit内核浏览器*/
+	}
+	</style>
+</head>
+<!--iframe背景透明设置方法 allowtransparency=”true”-->
+<iframe width="100%" height="200" src="demo.html" allowTransparency="true" frameBorder="0" scrolling="no"></iframe>
+<body>
+
+</body>
+</html>

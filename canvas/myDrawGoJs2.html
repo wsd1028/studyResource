@@ -1,0 +1,1667 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+  <link rel="stylesheet" href="./css/element.css" />
+  <title>流程图</title>
+  <style>
+    [v-cloak] {
+      display: none;
+    }
+
+    .content {
+      width: 100%;
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      text-align: center;
+    }
+  </style>
+</head>
+
+<body>
+  有增删改查功能,但是需要接口
+  <div v-cloak id="main" v-loading="mainLoading" element-loading-text="加载中..."
+    element-loading-spinner="el-icon-loading">
+    <el-row :gutter="10">
+      <el-col :span="3">
+        <el-card shadow="never" style="text-align: center;">
+          <div id="myPaletteDiv" style="width: 100%;height: 350px; margin-right: 2px"></div>
+          <el-button type="primary" @click="save(false)">保存</el-button>
+        </el-card>
+      </el-col>
+      <el-col :span="21">
+        <el-card shadow="never">
+          <div id="stateCanvas" style=" height: 70px;"></div>
+        </el-card>
+        <el-card shadow="never" style="marginTop:10px ;">
+          <div id="myDiagramDiv" style=" height: 650px; "></div>
+        </el-card>
+      </el-col>
+    </el-row>
+  </div>
+  <script src="./js/vue.js"></script>
+  <script src="./js/go.js"></script>
+  <script src="./js/element.js"></script>
+  <script src="./js/es6-shim.min.js"></script>
+  <script>
+    let itemWidth = 150; //每一项的宽
+    let itemHeight = 50; //每一项的高
+    let rowWidth = 70; //行间距
+    let coleWidth = 140; //列间距
+    let textColor = "white";
+    let mainColor = "#9cc983";
+    let activeColor = "#dfa202";
+    let textWillColor = "#1e1e1e";
+    let that = null;
+    let v = new Vue({
+      el: "#main",
+      data: {
+        mainLoading: false,
+        mainData: {},
+        startItem: {},
+        flowid: ""
+      },
+      methods: {
+        add: function (data) {
+          let loc = data.loc.split(" ");
+          if (data.category == "Step") {
+            StepType = "0";
+          }
+          if (data.category == "Conditional") {
+            StepType = "1";
+          }
+          if (data.category == "Start") {
+            StepType = "2";
+          }
+
+          if (data.category == "End") {
+            StepType = "3";
+          }
+          if (data.category == "Document") {
+            StepType = "4";
+          }
+          let addItem = {
+            flowid: that.flowid,
+            id: "", //每一项的id
+            stepName: data.text, //步骤名称
+            stepType: StepType, //步骤类型，0普通步骤，1判断步骤
+            state: "0", //步骤状态0未完成，1已完成，2执行中
+            X: loc[0], //每一项的横坐标
+            Y: loc[1], //每一项的纵坐标
+            link: [{
+              form: that.mainData.id, //从哪来 父id
+              to: "", //到哪去 自己id
+              fromPort: "B", //箭头开始方向 默认
+              toPort: "T", //箭头结束方向 默认
+              points: "", //箭头坐标 数组 默认空
+              lineTitle: "" //线条上的文字 条件判断时会有
+            }]
+          };
+          let dataStr = JSON.stringify([addItem]);
+          this.save(true);
+          that.mainLoading = true;
+
+        },
+        del: function (data) {
+          this.$confirm('此操作将永久删除该流程, 是否继续?', '提示', {
+            confirmButtonText: '确定',
+            cancelButtonText: '取消',
+            type: 'warning'
+          }).then(function () {
+            that.mainLoading = true;
+            let url =
+              "/v5/handler/WorkFlowHandler.ashx?action=DelFlowImage&flowid=" + that.flowid + "&random=" +
+              Math.random();
+
+          }).catch(function () {
+            that.save();
+            that.getMainData(true);
+            that.$message({
+              type: 'info',
+              message: '已取消删除'
+            });
+          });
+
+        },
+        save: function (state) {
+          let obj = JSON.parse(myDiagram.model.toJson());
+          let saveItem = {
+            id: "", //每一项的id
+            stepName: "", //步骤名称
+            stepType: "", //步骤类型，0普通步骤，1判断步骤
+            state: "0", //步骤状态0未完成，1已完成，2执行中
+            X: "", //每一项的横坐标
+            Y: "", //每一项的纵坐标
+            link: [{
+              id: "",
+              toId: "",
+              form: "", //从哪来 父id
+              to: "", //到哪去 自己id
+              fromPort: "B", //箭头开始方向 默认
+              toPort: "T", //箭头结束方向 默认
+              points: "", //箭头坐标 数组 默认空
+              lineTitle: "" //线条上的文字 条件判断时会有
+            }]
+          };
+          let saveData = [];
+          //保存节点变化
+          for (let i = 0; i < obj.nodeDataArray.length; i++) {
+            let item = obj.nodeDataArray[i];
+            let loc = item.loc.split(" ");
+            if (item.category == "Step") {
+              StepType = "0";
+            }
+            if (item.category == "Conditional") {
+              StepType = "1";
+            }
+            if (item.category == "Start") {
+              StepType = "2";
+            }
+
+            if (item.category == "End") {
+              StepType = "3";
+            }
+            if (item.category == "Document") {
+              StepType = "4";
+            }
+            saveItem = {
+              flowid: that.flowid,
+              id: item.key, //每一项的id
+              stepName: item.text, //步骤名称
+              stepType: StepType, //步骤类型，0普通步骤，1判断步骤
+              state: item.state, //步骤状态0未完成，1已完成，2执行中
+              X: loc[0], //每一项的横坐标
+              Y: loc[1], //每一项的纵坐标
+              link: []
+            };
+            saveData.push(saveItem);
+          }
+          for (let i = 0; i < saveData.length; i++) {
+            for (let j = 0; j < obj.linkDataArray.length; j++) {
+              if (saveData[i].id == obj.linkDataArray[j].from) {
+                saveData[i].link.push({
+                  id: obj.linkDataArray[j].id, //线条自己的id
+                  form: obj.linkDataArray[j].from, //从哪来 父id
+                  to: obj.linkDataArray[j].to, //到哪去 自己id
+                  fromPort: obj.linkDataArray[j].fromPort, //箭头开始方向 默认
+                  toPort: obj.linkDataArray[j].toPort, //箭头结束方向 默认
+                  points: JSON.stringify(obj.linkDataArray[j].points), //箭头坐标 数组 默认空
+                  lineTitle: obj.linkDataArray[j].text //线条上的文字 条件判断时会有
+                });
+              }
+            }
+          }
+          let dataStr = JSON.stringify(saveData);
+          that.mainLoading = true;
+          let url =
+            "/v5/handler/WorkFlowHandler.ashx?action=UpdateFlowImage&id=" + that.flowid + "&random=" +
+            Math.random();
+        },
+        init: function () {
+          let that = this;
+          if (window.goSamples) goSamples();
+          var $ = go.GraphObject.make;
+          //流程图
+          myDiagram = $(go.Diagram, "myDiagramDiv", {
+            LinkDrawn: showLinkLabel,
+            LinkRelinked: showLinkLabel,
+            "undoManager.isEnabled": true
+          });
+          //监听流程图变化
+          myDiagram.addModelChangedListener(function (evt) {
+            // ignore unimportant Transaction events
+            if (!evt.isTransactionFinished) return;
+            var txn = evt.object; // a Transaction
+            if (txn === null) return;
+            // iterate over all of the actual ChangedEvents of the Transaction
+            txn.changes.each(function (e) {
+              // ignore any kind of change other than adding/removing a node
+              if (e.modelChange !== "nodeDataArray") return;
+              // record node insertions and removals
+              if (e.change === go.ChangedEvent.Insert) {
+                that.add(e.Co);
+              } else if (e.change === go.ChangedEvent.Remove) {
+                that.del(e.Io);
+              }
+            });
+          });
+          //状态div(右上canvas)
+          stateCanvas = $(go.Diagram, "stateCanvas", {
+            LinkDrawn: showLinkLabel,
+            LinkRelinked: showLinkLabel,
+            "undoManager.isEnabled": true,
+            isReadOnly: true,
+            allowSelect: false,
+            contentAlignment: go.Spot.Center,
+            initialPosition: new go.Point(0, 0)
+          });
+          stateCanvas.nodeTemplateMap.add(
+            "Step",
+            $(
+              go.Node,
+              "Table",
+              nodeStyle(),
+              $(
+                go.Panel,
+                "Auto",
+                $(
+                  go.Shape,
+                  "Rectangle", {
+                    fill: mainColor, //矩形
+                    strokeWidth: 0,
+                    width: 40, //宽度
+                    height: 20 //高度
+                  },
+                  new go.Binding("figure", "figure"),
+                  new go.Binding("fill", "fillColor"),
+                  new go.Binding("strokeWidth", "stroke"),
+                  new go.Binding("stroke", "strokeColor")
+                )
+              ),
+              makePort("T", go.Spot.Top, go.Spot.TopSide, false, true),
+              makePort("L", go.Spot.Left, go.Spot.LeftSide, true, true),
+              makePort("R", go.Spot.Right, go.Spot.RightSide, true, true),
+              makePort("B", go.Spot.Bottom, go.Spot.BottomSide, true, false)
+            )
+          );
+          stateCanvas.linkTemplate = $(
+            go.Link, {
+              routing: go.Link.AvoidsNodes,
+              curve: go.Link.JumpOver,
+              corner: 5,
+              toShortLength: 4,
+              relinkableFrom: true,
+              relinkableTo: true,
+              reshapable: true,
+              resegmentable: true,
+              selectionAdorned: false
+            },
+            new go.Binding("points").makeTwoWay(),
+            $(go.Shape, {
+              isPanelMain: true,
+              strokeWidth: 8,
+              stroke: "transparent",
+              name: "HIGHLIGHT"
+            }),
+            $(
+              go.Shape, {
+                isPanelMain: true,
+                stroke: mainColor,
+                strokeWidth: 2
+              },
+              new go.Binding("stroke", "textColor")
+            ),
+            $(
+              go.Shape, {
+                toArrow: "standard",
+                strokeWidth: 0,
+                fill: mainColor
+              },
+              new go.Binding("fill", "textColor")
+            ),
+            $(
+              go.Panel,
+              "Auto", {
+                visible: false,
+                name: "LABEL",
+                segmentIndex: 2,
+                segmentFraction: 0.5
+              },
+              new go.Binding("visible", "visible").makeTwoWay(),
+              $(go.Shape, "RoundedRectangle", {
+                fill: "#fff",
+                strokeWidth: 0
+              }),
+              $(
+                go.TextBlock,
+                "Yes", {
+                  //条件线条文字
+                  textAlign: "center",
+                  font: "14px helvetica, arial, sans-serif",
+                  stroke: mainColor,
+                  editable: true
+                },
+                new go.Binding("stroke", "textColor"),
+                new go.Binding("text").makeTwoWay()
+              )
+            )
+          );
+          //状态div结束(右上canvas)
+          function nodeStyle() {
+            return [
+              new go.Binding("location", "loc", go.Point.parse).makeTwoWay(
+                go.Point.stringify
+              ),
+              {
+                locationSpot: go.Spot.Center
+              }
+            ];
+          }
+
+          function makePort(name, align, spot, output, input) {
+            var horizontal =
+              align.equals(go.Spot.Top) || align.equals(go.Spot.Bottom);
+            return $(go.Shape, {
+              fill: "transparent",
+              strokeWidth: 0,
+              width: horizontal ? NaN : 8,
+              height: !horizontal ? NaN : 8,
+              alignment: align,
+              stretch: horizontal ?
+                go.GraphObject.Horizontal : go.GraphObject.Vertical,
+              portId: name,
+              fromSpot: spot,
+              fromLinkable: output,
+              toSpot: spot,
+              toLinkable: input,
+              cursor: "pointer",
+              mouseEnter: function (e, port) {
+                if (!e.diagram.isReadOnly) port.fill = "rgba(255,0,255,0.5)";
+              },
+              mouseLeave: function (e, port) {
+                port.fill = "transparent";
+              }
+            });
+          }
+
+          //流程图正文canvas开始绘制
+          function textStyle() {
+            return {
+              font: " 14px Helvetica, Arial, sans-serif",
+              stroke: textColor,
+              textAlign: "center",
+            };
+          }
+          //自定义图形 (开始结束)
+          go.Shape.defineFigureGenerator("StartEnd", function (shape, w, h) {
+            var p1 = h / 2; // default corner size
+            if (shape !== null) {
+              var param1 = shape.parameter1;
+              if (!isNaN(param1) && param1 >= 0) p1 = param1; // can't be negative or NaN
+            }
+            var geo = new go.Geometry();
+            geo.add(
+              new go.PathFigure(p1, 0)
+              .add(new go.PathSegment(go.PathSegment.Line, w - p1, 0))
+              .add(
+                new go.PathSegment(
+                  go.PathSegment.Arc,
+                  -90,
+                  180,
+                  w - p1,
+                  h - p1,
+                  p1,
+                  p1
+                )
+              )
+              .add(new go.PathSegment(go.PathSegment.Line, p1, h))
+              .add(
+                new go.PathSegment(
+                  go.PathSegment.Arc,
+                  90,
+                  180,
+                  p1,
+                  h - p1,
+                  p1,
+                  p1
+                ).close()
+              )
+            );
+            geo.spot1 = new go.Spot(0, 0, 0.3 * p1, 0);
+            geo.spot2 = new go.Spot(1, 1, -0.3 * p1, -0.3 * p1);
+            return geo;
+          });
+
+          //自定义图形 (文档)
+          go.Shape.defineFigureGenerator("Document", function (shape, w, h) {
+            var p1 = 10; // default corner size
+            if (shape !== null) {
+              var param1 = shape.parameter1;
+              if (!isNaN(param1) && param1 >= 0) p1 = param1; // can't be negative or NaN
+            }
+            var geo = new go.Geometry();
+            geo.add(
+              new go.PathFigure(0, 0)
+              .add(new go.PathSegment(go.PathSegment.Line, w, 0))
+              .add(new go.PathSegment(go.PathSegment.Line, w, h - p1))
+              .add(
+                new go.PathSegment(
+                  go.PathSegment.Arc,
+                  0,
+                  -180,
+                  (3 / 4) * w,
+                  h,
+                  w / 4,
+                  h / 8
+                )
+              )
+              .add(
+                new go.PathSegment(
+                  go.PathSegment.Arc,
+                  0,
+                  180,
+                  (1 / 4) * w,
+                  h - 2,
+                  w / 4,
+                  h / 8
+                ).close()
+              )
+            );
+            geo.spot1 = new go.Spot(0, 0, 0.3 * p1, 0);
+            geo.spot2 = new go.Spot(1, 1, -0.3 * p1, -0.3 * p1);
+            return geo;
+          });
+          //矩形
+          myDiagram.nodeTemplateMap.add(
+            "Step",
+            $(
+              go.Node,
+              "Table",
+              nodeStyle(),
+              $(
+                go.Panel,
+                "Auto",
+                $(
+                  go.Shape,
+                  "Rectangle", {
+                    fill: mainColor,
+                    strokeWidth: 0,
+                    width: itemWidth, //宽度
+                    height: itemHeight //高度
+                  },
+                  new go.Binding("figure", "figure"),
+                  new go.Binding("fill", "state", function (state) {
+                    let color = "";
+                    if (state == 0) {
+                      color = "white";
+                    }
+                    if (state == 1) {
+                      color = mainColor;
+                    }
+                    if (state == 2) {
+                      color = activeColor;
+                    }
+                    return color;
+                  }),
+                  new go.Binding("strokeWidth", "state", function (state) {
+                    let strokeWidth = 0;
+                    if (state == 0) {
+                      strokeWidth = 1;
+                    }
+
+                    return strokeWidth;
+                  }),
+                  new go.Binding("stroke", "state", function (state) {
+                    let color = "transparent";
+                    if (state == 0) {
+                      color = mainColor;
+                    }
+                    return color;
+                  })
+                ),
+                $(
+                  go.TextBlock,
+                  textStyle(), {
+                    maxSize: new go.Size(itemWidth, NaN),
+                    wrap: go.TextBlock.WrapFit,
+                    editable: true
+                  },
+                  new go.Binding("text").makeTwoWay(),
+                  new go.Binding("stroke", "state", function (state) {
+                    let color = "white";
+                    if (state == 0) {
+                      color = textWillColor;
+                    }
+                    return color;
+                  })
+                )
+              ),
+              makePort("T", go.Spot.Top, go.Spot.Top, true, true),
+              makePort("L", go.Spot.Left, go.Spot.Left, true, true),
+              makePort("R", go.Spot.Right, go.Spot.Right, true, true),
+              makePort("B", go.Spot.Bottom, go.Spot.Bottom, true, true)
+            )
+          );
+          //菱形
+          myDiagram.nodeTemplateMap.add(
+            "Conditional",
+            $(
+              go.Node,
+              "Table",
+              nodeStyle(),
+              $(
+                go.Panel,
+                "Auto",
+                $(
+                  go.Shape,
+                  "Diamond", {
+                    fill: mainColor,
+                    strokeWidth: 0,
+                    width: itemWidth,
+                    height: itemHeight
+                  },
+                  new go.Binding("figure", "figure"),
+                  new go.Binding("strokeWidth", "state", function (state) {
+                    let strokeWidth = 0;
+                    if (state == 0) {
+                      strokeWidth = 1;
+                    }
+
+                    return strokeWidth;
+                  }),
+                  new go.Binding("fill", "state", function (state) {
+                    let color = "";
+                    if (state == 0) {
+                      color = "white";
+                    }
+                    if (state == 1) {
+                      color = mainColor;
+                    }
+                    if (state == 2) {
+                      color = activeColor;
+                    }
+                    return color;
+                  }),
+                  new go.Binding("stroke", "state", function (state) {
+                    let color = "transparent";
+                    if (state == 0) {
+                      color = mainColor;
+                    }
+                    return color;
+                  })
+                ),
+                $(
+                  go.TextBlock,
+                  textStyle(), {
+                    maxSize: new go.Size(itemWidth, NaN),
+                    wrap: go.TextBlock.WrapFit,
+                    editable: true
+                  },
+                  new go.Binding("text").makeTwoWay(),
+                  new go.Binding("stroke", "state", function (state) {
+                    let color = "white";
+                    if (state == 0) {
+                      color = textWillColor;
+                    }
+                    return color;
+                  })
+                )
+              ),
+              //             指向别人       别人指向
+              makePort("T", go.Spot.Top, go.Spot.Top, true, true),
+              makePort("L", go.Spot.Left, go.Spot.Left, true, true),
+              makePort("R", go.Spot.Right, go.Spot.Right, true, true),
+              makePort("B", go.Spot.Bottom, go.Spot.Bottom, true, true)
+            )
+          );
+          //开始
+          myDiagram.nodeTemplateMap.add(
+            "Start",
+            $(
+              go.Node,
+              "Table",
+              nodeStyle(),
+              $(
+                go.Panel,
+                "Auto",
+                $(
+                  go.Shape,
+                  "StartEnd", {
+                    fill: mainColor,
+                    strokeWidth: 0,
+                    width: itemWidth,
+                    height: itemHeight
+                  },
+
+                  new go.Binding("figure", "figure"),
+                  new go.Binding("fill", "state", function (state) {
+                    let color = "";
+                    if (state == 0) {
+                      color = "white";
+                    }
+                    if (state == 1) {
+                      color = mainColor;
+                    }
+                    if (state == 2) {
+                      color = activeColor;
+                    }
+                    return color;
+                  }),
+                  new go.Binding("strokeWidth", "state", function (state) {
+                    let strokeWidth = 0;
+                    if (state == 0) {
+                      strokeWidth = 1;
+                    }
+
+                    return strokeWidth;
+                  }),
+                  new go.Binding("stroke", "state", function (state) {
+                    let color = "transparent";
+                    if (state == 0) {
+                      color = mainColor;
+                    }
+                    return color;
+                  })
+                ),
+                $(
+                  go.TextBlock,
+                  "Start",
+                  textStyle(), {
+                    textAlign: "center",
+                    font: " 14px Helvetica, Arial, sans-serif"
+                  },
+                  new go.Binding("text"),
+                  new go.Binding("stroke", "state", function (state) {
+                    let color = "white";
+                    if (state == 0) {
+                      color = textWillColor;
+                    }
+                    return color;
+                  })
+                )
+              ),
+              makePort("L", go.Spot.Left, go.Spot.Left, true, false),
+              makePort("R", go.Spot.Right, go.Spot.Right, true, false),
+              makePort("B", go.Spot.Bottom, go.Spot.Bottom, true, false)
+            )
+          );
+          //结束
+          myDiagram.nodeTemplateMap.add(
+            "End",
+            $(
+              go.Node,
+              "Table",
+              nodeStyle(),
+              $(
+                go.Panel,
+                "Auto",
+                $(
+                  go.Shape,
+                  "StartEnd", {
+                    fill: mainColor,
+                    strokeWidth: 0,
+                    width: itemWidth,
+                    height: itemHeight
+                  },
+                  new go.Binding("figure", "figure"),
+                  new go.Binding("fill", "state", function (state) {
+                    let color = "";
+                    if (state == 0) {
+                      color = "white";
+                    }
+                    if (state == 1) {
+                      color = mainColor;
+                    }
+                    if (state == 2) {
+                      color = activeColor;
+                    }
+                    return color;
+                  }),
+                  new go.Binding("strokeWidth", "state", function (state) {
+                    let strokeWidth = 0;
+                    if (state == 0) {
+                      strokeWidth = 1;
+                    }
+
+                    return strokeWidth;
+                  }),
+                  new go.Binding("stroke", "state", function (state) {
+                    let color = "transparent";
+                    if (state == 0) {
+                      color = mainColor;
+                    }
+                    return color;
+                  })
+                ),
+                $(
+                  go.TextBlock,
+                  "End",
+                  textStyle(), {
+                    textAlign: "center",
+                    font: " 14px Helvetica, Arial, sans-serif"
+                  },
+                  new go.Binding("text"),
+                  new go.Binding("stroke", "state", function (state) {
+                    let color = "white";
+                    if (state == 0) {
+                      color = textWillColor;
+                    }
+                    return color;
+                  })
+                )
+              ),
+              makePort("T", go.Spot.Top, go.Spot.Top, false, true),
+              makePort("L", go.Spot.Left, go.Spot.Left, true, true),
+              makePort("R", go.Spot.Right, go.Spot.Right, true, true),
+              makePort("B", go.Spot.Bottom, go.Spot.Bottom, true, false)
+            )
+          );
+          //文件
+          myDiagram.nodeTemplateMap.add(
+            "Document",
+            $(
+              go.Node,
+              "Auto",
+              nodeStyle(),
+              $(go.Shape, "Document", {
+                  fill: mainColor,
+                  strokeWidth: 0,
+                  width: itemWidth,
+                  height: itemHeight
+                },
+                new go.Binding("figure", "figure"),
+                new go.Binding("fill", "state", function (state) {
+                  let color = "";
+                  if (state == 0) {
+                    color = "white";
+                  }
+                  if (state == 1) {
+                    color = mainColor;
+                  }
+                  if (state == 2) {
+                    color = activeColor;
+                  }
+                  return color;
+                }),
+                new go.Binding("strokeWidth", "state", function (state) {
+                  let strokeWidth = 0;
+                  if (state == 0) {
+                    strokeWidth = 1;
+                  }
+                  return strokeWidth;
+                }),
+                new go.Binding("stroke", "state", function (state) {
+                  let color = "transparent";
+                  if (state == 0) {
+                    color = mainColor;
+                  }
+                  return color;
+                })
+              ),
+              $(
+                go.TextBlock,
+                textStyle(), {
+                  maxSize: new go.Size(200, NaN),
+                  wrap: go.TextBlock.WrapFit,
+                  textAlign: "center",
+                  editable: true,
+                  font: " 14px Helvetica, Arial, sans-serif"
+                },
+                new go.Binding("text").makeTwoWay(),
+                new go.Binding("stroke", "state", function (state) {
+                  let color = "white";
+                  if (state == 0) {
+                    color = textWillColor;
+                  }
+                  return color;
+                })
+              ),
+              makePort("T", go.Spot.Top, go.Spot.Top, true, true),
+              makePort("L", go.Spot.Left, go.Spot.Left, true, true),
+              makePort("R", go.Spot.Right, go.Spot.Right, true, true),
+              makePort("B", go.Spot.Bottom, go.Spot.Bottom, true, true)
+            )
+          );
+          //线条
+          myDiagram.linkTemplate = $(
+            go.Link, {
+              routing: go.Link.AvoidsNodes,
+              curve: go.Link.JumpOver,
+              corner: 5,
+              toShortLength: 4,
+              relinkableFrom: true,
+              relinkableTo: true,
+              reshapable: true,
+              resegmentable: true,
+              mouseEnter: function (e, link) {
+                link.findObject("HIGHLIGHT").stroke = "rgba(30,144,255,0.2)";
+              },
+              mouseLeave: function (e, link) {
+                link.findObject("HIGHLIGHT").stroke = "transparent";
+              },
+              selectionAdorned: false
+            },
+            new go.Binding("points").makeTwoWay(),
+            $(go.Shape, {
+              isPanelMain: true,
+              strokeWidth: 8,
+              stroke: "transparent",
+              name: "HIGHLIGHT"
+            }),
+            $(
+              go.Shape, {
+                isPanelMain: true,
+                stroke: mainColor,
+                strokeWidth: 2
+              },
+              new go.Binding("stroke", "isSelected", function (sel) {
+                return sel ? "dodgerblue" : mainColor;
+              }).ofObject()
+            ),
+            $(go.Shape, {
+              toArrow: "standard",
+              strokeWidth: 0,
+              fill: mainColor
+            }),
+            $(
+              go.Panel,
+              "Auto", {
+                visible: false,
+                name: "LABEL",
+                segmentIndex: 2,
+                segmentFraction: 0.5
+              },
+              new go.Binding("visible", "visible").makeTwoWay(),
+              $(go.Shape, "RoundedRectangle", {
+                fill: "#fff",
+                strokeWidth: 0
+              }),
+              $(
+                go.TextBlock,
+                "Yes", {
+                  //条件线条文字
+                  textAlign: "center",
+                  font: "14px helvetica, arial, sans-serif",
+                  stroke: mainColor,
+                  editable: true
+                },
+                new go.Binding("text").makeTwoWay()
+              )
+            )
+          );
+
+          function showLinkLabel(e) {
+            var label = e.subject.findObject("LABEL");
+            if (label !== null)
+              label.visible =
+              e.subject.fromNode.data.category === "Conditional";
+          }
+          myDiagram.toolManager.linkingTool.temporaryLink.routing =
+            go.Link.Orthogonal;
+          myDiagram.toolManager.relinkingTool.temporaryLink.routing =
+            go.Link.Orthogonal;
+
+          //左侧canvas
+          myPalette = $(go.Palette, "myPaletteDiv", {
+            nodeTemplateMap: myDiagram.nodeTemplateMap,
+            model: new go.GraphLinksModel([{
+                category: "Start",
+                text: "开始"
+              },
+              {
+                category: "Step",
+                text: "步骤"
+              },
+              {
+                category: "Conditional",
+                text: "条件"
+              },
+              {
+                category: "End",
+                text: "结束"
+              },
+              {
+                category: "Document",
+                text: "文件"
+              }
+            ])
+          });
+        },
+
+        load: function () {
+          //流程图正文canvas
+          let mainData = that.mainData;
+          let newObj = {
+            class: "go.GraphLinksModel",
+            linkFromPortIdProperty: "fromPort",
+            linkToPortIdProperty: "toPort",
+            nodeDataArray: [],
+            linkDataArray: []
+          };
+          for (let i = 0; i < mainData.length; i++) {
+            if (mainData[i].stepType == 0) {
+              type = "Step";
+            }
+            if (mainData[i].stepType == 1) {
+              type = "Conditional";
+            }
+            if (mainData[i].stepType == 2) {
+              type = "Start";
+            }
+
+            if (mainData[i].stepType == 3) {
+              type = "End";
+            }
+            if (mainData[i].stepType == 4) {
+              type = "Document";
+            }
+            let X = mainData[i].x;
+            let Y = mainData[i].y;
+            let offset = 0;
+            if (X) {
+              offset = X * 50;
+            }
+            if (!X) {
+              X =
+                parseInt(parseInt(mainData[i].id.slice(0, 3)) / 4) *
+                coleWidth;
+              if (X > 500) {
+                X = 400;
+              }
+            }
+            if (!Y) {
+              Y =
+                (parseInt(mainData[i].id.slice(0, 3)) - 1) * rowWidth -
+                offset;
+              if (Y > 500) {
+                Y = 400;
+              }
+            }
+            let nodeItem = {
+              key: mainData[i].id,
+              category: type,
+              loc: X + " " + Y,
+              text: mainData[i].stepName,
+              state: mainData[i].state,
+              data: mainData[i]
+            };
+            newObj.nodeDataArray.push(nodeItem);
+            for (let j = 0; j < mainData[i].link.length; j++) {
+              if (mainData[i].link) {
+                let points = mainData[i].link[j].points.split(",");
+                let linkItem = {
+                  from: mainData[i].link[j].fromId,
+                  to: mainData[i].link[j].toId,
+                  fromPort: mainData[i].link[j].fromPort || "B",
+                  toPort: mainData[i].link[j].toPort || "T",
+                  text: mainData[i].link[j].lineTitle,
+                  points: points,
+                  data: mainData[i],
+                  id: mainData[i].link[j].id
+                };
+                newObj.linkDataArray.push(linkItem);
+              }
+            }
+          }
+          //设置线条上的文字是否可改
+          for (let i = 0; i < newObj.linkDataArray.length; i++) {
+            if (newObj.linkDataArray[i].text) {
+              newObj.linkDataArray[i].visible = true;
+            }
+          }
+          //传入流程图数据
+          myDiagram.model = go.Model.fromJson(newObj);
+          //流程图状态栏
+          let stateObj = {
+            class: "GraphLinksModel",
+            linkFromPortIdProperty: "fromPort",
+            linkToPortIdProperty: "toPort",
+            nodeDataArray: [{
+                key: 1,
+                category: "Step",
+                loc: "0 0",
+                fillColor: mainColor
+              },
+              {
+                key: 2,
+                category: "Step",
+                loc: "150 0",
+                fillColor: "transparent"
+              },
+              {
+                key: 3,
+                category: "Step",
+                loc: "220 0",
+                fillColor: activeColor
+              },
+              {
+                key: 4,
+                category: "Step",
+                loc: "370 0",
+                fillColor: "transparent"
+              },
+              {
+                key: 5,
+                category: "Step",
+                loc: "420 0",
+                fillColor: "transparent",
+                stroke: 2,
+                strokeColor: mainColor
+              },
+              {
+                key: 6,
+                category: "Step",
+                loc: "550 0",
+                fillColor: "transparent"
+              }
+            ],
+            linkDataArray: [{
+                from: 1,
+                to: 2,
+                fromPort: "R",
+                toPort: "L",
+                visible: true,
+                text: "已办理"
+              },
+              {
+                from: 3,
+                to: 4,
+                fromPort: "R",
+                toPort: "L",
+                visible: true,
+                textColor: activeColor,
+                text: "正在办理"
+              },
+              {
+                from: 5,
+                to: 6,
+                fromPort: "R",
+                toPort: "L",
+                visible: true,
+                text: "未办理"
+              }
+            ]
+          };
+          stateCanvas.model = go.Model.fromJson(stateObj);
+        },
+        getMainData: function (status) {
+          that.mainLoading = true;
+          let res = {};
+          res.data = {
+            status: 0,
+            datas: [{
+              "id": "BA28E41F1E1940CDA20D66B5EFE99184",
+              "flowId": "tdm_hx_jd_tw_WorkFlow",
+              "stepName": "网络保障部经理验收工程师审核工作",
+              "stepType": 0,
+              "state": 1,
+              "x": "214.50",
+              "y": "335.50",
+              "orderNum": 6,
+              "stepId": "step16",
+              "link": [{
+                "id": "142A156CBBC645A8BEFE85C072F6D6C9",
+                "stepId": "BA28E41F1E1940CDA20D66B5EFE99184",
+                "lineTitle": "",
+                "fromId": "3D0AEC65BE7B49CA8C3828E97E0A758C",
+                "toId": "BA28E41F1E1940CDA20D66B5EFE99184",
+                "points": "[405,974,405,984,548.5,984,548.5,948,662,948,662,958]",
+                "fromPort": "B",
+                "toPort": "T"
+              }]
+            }, {
+              "id": "F0DF181EFD844FDEBC6495C1D5939253",
+              "flowId": "tdm_hx_jd_tw_WorkFlow",
+              "stepName": "网络运行保障事业部总经理审批",
+              "stepType": 0,
+              "state": 1,
+              "x": "216.49999999999994",
+              "y": "491.50",
+              "orderNum": 8,
+              "stepId": "step5",
+              "link": [{
+                "id": "B83CBD9AA37A4B64AAB3B1B982D7EF60",
+                "stepId": "F0DF181EFD844FDEBC6495C1D5939253",
+                "lineTitle": "",
+                "fromId": "EC44010DBDAC408F966DC92E4BC9A730",
+                "toId": "F0DF181EFD844FDEBC6495C1D5939253",
+                "points": "[405,974,405,984,548.5,984,548.5,948,662,948,662,958]",
+                "fromPort": "B",
+                "toPort": "T"
+              }]
+            }, {
+              "id": "F95C46DF4CDD47969D96A08DC1CD8528",
+              "flowId": "tdm_hx_jd_tw_WorkFlow",
+              "stepName": "客服部专员审核",
+              "stepType": 0,
+              "state": 1,
+              "x": "406.99999999999994",
+              "y": "601",
+              "orderNum": 9,
+              "stepId": "step6",
+              "link": [{
+                "id": "B7C2350158214B64A172CE338C0D49B5",
+                "stepId": "F95C46DF4CDD47969D96A08DC1CD8528",
+                "lineTitle": "",
+                "fromId": "95F9944B6A90478AA8CAAAD60F70E0CE",
+                "toId": "F95C46DF4CDD47969D96A08DC1CD8528",
+                "points": "[405,974,405,984,548.5,984,548.5,948,662,948,662,958]",
+                "fromPort": "B",
+                "toPort": "T"
+              }, {
+                "id": "6303DF21ADD542FAA3C9B3348F634171",
+                "stepId": "F95C46DF4CDD47969D96A08DC1CD8528",
+                "lineTitle": "",
+                "fromId": "EC44010DBDAC408F966DC92E4BC9A730",
+                "toId": "F95C46DF4CDD47969D96A08DC1CD8528",
+                "points": "[405,974,405,984,548.5,984,548.5,948,662,948,662,958]",
+                "fromPort": "B",
+                "toPort": "T"
+              }]
+            }, {
+              "id": "95F9944B6A90478AA8CAAAD60F70E0CE",
+              "flowId": "tdm_hx_jd_tw_WorkFlow",
+              "stepName": "客服部经理审核客服专员工作",
+              "stepType": 0,
+              "state": 1,
+              "x": "406.49999999999990",
+              "y": "684.50",
+              "orderNum": 10,
+              "stepId": "step17",
+              "link": [{
+                "id": "57D898A4E115414BBDC7B0ABC685E28A",
+                "stepId": "95F9944B6A90478AA8CAAAD60F70E0CE",
+                "lineTitle": "",
+                "fromId": "F95C46DF4CDD47969D96A08DC1CD8528",
+                "toId": "95F9944B6A90478AA8CAAAD60F70E0CE",
+                "points": "[405,974,405,984,548.5,984,548.5,948,662,948,662,958]",
+                "fromPort": "B",
+                "toPort": "T"
+              }]
+            }, {
+              "id": "F3619B03B44D48ACA4DA554174264095",
+              "flowId": "tdm_hx_jd_tw_WorkFlow",
+              "stepName": "客服部领导审批",
+              "stepType": 0,
+              "state": 1,
+              "x": "406",
+              "y": "778.00000000000020",
+              "orderNum": 11,
+              "stepId": "step8",
+              "link": [{
+                "id": "3EED56697D5940DDB162420A223C76D9",
+                "stepId": "F3619B03B44D48ACA4DA554174264095",
+                "lineTitle": "",
+                "fromId": "95F9944B6A90478AA8CAAAD60F70E0CE",
+                "toId": "F3619B03B44D48ACA4DA554174264095",
+                "points": "[405,974,405,984,548.5,984,548.5,948,662,948,662,958]",
+                "fromPort": "B",
+                "toPort": "T"
+              }]
+            }, {
+              "id": "B4249DF4746148FBAFE7E7548BDBE064",
+              "flowId": "tdm_hx_jd_tw_WorkFlow",
+              "stepName": "市场营销事业部总经理审批",
+              "stepType": 0,
+              "state": 1,
+              "x": "407",
+              "y": "867",
+              "orderNum": 12,
+              "stepId": "step9",
+              "link": [{
+                "id": "788C9EAB18EF48E9BE3DDB68B8EF591E",
+                "stepId": "B4249DF4746148FBAFE7E7548BDBE064",
+                "lineTitle": "",
+                "fromId": "F3619B03B44D48ACA4DA554174264095",
+                "toId": "B4249DF4746148FBAFE7E7548BDBE064",
+                "points": "[405,974,405,984,548.5,984,548.5,948,662,948,662,958]",
+                "fromPort": "B",
+                "toPort": "T"
+              }]
+            }, {
+              "id": "89058DA279E74F748EEF477DABE60644",
+              "flowId": "tdm_hx_jd_tw_WorkFlow",
+              "stepName": "客服专员办理",
+              "stepType": 0,
+              "state": 1,
+              "x": "131.99999999999994",
+              "y": "1091",
+              "orderNum": 17,
+              "stepId": "step19",
+              "link": [{
+                "id": "96F862566C9A4D3694AF025B781A941B",
+                "stepId": "89058DA279E74F748EEF477DABE60644",
+                "lineTitle": "",
+                "fromId": "D385B51BA26440EF9D246BC873D02385",
+                "toId": "89058DA279E74F748EEF477DABE60644",
+                "points": "[405,974,405,984,548.5,984,548.5,948,662,948,662,958]",
+                "fromPort": "B",
+                "toPort": "T"
+              }]
+            }, {
+              "id": "E7B102A7504A4077B2C71F174F24F2B9",
+              "flowId": "tdm_hx_jd_tw_WorkFlow",
+              "stepName": "网络保障部经理分配配置工程师",
+              "stepType": 0,
+              "state": 1,
+              "x": "-109.00000000000008",
+              "y": "1177",
+              "orderNum": 18,
+              "stepId": "step11",
+              "link": [{
+                "id": "6A26BC3E448F402B9C3CC63627DDC3C2",
+                "stepId": "E7B102A7504A4077B2C71F174F24F2B9",
+                "lineTitle": "",
+                "fromId": "89058DA279E74F748EEF477DABE60644",
+                "toId": "E7B102A7504A4077B2C71F174F24F2B9",
+                "points": "[405,974,405,984,548.5,984,548.5,948,662,948,662,958]",
+                "fromPort": "B",
+                "toPort": "T"
+              }, {
+                "id": "6F98D2861E094C2DACB789F9D9116648",
+                "stepId": "E7B102A7504A4077B2C71F174F24F2B9",
+                "lineTitle": "",
+                "fromId": "73035B1E703544F79D20F83157F7235C",
+                "toId": "E7B102A7504A4077B2C71F174F24F2B9",
+                "points": "[405,974,405,984,548.5,984,548.5,948,662,948,662,958]",
+                "fromPort": "B",
+                "toPort": "T"
+              }]
+            }, {
+              "id": "73035B1E703544F79D20F83157F7235C",
+              "flowId": "tdm_hx_jd_tw_WorkFlow",
+              "stepName": "工程师是否移交",
+              "stepType": 1,
+              "state": 1,
+              "x": "-115.00000000000005",
+              "y": "1279",
+              "orderNum": 19,
+              "stepId": "",
+              "link": [{
+                "id": "51A4D2B359134BB8B7C983571E2A870B",
+                "stepId": "73035B1E703544F79D20F83157F7235C",
+                "lineTitle": "",
+                "fromId": "E7B102A7504A4077B2C71F174F24F2B9",
+                "toId": "73035B1E703544F79D20F83157F7235C",
+                "points": "[405,974,405,984,548.5,984,548.5,948,662,948,662,958]",
+                "fromPort": "B",
+                "toPort": "T"
+              }]
+            }, {
+              "id": "568E4CF1199A4FEB8B8501C20EA12003",
+              "flowId": "tdm_hx_jd_tw_WorkFlow",
+              "stepName": "网络保障部工程师配置",
+              "stepType": 0,
+              "state": 1,
+              "x": "96",
+              "y": "1275",
+              "orderNum": 20,
+              "stepId": "step12",
+              "link": [{
+                "id": "0FD0FE5AF7FB4AC380431F0C7F32ABE9",
+                "stepId": "568E4CF1199A4FEB8B8501C20EA12003",
+                "lineTitle": "",
+                "fromId": "E7B102A7504A4077B2C71F174F24F2B9",
+                "toId": "568E4CF1199A4FEB8B8501C20EA12003",
+                "points": "[405,974,405,984,548.5,984,548.5,948,662,948,662,958]",
+                "fromPort": "B",
+                "toPort": "T"
+              }, {
+                "id": "75BCD6E049C44F3F82217D4C8A0C53BE",
+                "stepId": "568E4CF1199A4FEB8B8501C20EA12003",
+                "lineTitle": "",
+                "fromId": "1D27BF71E9EA4797BF8E7DDA951A9BE9",
+                "toId": "568E4CF1199A4FEB8B8501C20EA12003",
+                "points": "[405,974,405,984,548.5,984,548.5,948,662,948,662,958]",
+                "fromPort": "B",
+                "toPort": "T"
+              }]
+            }, {
+              "id": "64B415CDA16344458C1AB7F514863E16",
+              "flowId": "tdm_hx_jd_tw_WorkFlow",
+              "stepName": "网络保障部经理分配审核配置工程师",
+              "stepType": 0,
+              "state": 1,
+              "x": "-115.50",
+              "y": "1397.50",
+              "orderNum": 21,
+              "stepId": "step13",
+              "link": [{
+                "id": "F897A41E75C54B03BBC38FDC3DCEB572",
+                "stepId": "64B415CDA16344458C1AB7F514863E16",
+                "lineTitle": "",
+                "fromId": "73035B1E703544F79D20F83157F7235C",
+                "toId": "64B415CDA16344458C1AB7F514863E16",
+                "points": "[405,974,405,984,548.5,984,548.5,948,662,948,662,958]",
+                "fromPort": "B",
+                "toPort": "T"
+              }, {
+                "id": "34ADBC57350E42A9AF5A30CF8268C539",
+                "stepId": "64B415CDA16344458C1AB7F514863E16",
+                "lineTitle": "",
+                "fromId": "568E4CF1199A4FEB8B8501C20EA12003",
+                "toId": "64B415CDA16344458C1AB7F514863E16",
+                "points": "[405,974,405,984,548.5,984,548.5,948,662,948,662,958]",
+                "fromPort": "B",
+                "toPort": "T"
+              }]
+            }, {
+              "id": "626FE305A8F24156A9440455B391F1DC",
+              "flowId": "tdm_hx_jd_tw_WorkFlow",
+              "stepName": "网络保障部工程师审核配置",
+              "stepType": 0,
+              "state": 1,
+              "x": "-115.49999999999988",
+              "y": "1482.50",
+              "orderNum": 22,
+              "stepId": "step14",
+              "link": [{
+                "id": "BD6C85E1B1EA4F918319B339DBAC7A4A",
+                "stepId": "626FE305A8F24156A9440455B391F1DC",
+                "lineTitle": "",
+                "fromId": "64B415CDA16344458C1AB7F514863E16",
+                "toId": "626FE305A8F24156A9440455B391F1DC",
+                "points": "[405,974,405,984,548.5,984,548.5,948,662,948,662,958]",
+                "fromPort": "B",
+                "toPort": "T"
+              }]
+            }, {
+              "id": "1D27BF71E9EA4797BF8E7DDA951A9BE9",
+              "flowId": "tdm_hx_jd_tw_WorkFlow",
+              "stepName": "工程师审核配置是否通过",
+              "stepType": 1,
+              "state": 1,
+              "x": "-115",
+              "y": "1560",
+              "orderNum": 23,
+              "stepId": "",
+              "link": [{
+                "id": "DD5E7042F387412CAE524DCC2469662C",
+                "stepId": "1D27BF71E9EA4797BF8E7DDA951A9BE9",
+                "lineTitle": "",
+                "fromId": "626FE305A8F24156A9440455B391F1DC",
+                "toId": "1D27BF71E9EA4797BF8E7DDA951A9BE9",
+                "points": "[405,974,405,984,548.5,984,548.5,948,662,948,662,958]",
+                "fromPort": "B",
+                "toPort": "T"
+              }]
+            }, {
+              "id": "591063A4D31B477FB03E5FCFB6E9F83D",
+              "flowId": "tdm_hx_jd_tw_WorkFlow",
+              "stepName": "业务完成确认",
+              "stepType": 0,
+              "state": 1,
+              "x": "-373.00000000000005",
+              "y": "1693.99999999999950",
+              "orderNum": 25,
+              "stepId": "step15",
+              "link": [{
+                "id": "A8CC9FE3CBFA4787BB6FBFFCB4AACED4",
+                "stepId": "591063A4D31B477FB03E5FCFB6E9F83D",
+                "lineTitle": "",
+                "fromId": "1D27BF71E9EA4797BF8E7DDA951A9BE9",
+                "toId": "591063A4D31B477FB03E5FCFB6E9F83D",
+                "points": "[405,974,405,984,548.5,984,548.5,948,662,948,662,958]",
+                "fromPort": "B",
+                "toPort": "T"
+              }]
+            }, {
+              "id": "AC4038A10A084462A5B589B82FA3F4BF",
+              "flowId": "tdm_hx_jd_tw_WorkFlow",
+              "stepName": "备案",
+              "stepType": 4,
+              "state": 1,
+              "x": "414.99999999999994",
+              "y": "1756",
+              "orderNum": 26,
+              "stepId": "",
+              "link": [{
+                "id": "FDD3024BA8EF408C92AAB99E86227501",
+                "stepId": "AC4038A10A084462A5B589B82FA3F4BF",
+                "lineTitle": "",
+                "fromId": "591063A4D31B477FB03E5FCFB6E9F83D",
+                "toId": "AC4038A10A084462A5B589B82FA3F4BF",
+                "points": "[405,974,405,984,548.5,984,548.5,948,662,948,662,958]",
+                "fromPort": "B",
+                "toPort": "T"
+              }]
+            }, {
+              "id": "5FCACF8244714EAE9B46BFD85F146A14",
+              "flowId": "tdm_hx_jd_tw_WorkFlow",
+              "stepName": "结束",
+              "stepType": 3,
+              "state": 1,
+              "x": "-518",
+              "y": "1819.99999999999970",
+              "orderNum": 27,
+              "stepId": "end",
+              "link": [{
+                "id": "1CE4A08076B04600AC33470B22358F71",
+                "stepId": "5FCACF8244714EAE9B46BFD85F146A14",
+                "lineTitle": "",
+                "fromId": "AC4038A10A084462A5B589B82FA3F4BF",
+                "toId": "5FCACF8244714EAE9B46BFD85F146A14",
+                "points": "[405,974,405,984,548.5,984,548.5,948,662,948,662,958]",
+                "fromPort": "B",
+                "toPort": "T"
+              }, {
+                "id": "965F67DC0A4145A793AD508A1E648686",
+                "stepId": "5FCACF8244714EAE9B46BFD85F146A14",
+                "lineTitle": "",
+                "fromId": "827D19DFB6C3456BA9580FEF5CFA5973",
+                "toId": "5FCACF8244714EAE9B46BFD85F146A14",
+                "points": "[405,974,405,984,548.5,984,548.5,948,662,948,662,958]",
+                "fromPort": "B",
+                "toPort": "T"
+              }]
+            }, {
+              "id": "827D19DFB6C3456BA9580FEF5CFA5973",
+              "flowId": "tdm_hx_jd_tw_WorkFlow",
+              "stepName": "调整申请？",
+              "stepType": 1,
+              "state": 1,
+              "x": "-517",
+              "y": "520",
+              "orderNum": 16,
+              "stepId": "",
+              "link": [{
+                "id": "510FCAC0AED94DB1B7EB22B76A37CE9E",
+                "stepId": "827D19DFB6C3456BA9580FEF5CFA5973",
+                "lineTitle": "",
+                "fromId": "D385B51BA26440EF9D246BC873D02385",
+                "toId": "827D19DFB6C3456BA9580FEF5CFA5973",
+                "points": "[405,974,405,984,548.5,984,548.5,948,662,948,662,958]",
+                "fromPort": "B",
+                "toPort": "T"
+              }]
+            }, {
+              "id": "EC44010DBDAC408F966DC92E4BC9A730",
+              "flowId": "tdm_hx_jd_tw_WorkFlow",
+              "stepName": "网络保障部经理审批",
+              "stepType": 0,
+              "state": 1,
+              "x": "216",
+              "y": "407.00000000000005",
+              "orderNum": 7,
+              "stepId": "step4",
+              "link": [{
+                "id": "B01BC8EA8FD24716AAAF8D20BEDE663B",
+                "stepId": "EC44010DBDAC408F966DC92E4BC9A730",
+                "lineTitle": "",
+                "fromId": "BA28E41F1E1940CDA20D66B5EFE99184",
+                "toId": "EC44010DBDAC408F966DC92E4BC9A730",
+                "points": "[405,974,405,984,548.5,984,548.5,948,662,948,662,958]",
+                "fromPort": "B",
+                "toPort": "T"
+              }]
+            }, {
+              "id": "1B72A60E5EC5441DB7148A0313129D9D",
+              "flowId": "tdm_hx_jd_tw_WorkFlow",
+              "stepName": "公司领导审批",
+              "stepType": 0,
+              "state": 1,
+              "x": "405",
+              "y": "954",
+              "orderNum": 13,
+              "stepId": "step10",
+              "link": [{
+                "id": "B61A40BD027A40ECA949349191DD0AD5",
+                "stepId": "1B72A60E5EC5441DB7148A0313129D9D",
+                "lineTitle": "",
+                "fromId": "B4249DF4746148FBAFE7E7548BDBE064",
+                "toId": "1B72A60E5EC5441DB7148A0313129D9D",
+                "points": "[405,974,405,984,548.5,984,548.5,948,662,948,662,958]",
+                "fromPort": "B",
+                "toPort": "T"
+              }]
+            }, {
+              "id": "D385B51BA26440EF9D246BC873D02385",
+              "flowId": "tdm_hx_jd_tw_WorkFlow",
+              "stepName": "用印",
+              "stepType": 0,
+              "state": 1,
+              "x": "692",
+              "y": "978",
+              "orderNum": 14,
+              "stepId": "step18",
+              "link": [{
+                "id": "1795DD593C82436586EFBA4AAE6A8D0D",
+                "stepId": "D385B51BA26440EF9D246BC873D02385",
+                "lineTitle": "",
+                "fromId": "F3619B03B44D48ACA4DA554174264095",
+                "toId": "D385B51BA26440EF9D246BC873D02385",
+                "points": "[405,974,405,984,548.5,984,548.5,948,662,948,662,958]",
+                "fromPort": "B",
+                "toPort": "T"
+              }, {
+                "id": "245BD09ED34B4A229D8D0130EB1D681B",
+                "stepId": "D385B51BA26440EF9D246BC873D02385",
+                "lineTitle": "",
+                "fromId": "B4249DF4746148FBAFE7E7548BDBE064",
+                "toId": "D385B51BA26440EF9D246BC873D02385",
+                "points": "[405,974,405,984,548.5,984,548.5,948,662,948,662,958]",
+                "fromPort": "B",
+                "toPort": "T"
+              }, {
+                "id": "EF4B3D2F28AB4D34A4FE636D16A56FB5",
+                "stepId": "D385B51BA26440EF9D246BC873D02385",
+                "lineTitle": "",
+                "fromId": "1B72A60E5EC5441DB7148A0313129D9D",
+                "toId": "D385B51BA26440EF9D246BC873D02385",
+                "points": "[405,974,405,984,548.5,984,548.5,948,662,948,662,958]",
+                "fromPort": "B",
+                "toPort": "T"
+              }]
+            }, {
+              "id": "FDFE2D8202B4441FBD12C3BABC2CD158",
+              "flowId": "tdm_hx_jd_tw_WorkFlow",
+              "stepName": "网络保障部经理分配审核工程师",
+              "stepType": 0,
+              "state": 1,
+              "x": "209.50000000000003",
+              "y": "189.50",
+              "orderNum": 4,
+              "stepId": "step2",
+              "link": [{
+                "id": "6D17EDADA6A64478B056CC2B9C6EB23B",
+                "stepId": "FDFE2D8202B4441FBD12C3BABC2CD158",
+                "lineTitle": "",
+                "fromId": "84BAEB52C7514A629ECE6250E0E621BB",
+                "toId": "FDFE2D8202B4441FBD12C3BABC2CD158",
+                "points": "[405,974,405,984,548.5,984,548.5,948,662,948,662,958]",
+                "fromPort": "B",
+                "toPort": "T"
+              }]
+            }, {
+              "id": "48E4942D829F4C47976FE7B7C94959F2",
+              "flowId": "tdm_hx_jd_tw_WorkFlow",
+              "stepName": "开始",
+              "stepType": 2,
+              "state": 1,
+              "x": "-51.00000000000003",
+              "y": "-21.0000000000000140",
+              "orderNum": 0,
+              "stepId": "",
+              "link": []
+            }, {
+              "id": "84BAEB52C7514A629ECE6250E0E621BB",
+              "flowId": "tdm_hx_jd_tw_WorkFlow",
+              "stepName": "提交申请",
+              "stepType": 0,
+              "state": 1,
+              "x": "-71.00000000000005",
+              "y": "72",
+              "orderNum": 1,
+              "stepId": "",
+              "link": [{
+                "id": "305AD589B3A146A4A9947D5BE34BA172",
+                "stepId": "84BAEB52C7514A629ECE6250E0E621BB",
+                "lineTitle": "",
+                "fromId": "827D19DFB6C3456BA9580FEF5CFA5973",
+                "toId": "84BAEB52C7514A629ECE6250E0E621BB",
+                "points": "[405,974,405,984,548.5,984,548.5,948,662,948,662,958]",
+                "fromPort": "B",
+                "toPort": "T"
+              }, {
+                "id": "3C404CD273054A27B1B4D09FCCD01C33",
+                "stepId": "84BAEB52C7514A629ECE6250E0E621BB",
+                "lineTitle": "",
+                "fromId": "48E4942D829F4C47976FE7B7C94959F2",
+                "toId": "84BAEB52C7514A629ECE6250E0E621BB",
+                "points": "[405,974,405,984,548.5,984,548.5,948,662,948,662,958]",
+                "fromPort": "B",
+                "toPort": "T"
+              }]
+            }, {
+              "id": "3D0AEC65BE7B49CA8C3828E97E0A758C",
+              "flowId": "tdm_hx_jd_tw_WorkFlow",
+              "stepName": "网络保障部工程师审核用户提交材料",
+              "stepType": 0,
+              "state": 1,
+              "x": "215",
+              "y": "266",
+              "orderNum": 5,
+              "stepId": "step3",
+              "link": [{
+                "id": "EBFDE7E61DB949028ABF221FC44CB78D",
+                "stepId": "3D0AEC65BE7B49CA8C3828E97E0A758C",
+                "lineTitle": "",
+                "fromId": "BA28E41F1E1940CDA20D66B5EFE99184",
+                "toId": "3D0AEC65BE7B49CA8C3828E97E0A758C",
+                "points": "[405,974,405,984,548.5,984,548.5,948,662,948,662,958]",
+                "fromPort": "B",
+                "toPort": "T"
+              }, {
+                "id": "45D050AF9E414B5FA577735E16032B28",
+                "stepId": "3D0AEC65BE7B49CA8C3828E97E0A758C",
+                "lineTitle": "",
+                "fromId": "FDFE2D8202B4441FBD12C3BABC2CD158",
+                "toId": "3D0AEC65BE7B49CA8C3828E97E0A758C",
+                "points": "[405,974,405,984,548.5,984,548.5,948,662,948,662,958]",
+                "fromPort": "B",
+                "toPort": "T"
+              }]
+            }],
+            mess: ""
+          };
+          if (res.data.status == 0) {
+            that.mainData = res.data.datas;
+            if (!status) {
+              that.init();
+            } //初始化加载
+            that.load();
+          } else {
+            that.$message({
+              message: res.data.mess,
+              type: "warning",
+              showClose: true
+            });
+          }
+          that.mainLoading = false;
+
+        }
+      },
+      mounted: function () {
+        that = this;
+
+        function getQueryString(name) {
+          var reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)", "i");
+          var r = window.location.search.substr(1).match(reg);
+          if (r != null) return decodeURI(r[2]);
+          return null;
+        }
+        that.flowid = getQueryString("id");
+        if (!that.flowid) {
+          that.flowid = "TDMCZWorkFlow";
+        }
+        that.getMainData(false);
+      }
+    });
+  </script>
+</body>
+
+</html>

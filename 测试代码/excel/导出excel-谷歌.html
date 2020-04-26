@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link rel="stylesheet" href="../css/element.css">
+    <link rel="stylesheet" href="../css/iconfont/iconfont.css">
+    <link rel="stylesheet" href="../css/home.min.css">
+    <title>背景乐</title>
+    <style>
+        audio {
+            display: block;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="main" class="homeShow" >
+        <el-button v-on:click="handelExport">click 激活</el-button>
+    </div>
+    <script src="../js/es6-shim.min.js"></script>
+    <script src="../js/vue.js"></script>
+    <script src="../js/element.js"></script>
+    <script>
+        var v = new Vue({
+            el: "#main",
+            data: {},
+            methods: {
+                toExcel: function (FileName, ShowLabel, JSONData) {
+                    //先转化json
+                    var arrData = typeof JSONData != 'object' ? JSON.parse(JSONData) : JSONData;
+                    var excel = '<table>';
+                    //设置表头
+                    var row = "<tr align='left'>"; //设置Excel的左居中
+                    for (var k in ShowLabel) {
+                        row += "<td>" + ShowLabel[k] + '</td>';
+                    }
+                    //换行
+                    excel += row + "</tr>";
+                    //设置数据
+                    for (var i = 0; i < arrData.length; i++) {
+                        var rowData = "<tr align='left'>";
+                        for (var k in ShowLabel) {
+                            rowData += "<td style='vnd.ms-excel.numberformat:@'>" + (arrData[i][
+                                k
+                            ] === null ? "" : arrData[i][k]) + "</td>";
+                        }
+                        excel += rowData + "</tr>";
+                    }
+                    console.log('excel',excel);
+                    excel += "</table>";
+                    var excelFile =
+                        "<html xmlns:o='urn:schemas-microsoft-com:office:office' xmlns:x='urn:schemas-microsoft-com:office:excel' xmlns='http://www.w3.org/TR/REC-html40'>";
+                    excelFile +=
+                        '<meta http-equiv="content-type" content="application/vnd.ms-excel; charset=UTF-8">';
+                    excelFile += '<meta http-equiv="content-type" content="application/vnd.ms-excel';
+                    excelFile += '; charset=UTF-8">';
+                    excelFile += "<head>";
+                    excelFile += "<!--[if gte mso 9]>";
+                    excelFile += "<xml>";
+                    excelFile += "<x:ExcelWorkbook>";
+                    excelFile += "<x:ExcelWorksheets>";
+                    excelFile += "<x:ExcelWorksheet>";
+                    excelFile += "<x:Name>";
+                    excelFile += "{worksheet}";
+                    excelFile += "</x:Name>";
+                    excelFile += "<x:WorksheetOptions>";
+                    excelFile += "<x:DisplayGridlines/>";
+                    excelFile += "</x:WorksheetOptions>";
+                    excelFile += "</x:ExcelWorksheet>";
+                    excelFile += "</x:ExcelWorksheets>";
+                    excelFile += "</x:ExcelWorkbook>";
+                    excelFile += "</xml>";
+                    excelFile += "<![endif]-->";
+                    excelFile += "</head>";
+                    excelFile += "<body>";
+                    excelFile += excel;
+                    excelFile += "</body>";
+                    excelFile += "</html>";
+                    var uri = 'data:application/vnd.ms-excel;charset=utf-8,' + encodeURIComponent(
+                        excelFile);
+                    var link = document.createElement("a");
+                    link.href = uri;
+                    link.style = "visibility:hidden";
+                    link.download = FileName + ".xls";
+                    document.body.appendChild(link);
+                    link.click();
+                    document.body.removeChild(link);
+                },
+                handelExport: function () {
+                    this.exportDia = true;
+                    var FileName = "检验单";
+                    var ShowLabel = {
+                        inspect_item_name: '检验项目',
+                        type: '类型',
+                        sn: 'SN',
+                        result: '结果'
+                    };
+                    var JSONData = [{
+                        inspect_item_name: '功能',
+                        type: '常规',
+                        sn: '123456789',
+                        result: 'Fail'
+                    }, {
+                        inspect_item_name: '功能2',
+                        type: '常规2',
+                        sn: '123456789',
+                        result: 'Fail2'
+                    }, ];
+
+                    //导出
+                    this.toExcel(FileName, ShowLabel, JSONData);
+                },
+            },
+            mounted: function () {}
+        })
+    </script>
+</body>
+
+</html>

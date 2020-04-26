@@ -9,3 +9,27 @@
     });
     return node;
   }
+
+�����ڵ���2
+function buildTree(parent) {
+                            var tempList = [];
+                            if (parent == null) {//��ʾ���ڵ� parentKey 
+                                tempList = list.where(function (x) { return x.parentKey == '1'; });
+                            } else {
+                                tempList = list.where(function (x) { return x.parentKey === parent.nodeKey });
+                            }
+                            tempList.forEach(function (x) {
+                                x.children = buildTree(x);
+                            });
+                            return tempList.toArray();
+ }
+�����νṹ��Ϊһά����
+  function loopTreeData(data, children) {
+      for (let i = 0; i < data.length; i++) {
+        if (data[i][children]) {
+          if (data[i][children].length > 0) {
+            loopTreeData(data[i][children], children);
+          }
+        }
+      }
+    }

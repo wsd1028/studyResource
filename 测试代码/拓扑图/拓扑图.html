@@ -1,0 +1,344 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link rel="stylesheet" href="../css/element.css">
+    <link rel="stylesheet" href="../css/iconfont/iconfont.css">
+    <title>拓扑图-基础</title>
+    <style>
+        #chart {
+            width: 100%;
+            height: 800px;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="main" class="homeShow">
+        <div id="chart"></div>
+
+    </div>
+    <script src="../js/es6-shim.min.js"></script>
+    <script src="../js/vue.js"></script>
+    <script src="../js/element.js"></script>
+    <script src="../js/echarts/dist/echarts.min.js"></script>
+    <script src="../js/hunan.js"></script>
+    <script>
+        var v = new Vue({
+            el: "#main",
+            data: {
+                mainData: [{
+                    type: "主机",
+                    name: "主机",
+                    src: "主机1",
+                    warn: [{
+                        type: "告警",
+                        name: "告警",
+                        count: 10
+                    }],
+                    tar: ["服务器1"],
+                    x: 100,
+                    y: 20
+                }, {
+                    type: "服务器",
+                    name: "服务器",
+                    src: "服务器1",
+                    warn: [{
+                        type: "告警",
+                        name: "告警",
+                        count: 10
+                    }],
+                    tar: [],
+                    x: 30,
+                    y: 50
+                }, {
+                    type: "主机",
+                    name: "主机2",
+                    src: "主机2",
+                    warn: [{
+                        type: "告警",
+                        name: "告警",
+                        count: 10
+                    }],
+                    tar: ["主机1"],
+                    x: 40,
+                    y: 30
+                }]
+            },
+            methods: {
+                drawChart: function () {
+                    let myChart = echarts.init(document.getElementById("chart"));
+                    let mainData = this.mainData;
+                    let symbolSize = 50;
+                    let biaoqian =
+                        "path://M2088.520038 127.63648c-14.88896-14.88384-34.67776-23.17824-55.59808-23.17824-7.9104 0-1541.0432-1.32096-1586.08384-1.5104-58.4192 0-99.12832 28.6464-142.47424 71.61344-41.6512 41.6512-281.37472 280.62208-281.37472 280.62208-14.88384 14.6944-22.9888 34.48832-22.9888 55.40352a78.1312 78.1312 0 0 0 22.9888 55.59296s252.91776 253.48096 287.96928 288.53248c41.08288 41.08288 76.32896 65.01888 135.31648 65.01888 87.82336 0 1578.55232 1.32096 1586.08896 1.32096 20.91008 0 40.69888-8.10496 55.3984-22.80448 14.88896-14.69952 22.9888-34.48832 22.9888-55.40352l0.56832-659.79904c0.19456-20.92544-7.90528-40.51968-22.79936-55.40864z m-1696.6144 483.68128c-54.84032 0-99.31264-44.48256-99.31264-99.31776s44.47744-99.31776 99.31264-99.31776c54.85056 0 99.31776 44.48256 99.31776 99.31776s-44.4672 99.31776-99.31776 99.31776z";
+                    let fuwuqi =
+                        "path://M827.4 112.2H196.2c-31.1 0.1-56.3 25.2-56.4 56.3v169h743.9v-169c0-31.1-25.2-56.2-56.3-56.3zM432.3 258.5H248.4v-75.6h184l-0.1 75.6z m193.7 0c-13.8 0.7-26.9-6.1-34.2-17.8-7.3-11.7-7.6-26.5-0.9-38.6 6.8-12 19.6-19.5 33.4-19.3 20.5 0.2 37.1 16.6 37.5 37 0.4 20.5-15.4 37.6-35.8 38.7z m109.1 0c-20.9 0.4-38.2-16.1-38.6-37-0.4-20.9 16.1-38.2 37-38.6 20.9-0.4 38.2 16.1 38.6 37 0.5 20.9-16.1 38.2-37 38.6zM139.9 625.3h743.9V400.1H139.9v225.2z m595.2-150.4c20.9-0.5 38.2 16.1 38.7 37s-16.1 38.2-37 38.7-38.2-16.1-38.7-37c-0.5-21 16.1-38.3 37-38.7z m-109.1 0c15.4-0.3 29.5 8.7 35.7 22.8 6.1 14.1 3.1 30.6-7.7 41.6s-27.2 14.4-41.5 8.6c-14.3-5.8-23.6-19.7-23.6-35.2 0-20.5 16.5-37.4 37.1-37.8z m-377.6 0h184v75.6h-184v-75.6z m-52.2 210.6h-56.4v169c0.2 31.1 25.3 56.2 56.4 56.4h631.2c31.1-0.1 56.2-25.3 56.3-56.4v-169H196.2z m236.1 155.8H248.4v-75.7h184l-0.1 75.7z m193.7 0c-15.4 0.3-29.4-8.7-35.5-22.8-6.1-14.1-3-30.5 7.7-41.5 10.8-11 27.1-14.3 41.3-8.5 14.2 5.8 23.5 19.6 23.5 35 0 20.6-16.4 37.4-37 37.8z m109.1 0c-13.7 0.3-26.4-6.8-33.3-18.7-6.9-11.8-6.8-26.4 0.1-38.2 6.9-11.8 19.6-19 33.3-18.8 20.3 0.8 36.4 17.5 36.4 37.8-0.1 20.4-16.2 37.1-36.5 37.9z m0 0";
+                    let zhuji =
+                        "path://M911.102515 579.936557C414.155513 579.936557 9.903288 449.80735 9.903288 289.968279S414.155513 0 911.102515 0s901.199226 130.129207 901.199226 289.968279S1408.049516 579.936557 911.102515 579.936557zM0 281.253385v0z m911.102515 308.58646C407.817408 589.839845 0 455.551257 0 289.968279V736.804642h2.178723C32.482785 897.039845 427.623985 1024 911.102515 1024s878.619729-126.960155 908.923791-287.195358H1822.205029V289.968279C1822.205029 455.551257 1414.387621 589.839845 911.102515 589.839845zM1822.205029 281.253385v8.714894-8.714894z";
+
+                    let nodes = [],
+                        warnNodes = [],
+                        links = [];
+
+                    function findNode(data, src) {
+                        for (let i = 0; i < data.length; i++) {
+                            if (data[i].src == src) {
+                                return data[i]
+                            }
+                        }
+                        return;
+                    }
+
+                    function makeData() {
+                        nodes = [];
+                        warnNodes = [];
+                        links = [];
+                        //生成节点元素
+                        for (let i = 0; i < mainData.length; i++) {
+                            let nodeItem = {
+                                type: "node",
+                                name: "",
+                                value: [],
+                                symbol: "",
+                                detail: {},
+                                itemStyle: {}
+                            };
+                            let item = mainData[i];
+                            nodeItem.name = item.src; //必须是唯一标识
+                            //生成坐标
+                            if (!item.x || item.x == 0) {
+                                nodeItem.value = [Math.round(Math.random() * 100), Math.round(Math
+                                    .random() *
+                                    100)]
+                            } else {
+                                nodeItem.value = [item.x, item.y];
+                            }
+                            //生成节点图标
+                            if (item.type == "主机") {
+                                nodeItem.symbol = zhuji;
+                            }
+                            if (item.type == "服务器") {
+                                nodeItem.symbol = fuwuqi;
+                            }
+                            //保存详细数据
+                            nodeItem.detail = item;
+                            nodes.push(nodeItem)
+                        }
+
+                        //生成线条
+                        for (let i = 0; i < mainData.length; i++) {
+                            for (let j = 0; j < mainData[i].tar.length; j++) {
+                                links.push({
+                                    source: mainData[i].src,
+                                    target: mainData[i].tar[j],
+                                })
+                            }
+                        }
+                        //生成告警
+                        for (let i = 0; i < mainData.length; i++) {
+                            for (let j = 0; j < mainData[i].warn.length; j++) {
+                                let nodeItem = {
+                                    type: "warn",
+                                    name: "",
+                                    value: [],
+                                    symbol: "",
+                                    detail: {},
+                                    itemStyle: {}
+                                };
+                                let item = mainData[i].warn[j];
+                                nodeItem.symbol = biaoqian;
+                                nodeItem.itemStyle = {
+                                    color: "red",
+                                };
+                                nodeItem.label = {
+                                    fontSize: 10,
+                                    formatter: function (parmas) {
+                                        return parmas.data.detail.type + parmas.data.detail.count
+                                    }
+                                }
+                                nodeItem.symbolSize = [40, 20],
+                                    nodeItem.name = nodes[i].name + "-" + item.type;
+                                nodeItem.detail = item;
+                                nodeItem.value = [nodes[i].value[0], nodes[i].value[1]]; //只适用于一种告警的时候
+                                nodeItem.symbolOffset = ["110%", 0] //查看模式时使用
+                                warnNodes.push(nodeItem);
+                            }
+                        }
+                        nodes = [...nodes, ...warnNodes];
+                    }
+                    makeData(); //处理数据,使数据格式达到echart的要求
+                    let option = {
+                        title: {
+                            text: '可拖动流程图'
+                        },
+                        grid: {
+                            left:0,
+                            right:0,
+                            bottom:0,
+                            top:0
+                        },
+                        dataZoom: [{
+                                type: 'slider',
+                                xAxisIndex: 0,
+                                filterMode: 'empty',
+
+                            },
+                            {
+                                type: 'slider',
+                                yAxisIndex: 0,
+                                filterMode: 'empty',
+                            },
+                            {
+                                type: 'inside',
+                                xAxisIndex: 0,
+                                filterMode: 'empty',
+                            },
+                            {
+                                type: 'inside',
+                                yAxisIndex: 0,
+                                filterMode: 'empty',
+                            }
+                        ],
+                        //定义X轴 
+                        xAxis: {
+                            min: -300,
+                            max: 300,
+                            type: 'value',
+                            axisLine: {
+                                onZero: false
+                            },
+                            show: true
+                        },
+                        yAxis: {
+                            min: -300,
+                            max: 300,
+                            type: 'value',
+                            axisLine: {
+                                onZero: false
+                            },
+                            show: true
+                        },
+                        series: [{
+                            //设置id很重要 
+                            id: 'main',
+                            //设置为甘特图
+                            type: 'graph',
+                            layout: 'none',
+                            coordinateSystem: 'cartesian2d',
+                            //设置球的大小
+                            symbolSize: symbolSize,
+                            label: {
+                                show: true,
+                                formatter: function (parmas) {
+                                    return parmas.data.name
+                                }
+                            },
+                            itemStyle: {
+                                color: '#666',
+                            },
+                            //设置连线形式为箭头
+                            edgeSymbol: ['circle', 'arrow'],
+                            edgeSymbolSize: [4, 10],
+                            //指定数据数组
+                            data: nodes,
+                            //指定连线方式
+                            edges: links,
+                            //指定连线颜色
+                            lineStyle: {
+                                normal: {
+                                    color: '#333'
+                                }
+                            },
+                        }],
+                    };
+
+                    myChart.setOption(option, true);
+                    myChart.on('click', function (params) {
+                        console.log("params", params);
+                    });
+                    //在demo里，必须要加setTimeout ，否则执行 myChart.convertToPixel 会报错
+                    setTimeout(function () {
+                        initGraphic();
+                        window.addEventListener('resize', updatePosition);
+                    }, 0);
+
+                    //重新定位图形元素
+                    function updatePosition() {
+                        myChart.setOption({
+                            graphic: echarts.util.map(nodes, function (item, dataIndex) {
+                                if (item.type == "node")
+                                    return {
+                                        position: myChart.convertToPixel('grid', item
+                                            .value),
+                                    };
+                            })
+                        });
+                    }
+
+                    //绘制图形元素
+                    function initGraphic() {
+                        myChart.setOption({
+                            graphic: echarts.util.map(nodes, function (item, dataIndex) {
+                                if (item.type == "node")
+                                    return {
+                                        //圆形
+                                        type: 'circle',
+                                        //将坐标转化为像素
+                                        position: myChart.convertToPixel('grid', item
+                                            .value),
+                                        shape: {
+                                            // 拖动点的大小
+                                            r: symbolSize / 2 - 2
+                                        },
+                                        symbol: item.symbol,
+                                        detail: item,
+                                        style: {
+                                            fill: '#3FA7DC50',
+                                            borderColor: '#22faf7',
+                                            borderWidth: 1,
+                                        },
+                                        //指定虚拟圈是否可见  false 可见
+                                        invisible: false,
+                                        //指定圈被拖拽（可以与不可以）
+                                        draggable: true,
+                                        onmouseup: echarts.util.curry(onPointDragging,
+                                            dataIndex),
+                                        //层级
+                                        z: 100
+                                    };
+                            })
+                        });
+                    }
+                    //图形元素拖动后， 修改节点位置
+                    function onPointDragging(dataIndex, e) {
+                        console.log('dataIndex', dataIndex);
+                        if (dataIndex < mainData.length) {
+                            let value = myChart.convertFromPixel('grid', this.position);
+                            mainData[dataIndex].x = value[0];
+                            mainData[dataIndex].y = value[1];
+                            makeData();
+                            // Update data
+                            myChart.setOption({
+                                series: [{
+                                    id: 'main',
+                                    data: nodes
+                                }]
+                            });
+                        }
+
+
+                    };
+                }
+            },
+            mounted: function () {
+                this.drawChart();
+            }
+        })
+    </script>
+</body>
+
+</html>

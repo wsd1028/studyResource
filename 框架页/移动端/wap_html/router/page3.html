@@ -1,0 +1,254 @@
+<template>
+    <ak-header data-display="true">
+        <button type="button" class="left_0 w_25 pl_3 text_al_l text_12em" id="plug_menu_left"><i class="text_14em icon-im_fenlei"></i></button>
+        <h1 class="text_al_c">瀑布流展示</h1>
+        <button type="button" class="right_0 w_25 pr_3 text_al_r text_12em" id="plug_menu_right"><i class="text_14em icon-im_fenlei"></i></button>
+    </ak-header>
+
+    <!--业务代码外层必须有ak-main元素才能正常运行，该元素用于屏幕的滚动条。弹窗或固定元素的代码可以在ak-main元素的下面写（ak-header和ak-main中间禁止写代码）。-->
+    <ak-main data-bounce="true">
+        <div class="plug_waterfall module mt_3 mb_3 wm_96">
+        </div>
+    </ak-main>
+
+    <!----------AKjs_PopupWin Start---------->
+    <dialog id="plug_MenuWin" class="dis_none fix w_50 h_100 top_0">
+        <nav class="module press bg_gray_333 h_in">
+            <h3 class="dis_block text_hidden ovh w_97 c_gray_ccc pl_3 line_h_38em">菜单展示</h3>
+            <ul>
+                <li class="bor_bottom bor_gray_222 active_gray_555" data-href="/page1">
+                    <dl class="rel pl_3 ovh list_h_36em">
+                        <dt class="fl ovh w_90 text_hidden">
+                            <i class="c_white text_al_m text_12em icon-mn_baobiao"></i>
+                            <span class="ml_05em c_white">菜单01</span>
+                        </dt>
+                        <dd class="abs wm_94 right_2 c_white text_al_r">
+                            <i class="text_08em icon-ln_qianjin_b"></i>
+                        </dd>
+                    </dl>
+                </li>
+                <li class="bor_bottom bor_gray_222 active_gray_555" data-href="/page1">
+                    <dl class="rel pl_3 ovh list_h_36em">
+                        <dt class="fl ovh w_90 text_hidden">
+                            <i class="c_white text_al_m text_12em icon-mn_baobiao"></i>
+                            <span class="ml_05em c_white">菜单02</span>
+                        </dt>
+                        <dd class="abs wm_94 right_2 c_white text_al_r">
+                            <i class="text_08em icon-ln_qianjin_b"></i>
+                        </dd>
+                    </dl>
+                </li>
+                <li class="bor_bottom bor_gray_222 active_gray_555" data-href="/page1">
+                    <dl class="rel pl_3 ovh list_h_36em">
+                        <dt class="fl ovh w_90 text_hidden">
+                            <i class="c_white text_al_m text_12em icon-mn_baobiao"></i>
+                            <span class="ml_05em c_white">菜单03</span>
+                        </dt>
+                        <dd class="abs wm_94 right_2 c_white text_al_r">
+                            <i class="text_08em icon-ln_qianjin_b"></i>
+                        </dd>
+                    </dl>
+                </li>
+                <li class="bor_bottom bor_gray_222 active_gray_555" data-href="/page1">
+                    <dl class="rel pl_3 ovh list_h_36em">
+                        <dt class="fl ovh w_90 text_hidden">
+                            <i class="c_white text_al_m text_12em icon-mn_baobiao"></i>
+                            <span class="ml_05em c_white">菜单04</span>
+                        </dt>
+                        <dd class="abs wm_94 right_2 c_white text_al_r">
+                            <i class="text_08em icon-ln_qianjin_b"></i>
+                        </dd>
+                    </dl>
+                </li>
+                <li class="bor_bottom bor_gray_222 active_gray_555" data-href="/page1">
+                    <dl class="rel pl_3 ovh list_h_36em">
+                        <dt class="fl ovh w_90 text_hidden">
+                            <i class="c_white text_al_m text_12em icon-mn_baobiao"></i>
+                            <span class="ml_05em c_white">菜单05</span>
+                        </dt>
+                        <dd class="abs wm_94 right_2 c_white text_al_r">
+                            <i class="text_08em icon-ln_qianjin_b"></i>
+                        </dd>
+                    </dl>
+                </li>
+            </ul>
+        </nav>
+    </dialog>
+    <!----------AKjs_PopupWin End---------->
+
+    <ak-footer data-display="true">
+    </ak-footer>
+</template>
+
+<script type="text/javascript">
+    //引入AKjs功能插件的区域
+
+    /*-----------------------------------------------AKjs_Popupwin (左侧方法)使用方法-------------------------------------------*/
+    $(function(){
+        $("#plug_menu_left").bind("click", function (el) {
+            el.preventDefault();
+            AKjs_Popupwin({
+                dom: "#plug_MenuWin", //弹窗内容的布局
+                hasMask: true, //是否开启遮罩层背景 (true / false)
+                maskPosition: 3, //Mask的z-index数值
+                closeBtn: "#popup_mask", //关闭弹窗按钮的Class名
+                OneButton: el.currentTarget, //点击按钮和关闭按钮通用时需要加该属性
+                toggleIcon: "text_14em icon-bt_quxiao_a", //是否点击后替换图标功能，加图标的Class名 （建议启用OneButton的参数后使用）
+                callback:function (ele,toggle) { //通过回调获取弹窗显示后的以上参数
+                    if (toggle) { //判断是否弹出弹窗
+                        $("footer").addClass("zindex_2");
+                        $("header, #ak-main, footer").removeClass("left_au").addClass("right_au");
+                        $(ele[0].dom).removeClass("dis_none").removeClass("left_au").addClass("right_au").css({"left": parseInt(-$(ele[0].dom).outerWidth())+"px"});
+                        $("header, #ak-main, footer").animate({
+                            "left": parseInt($(ele[0].dom).outerWidth())+"px"
+                        },500);
+                        $(ele[0].dom).animate({
+                            "left": 0
+                        },500);
+                    } else {
+                        $("header, #ak-main, footer").animate({
+                            "left": 0
+                        },500);
+                        $(ele[0].dom).animate({
+                            "left": parseInt(-$(ele[0].dom).outerWidth())+"px"
+                        },500);
+                        setTimeout(function() {
+                            $(ele[0].dom).addClass("dis_none");
+                        },500);
+                        setTimeout(function() {
+                            $("header, #ak-main, footer").removeClass("right_au");
+                            $(ele[0].dom).removeClass("right_au");
+                            $("footer").removeClass("zindex_2");
+                        },1000);
+                    }
+                }
+            });
+        });
+    });
+
+    /*-----------------------------------------------AKjs_Popupwin (右侧方法)使用方法-------------------------------------------*/
+    $(function(){
+        $("#plug_menu_right").bind("click", function (er) {
+            er.preventDefault();
+            AKjs_Popupwin({
+                dom: "#plug_MenuWin", //弹窗内容的布局
+                hasMask: true, //是否开启遮罩层背景 (true / false)
+                maskPosition: 3, //Mask的z-index数值
+                closeBtn: "#popup_mask", //关闭弹窗按钮的Class名
+                OneButton: er.currentTarget, //点击按钮和关闭按钮通用时需要加该属性
+                toggleIcon: "text_14em icon-bt_quxiao_a", //是否点击后替换图标功能，加图标的Class名 （建议启用OneButton的参数后使用）
+                callback:function (ele,toggle) { //通过回调获取弹窗显示后的以上参数
+                    if (toggle) { //判断是否弹出弹窗
+                        $("footer").addClass("zindex_2");
+                        $("header, #ak-main, footer").removeClass("right_au").addClass("left_au");
+                        $(ele[0].dom).removeClass("dis_none").removeClass("right_au").addClass("left_au").css({"right": parseInt(-$(ele[0].dom).outerWidth())+"px"});
+                        $("header, #ak-main, footer").animate({
+                            "right": parseInt($(ele[0].dom).outerWidth())+"px"
+                        },500);
+                        $(ele[0].dom).animate({
+                            "right": 0
+                        },500);
+                    } else {
+                        $("header, #ak-main, footer").animate({
+                            "right": 0
+                        },500);
+                        $(ele[0].dom).animate({
+                            "right": parseInt(-$(ele[0].dom).outerWidth())+"px"
+                        },500);
+                        setTimeout(function() {
+                            $(ele[0].dom).addClass("dis_none");
+                        },500);
+                        setTimeout(function() {
+                            $("header, #ak-main, footer").removeClass("left_au");
+                            $(ele[0].dom).removeClass("left_au");
+                            $("footer").removeClass("zindex_2");
+                        },1000);
+                    }
+                }
+            });
+        });
+    });
+
+    /*-----------------------------------------------AKjs_Waterfall 使用方法-------------------------------------------*/
+    $(function(){
+        $(".plug_waterfall").AKjs_Waterfall({
+            spacingWidth: 5, // 布局的元素水平间距设置
+            spacingHeight: 5, // 布局的元素垂直间距设置
+            minColCount: 2, // 最小一行显示几个？
+            itemAlign: "center", // 布局排列方式 (center|left)
+            isFadeIn: true, //是否开启浅入效果 （追加元素中的class必须有ak-fadeIn才有效果）
+            Callback: function(ele) {
+                var data = {"data": [
+                        { "src": "tibet-3.jpg" }, { "src": "tibet-2.jpg" }, { "src": "tibet-1.jpg" }, { "src": "tibet-5.jpg" }, { "src": "tibet-4.jpg" }, { "src": "tibet-6.jpg" }, { "src": "tibet-3.jpg" }, { "src": "tibet-5.jpg" }
+                    ]};
+                var str = "";
+                var templ = '<figure class="bg_white ak-fadeIn"><img src="./img/{{src}}" class="defer_none" /></figure>'
+
+                for(var i = 0; i < data.data.length; i++) {
+                    str += templ.replace("{{src}}", data.data[i].src);
+                }
+                /*元素设置*/
+                var wdropload = "<div class=\"ak-waterfall-down abs top_0 w_100\"><div class=\"ak-waterfall-load\"><span class=\"ak-waterfall-loading\"></span>加载中...</div></div>";
+                ele.parent().append(wdropload);
+                $(str).appendTo(ele);
+            },
+            ajaxCallback: function(ele, success, end) { //数据加载回调入口
+                success();
+                /*数据设置*/
+                var data = {"data": [
+                        { "src": "tibet-3.jpg" }, { "src": "tibet-2.jpg" }, { "src": "tibet-1.jpg" }, { "src": "tibet-5.jpg" }, { "src": "tibet-4.jpg" }, { "src": "tibet-6.jpg" }
+                    ]};
+                var str = "";
+                var templ = '<figure class="bg_white ak-fadeIn"><img src="./img/{{src}}" class="defer_none" /></figure>'
+
+                for(var i = 0; i < data.data.length; i++) {
+                    str += templ.replace("{{src}}", data.data[i].src);
+                }
+                /*元素设置*/
+                var wdropload = "<div class=\"ak-waterfall-down dis_none\"><div class=\"ak-waterfall-load\"><span class=\"ak-waterfall-loading\"></span>加载中...</div></div>\n" +
+                    "    <div class=\"ak-waterfall-down dis_none\"><div class=\"ak-waterfall-noData\">暂无数据</div></div>";
+                if ($(".ak-waterfall-down").length < 3) {
+                    ele.parent().append(wdropload);
+                }
+                if (ele.children().length < 200) {
+                    $(".ak-waterfall-down").eq(0).removeClass("dis_none");
+                    $(".ak-waterfall-down").eq(1).addClass("dis_none");
+                    $(str).appendTo(ele);
+                } else {
+                    $(".ak-waterfall-down").eq(0).addClass("dis_none");
+                    $(".ak-waterfall-down").eq(1).removeClass("dis_none");
+                }
+                end();
+            }
+        });
+    });
+
+</script>
+
+<style type="text/css">
+    /*样式覆盖区域*/
+</style>
+
+<!--
+* ak-header和ak-footer元素的data-display值是隐藏和显示APP的头部区域和底部菜单区域 (true / false)；
+ak-main和ak-scrollview元素的data-bounce值是滚动区域是否开启ios弹性效果的功能 (true / false)；
+button元素的data-back="true"值是识别为该按钮是返回键的意思
+//注：template，ak-header，ak-footer，script，style等这些元素在页面中不能多个使用否则代码无效；
+路由页面的布局结构使用方法（必须用以下的结构使用）：
+<template>
+    <ak-header>头部区域</ak-header>
+    <ak-main>
+        <ak-scrollview>
+            <div>中间内容</div>
+        </ak-scrollview>
+        <dialog>弹窗代码</dialog>
+    </ak-main>
+    <ak-footer>底部区域</ak-footer>
+</template>
+<script>
+    //编写当前页面的脚本代码区域
+</script>
+<style>
+    //覆盖当前界面的样式区域
+</style>
+-->

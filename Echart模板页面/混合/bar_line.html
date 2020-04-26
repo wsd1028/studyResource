@@ -1,0 +1,527 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link rel="stylesheet" href="../css/element.css">
+    <link rel="stylesheet" href="../css/iconfont/iconfont.css">
+    <title>柱状图+折线图</title>
+    <style>
+        #main {
+            display: flex;
+            flex-wrap: wrap;
+        }
+
+        .item {
+            flex-shrink: 0;
+            width: 500px;
+            height: 300px;
+            border: 1px solid #ccc;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="main">
+        <div id="mix1" class="item"></div>
+        <div id="mix2" class="item"></div>
+    </div>
+    <script src="../data/bar_line.js"></script>
+    <script src="../js/es6-shim.min.js"></script>
+    <script src="../js/vue.js"></script>
+    <script src="../js/element.js"></script>
+    <script src="../js/echarts/dist/echarts.min.js"></script>
+
+    <script>
+        var v = new Vue({
+            el: "#main",
+            data: {
+                drawMix1: function () {
+                    var myChart = echarts.init(document.getElementById("mix1"));
+                    var name = ["水渡石", "腾讯", "百度", "爱奇艺", "北京盈骏", "阿里巴巴"],
+                        now = ["516", "408", "401", "220", "187", "155"],
+                        all = ["820", "1000", "1040", "240", "500", "320"],
+                        left = ["304", "592", "639", "20", "313", "165"],
+                        time = ["-11", "-3", "6", "0", "-10", "-34"];
+                    let option = {
+                        backgroundColor: "rgb(10,78,180)",
+                        title: {
+                            text: "汇总流量",
+                            textStyle: {
+                                color: "#fff",
+                                fontSize: "16"
+                            }
+                        },
+                        grid: {
+                            left: "3%",
+                            right: "4%",
+                            bottom: "3%",
+                            containLabel: true
+                        },
+                        tooltip: {
+                            trigger: "axis",
+                            axisPointer: {
+                                type: "shadow",
+                                textStyle: {
+                                    color: "#fff"
+                                }
+                            }
+                        },
+                        legend: {
+                            // right: "15%",
+                            top: "5%",
+                            textStyle: {
+                                color: "white"
+                            },
+                            data: [
+                                "空闲带宽(G)",
+                                "计费流量(G)",
+                                "带宽总量(G)",
+                                "增减幅度(%)"
+                            ]
+                        },
+                        calculable: true,
+                        xAxis: [{
+                            type: "category",
+                            axisLine: {
+                                lineStyle: {
+                                    color: "white"
+                                }
+                            },
+                            splitLine: {
+                                show: false
+                            },
+                            axisTick: {
+                                show: true
+                            },
+                            splitArea: {
+                                show: false
+                            },
+                            axisLabel: {
+                                interval: 0
+                            },
+                            data: name
+                        }],
+                        yAxis: [{
+                                type: "value",
+                                splitLine: {
+                                    show: true
+                                },
+                                axisLine: {
+                                    lineStyle: {
+                                        color: "white"
+                                    }
+                                },
+                                axisTick: {
+                                    show: true
+                                },
+                                axisLabel: {
+                                    interval: 0
+                                },
+                                splitArea: {
+                                    show: false
+                                }
+                            },
+                            {
+                                type: "value",
+                                name: "增减幅度",
+                                nameTextStyle: {
+                                    color: "#fff"
+                                },
+                                position: "right",
+                                splitLine: {
+                                    show: false
+                                },
+                                splitLine: {
+                                    show: false
+                                },
+                                axisTick: {
+                                    show: false
+                                },
+                                axisLine: {
+                                    show: false
+                                },
+                                axisLabel: {
+                                    show: true,
+                                    formatter: "{value}%", //右侧Y轴文字显示
+                                    textStyle: {
+                                        color: "#fff"
+                                    }
+                                }
+                            }
+                        ],
+                        series: [{
+                                name: "增减幅度(%)",
+                                type: "line",
+                                yAxisIndex: 1, //使用的 y 轴的 index，在单个图表实例中存在多个 y轴的时候有用
+                                smooth: true, //平滑曲线显示
+                                showAllSymbol: true, //显示所有图形。
+                                //标记的图形为实心圆
+                                symbolSize: 3, //标记的大小
+                                itemStyle: {
+                                    //折线拐点标志的样式
+                                    color: "#0ca87d"
+                                },
+                                lineStyle: {
+                                    color: "#0ca87d"
+                                },
+                                areaStyle: {
+                                    color: "rgba(5,140,255, 0.2)"
+                                },
+                                data: time
+                            },
+                            {
+                                name: "计费流量(G)",
+                                type: "bar",
+                                stack: "总量",
+                                barMaxWidth: 50,
+                                // symbolSize:10,
+                                // symbol:'circle',
+                                itemStyle: {
+                                    normal: {
+                                        color: "#12a87f",
+                                        barBorderRadius: 0,
+                                        label: {
+                                            show: true,
+                                            position: "inside",
+                                            textStyle: {
+                                                color: "white"
+                                            },
+                                            formatter: function (p) {
+                                                return p.value > 0 ? p.value : "";
+                                            }
+                                        }
+                                    }
+                                },
+                                data: now
+                            },
+                            {
+                                name: "空闲带宽(G)",
+                                type: "bar",
+                                stack: "总量",
+                                barMaxWidth: 50,
+                                itemStyle: {
+                                    normal: {
+                                        color: "#1f8ae6",
+                                        barBorderRadius: 0,
+                                        label: {
+                                            show: true,
+                                            position: "inside",
+                                            textStyle: {
+                                                color: "white"
+                                            },
+                                            formatter: function (p) {
+                                                return p.value > 0 ? p.value : "";
+                                            }
+                                        }
+                                    }
+                                },
+                                data: left
+                            },
+                            {
+                                name: "带宽总量(G)",
+                                type: "scatter",
+                                symbolSize: 10,
+                                symbol: "circle",
+                                itemStyle: {
+                                    normal: {
+                                        color: "white",
+                                        barBorderRadius: 0,
+                                        label: {
+                                            show: true,
+                                            position: "top",
+                                            formatter: function (p) {
+                                                return p.value > 0 ? p.value : "";
+                                            }
+                                        }
+                                    }
+                                },
+                                data: all
+                            }
+                        ]
+                    };
+                    myChart.setOption(option, true);
+                },
+                drawMix2: function () {
+                    var myChart = echarts.init(document.getElementById("mix2"));
+                    var _data = JSON.parse(GetGatherGroupData);
+                    let str =
+                        "全省带宽流量(24h)，当前流出流量" +
+                        (
+                            _data.Data.OutData[_data.Data.OutData.length - 1].data /
+                            1000000000
+                        ).toFixed(1) +
+                        "G，当前带宽利用率" +
+                        (
+                            (_data.Data.OutData[_data.Data.OutData.length - 1].data /
+                                1000000000 /
+                                4800) *
+                            100
+                        ).toFixed(1) +
+                        "%";
+                    var name = [],
+                        inData = [],
+                        outData = [],
+                        preInData = [],
+                        preOutData = [],
+                        inDataFull = [],
+                        outDataFull = [],
+                        next = [],
+                        _dis = {},
+                        time = [],
+                        InPercent = [],
+                        OutPercent = []; //加入流入流出增长率
+
+                    var num = 1000000000;
+                    var newNum = 100;
+                    _data.Data.OutData.forEach(function (item) {
+                        next.push(item.time);
+                        outData.push((item.data / num).toFixed(2));
+                    });
+                    _data.Data.InData.forEach(function (item) {
+                        inData.push((item.data / num).toFixed(2));
+                    });
+                    _data.Data.LastOutData.forEach(function (item) {
+                        preOutData.push((item.data / num).toFixed(2));
+                    });
+                    _data.Data.LastInData.forEach(function (item) {
+                        preInData.push((item.data / num).toFixed(2));
+                    });
+                    //  增长率处理
+                    _data.Data.percentData.forEach(function (item) {
+                        InPercent.push((item.inPercent * newNum).toFixed(2));
+                    });
+
+                    _data.Data.percentData.forEach(function (item) {
+                        OutPercent.push((item.outPercent * newNum).toFixed(2));
+                    });
+
+                    //增长率的隔行取值 替换
+                    var cutNum = 28; //隔num行取一次值
+                    var newInPercent = []; //用来接收的新数组
+                    for (let i in InPercent) {
+                        //处理的方法
+                        if (i % cutNum === 0) {
+                            newInPercent.push(InPercent[i]);
+                        } else {
+                            newInPercent.push("");
+                        }
+                    }
+                    //
+                    var newOutPercent = []; //用来接收的新数组
+                    for (let i in OutPercent) {
+                        //处理的方法
+                        if (i % cutNum === 0) {
+
+                            newOutPercent.push(OutPercent[i]);
+                        } else {
+                            newOutPercent.push("");
+                        }
+                    }
+                    option = {
+                        backgroundColor: "rgb(10,78,180)",
+                        // 鼠标滑过阴影
+                        axisPointer: {
+                            type: "shadow"
+                        },
+                        title: {
+                            text: str,
+                            textStyle: {
+                                fontSize: 16,
+                                color: "#fff"
+                            },
+                            x: "center",
+                            y: "top",
+                            //  yuanlai
+                            subtextStyle: {
+                                color: "#ddd",
+                                fontSize: "12"
+                            }
+                        },
+                        tooltip: {
+                            trigger: "axis",
+                            axisPointer: {
+                                type: "cross",
+                                label: {
+                                    backgroundColor: "#6a7985"
+                                }
+                            }
+                        },
+                        legend: {
+                            top: "6%",
+                            itemWidth: 23,
+                            itemHeight: 13,
+                            itemGap: 10,
+                            data: [
+                                "流入流量(G)",
+                                "流出流量(G)",
+                                "同期流入(G)",
+                                "同期流出(G)",
+                                "流入流量增长率",
+                                "流出流量增长率"
+                            ],
+                            textStyle: {
+                                color: "white"
+                            }
+                        },
+                        color: [
+                            "#12A87F",
+                            "#2196F3",
+                            "#F154B1",
+                            "#ffffff",
+                            "#1f8ae6",
+                            "#12a87f"
+                        ],
+                        toolbox: {
+                            feature: {}
+                        },
+                        grid: {
+                            left: "3%",
+                            right: "4%",
+                            bottom: "3%",
+                            containLabel: true
+                        },
+                        xAxis: [{
+                            splitLine: {
+                                show: false
+                            }, //去除网格线
+
+                            type: "category",
+
+                            data: next,
+                            axisLine: {
+                                lineStyle: {
+                                    color: "#fff"
+                                }
+                            },
+                            axisLabel: {
+                                textStyle: {
+                                    color: "#fff"
+                                }
+                            }
+                        }],
+                        yAxis: [{
+                                name: "单位(G)",
+                                splitLine: {
+                                    show: false
+                                }, //去除网格线
+                                type: "value",
+                                offset: 10,
+                                axisLine: {
+                                    lineStyle: {
+                                        color: "#fff",
+                                        zIndex: 100
+                                    }
+                                },
+                                axisLabel: {
+                                    textStyle: {
+                                        color: "#fff"
+                                    }
+                                }
+                            },
+                            //
+                            {
+                                splitLine: {
+                                    show: false
+                                }, //去除网格线
+                                type: "value",
+                                name: "百分比",
+                                nameLocation: "end",
+
+                                axisLine: {
+                                    lineStyle: {
+                                        color: "#fff",
+                                        zIndex: 100
+                                    }
+                                },
+                                axisLabel: {
+                                    formatter: "{value} %",
+                                    textStyle: {
+                                        color: "#fff"
+                                    }
+                                }
+                            }
+                            //
+                        ],
+                        series: [{
+                                name: "流出流量(G)",
+                                type: "line",
+
+                                data: outData,
+                                lineStyle: {
+                                    normal: {
+                                        color: "#12A87F",
+                                        width: 2,
+                                        opacity: "1"
+                                    }
+                                }
+                            },
+                            {
+                                name: "流入流量(G)",
+                                type: "line",
+                                stack: "总量",
+                                data: inData,
+                                lineStyle: {
+                                    normal: {
+                                        color: "#2196F3",
+                                        width: 2,
+                                        opacity: "1"
+                                    }
+                                }
+                            },
+                            {
+                                name: "同期流入(G)",
+                                type: "line",
+                                data: preInData,
+                                lineStyle: {
+                                    normal: {
+                                        color: "#F154B1",
+                                        width: 2,
+                                        opacity: "1"
+                                    }
+                                }
+                            },
+                            {
+                                name: "同期流出(G)",
+                                type: "line",
+                                data: preOutData,
+                                lineStyle: {
+                                    normal: {
+                                        color: "#ffffff",
+                                        width: 2,
+                                        opacity: "1"
+                                    }
+                                }
+                            },
+                            {
+                                name: "流入流量增长率",
+                                type: "bar",
+                                barGap: 0,
+                                yAxisIndex: 1,
+                                barWidth: 10,
+                                data: newInPercent
+                            },
+                            {
+                                name: "流出流量增长率",
+                                type: "bar",
+                                yAxisIndex: 1,
+                                barWidth: 10, //柱图宽度
+                                data: newOutPercent
+                            }
+                        ]
+                    };
+                    myChart.setOption(option, true);
+                }
+            },
+            methods: {},
+            mounted: function () {
+                this.drawMix1();
+                this.drawMix2();
+            }
+        })
+    </script>
+</body>
+
+</html>

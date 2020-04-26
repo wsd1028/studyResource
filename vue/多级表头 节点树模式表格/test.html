@@ -1,0 +1,369 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <link rel="stylesheet" href="./css/element.css" />
+
+
+    <title>质量分析</title>
+    <style>
+        .nodename {
+            line-height: 50px;
+        }
+
+        body,
+        html {
+            margin: 0;
+            padding: 0;
+            width: 100%;
+            height: 100%;
+        }
+
+        [v-cloak] {
+            display: none;
+        }
+
+        *::-webkit-scrollbar-thumb {
+            background-color: #999;
+            border-radius: 10px;
+        }
+
+        *::-webkit-scrollbar {
+            width: 10px;
+            height: 10px;
+        }
+
+        *::-webkit-scrollbar-track {
+            background-color: transparent;
+        }
+
+        .el-breadcrumb {
+            padding-bottom: 20px;
+            border-bottom: 1px solid #e5e5e5;
+            margin-bottom: 20px;
+        }
+
+        .RouteError {
+            text-align: center;
+            height: 50px;
+            line-height: 50px;
+            margin-top: 140px;
+        }
+
+        * {
+            font-family: "\5FAE\8F6F\96C5\9ED1", "\5B8B\4F53", "\9ED1\4F53";
+            margin: 0;
+            padding: 0;
+        }
+
+        .router-header {
+            display: flex;
+        }
+
+        .router-header span {
+            display: block;
+        }
+
+        .el-cascader {
+            display: block;
+        }
+
+        #main {
+            text-align: center;
+            padding: 20px;
+            width: 100%;
+            height: 100%;
+        }
+
+        .routerMessOut {
+            height: 400px;
+            overflow: auto !important;
+            margin: 20px 0;
+            border: 1px solid #ebeef5;
+            width: 100%;
+        }
+
+        #routerMess {
+            width: 3000px !important;
+            height: 100%;
+        }
+
+        #mycharts {
+            width: 100%;
+            height: 300px;
+        }
+
+        .el-dialog__body {
+            padding-top: 0;
+        }
+
+        .all-error {
+            font-size: 12px;
+            margin-bottom: 20px;
+        }
+
+        .all-error .el-alert__content {
+            display: flex;
+        }
+
+        .gatherSysForm {
+            text-align: left;
+        }
+
+        .error-item {
+            display: flex;
+            align-items: center;
+            margin-right: 20px;
+            line-height: 18px;
+        }
+
+        .point {
+            cursor: pointer;
+        }
+
+        .my-table>.el-table {
+            flex: inherit;
+            width: auto;
+        }
+
+        .error-span {
+            display: inline-block;
+            cursor: pointer;
+            width: 14px;
+            height: 14px;
+            margin-right: 5px;
+            border-radius: 100%;
+        }
+
+        .el-table_1_column_1_column_3 {
+            padding: 10px !important;
+
+        }
+
+        /* html,
+    body,
+    #main {
+      height: 100%;
+    } */
+
+        .my-table {
+            width: min-content;
+            display: flex;
+            align-items: flex-start;
+        }
+
+        .primary {
+            background-color: #909399;
+        }
+
+        .success {
+            background-color: #67c23a;
+        }
+
+        .info {
+            background-color: #909399;
+        }
+
+        .warning {
+            background-color: #e6a23c;
+        }
+
+        .danger {
+            background-color: #f56c6c;
+        }
+
+        .tableTitle {
+            text-align: center;
+        }
+
+        div {
+            box-sizing: border-box;
+        }
+
+        .itd {
+            border-right: none !important;
+            border-bottom: none !important;
+        }
+
+        div {
+            box-sizing: border-box;
+        }
+
+        .table-div>table:last-child td {
+            border-right: none;
+        }
+
+        .table-cole .my-table2 tr>td:first-child {
+            border-left: none;
+        }
+
+
+
+        div {
+            box-sizing: border-box;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            text-align: center;
+        }
+
+        .content th,
+        td {
+            border: 1px solid #e5e5e5;
+            height: 50px;
+            /* line-height: 50px; */
+            box-sizing: border-box;
+        }
+
+        .table2 tr td:nth-child(1) {
+            border-left: 0;
+        }
+
+        .table2 tr td:nth-last-child(1) {
+            border-right: 0;
+        }
+
+        .table2 tr:nth-child(1) td {
+            border-top: 0;
+        }
+
+        .table2 tr:last-child() td {
+            border-bottom: 0;
+        }
+
+        .w200 {
+            width: 200px;
+        }
+
+        .title {
+            font-size: 14px;
+            font-weight: bold;
+            background-color: #f2f2f2;
+        }
+
+        .text {
+            font-size: 12px;
+            text-align: center;
+        }
+
+        /* 节点树样式 */
+        .node-sel {
+            width: 170px;
+        }
+
+        .el-select-dropdown__item.hover {
+            background-color: #fff;
+        }
+
+        .el-scrollbar .el-scrollbar__view .el-select-dropdown__item {
+            height: auto;
+            max-height: 274px;
+            overflow: hidden;
+            overflow-y: auto;
+        }
+
+        .el-select-dropdown__item.selected {
+            font-weight: normal;
+        }
+
+        ul li>>>.el-tree .el-tree-node__content {
+            height: auto;
+            padding: 0 20px;
+        }
+
+        .el-tree-node__label {
+            font-weight: normal;
+        }
+
+        .el-tree>>>.is-current .el-tree-node__label {
+            color: #409eff;
+            font-weight: 700;
+        }
+
+        .el-tree>>>.is-current .el-tree-node__children .el-tree-node__label {
+            color: #606266;
+            font-weight: normal;
+        }
+
+        /* 节点树样式 */
+        .wsd {
+            width: 100%;
+            overflow: auto;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="main" element-loading-text="加载中" element-loading-spinner="el-icon-loading">
+        <div class="wsd">
+            <div class="my-table">
+              <el-table border v-for="(nodeItem,nodeIndex) in mainData.entityArea" :data="entityArea">
+                <el-table-column :label="nodeItem.NodeName" align="center">
+                  <el-table-column class="my-row" align="center" :label="devItem.DevName"
+                    v-for="(devItem,devIndex) in nodeItem.entityHarvester" width="300px">
+                    <template slot-scope="scope">
+                      <el-table :data="devItem.items" width="100%" border class="my-table2">
+                        <el-table-column label="采集目标" align="center" prop="siteName">
+                        </el-table-column>
+                        <el-table-column label="平均延时(ms)" align="center" prop="time">
+                          <template slot-scope="scopeTime">
+                            <td class="text" v-show="showRule.type=='number'">
+                              <span v-cloak class="point" :data-site="scopeTime.row.site" :data-area="devItem.areaIP"
+                                :data-nodeid="devItem.NodeID" :data-title="scopeTime.row.siteName">
+                                {{ scopeTime.row.time || "" }}
+                              </span>
+                            </td>
+                            <td v-show="showRule.type=='img'" class="text itd">
+                              <i class="error-span info" v-show="scopeTime.row.time>=800" :data-nodeid="devItem.NodeID"
+                                :data-site="scopeTime.row.site" :data-area="devItem.areaIP"
+                                :data-title="scopeTime.row.siteName"></i>
+                              <i :data-nodeid="devItem.NodeID" class="error-span danger"
+                                v-show="scopeTime.row.time>=600&&item.time<800" :data-site="scopeTime.row.site"
+                                :data-area="devItem.areaIP" :data-title="scopeTime.row.siteName"></i>
+                              <i class="error-span warning" v-show="scopeTime.row.time>=200&&item.time<600"
+                                :data-nodeid="devItem.NodeID" :data-site="scopeTime.row.site" :data-area="devItem.areaIP"
+                                :data-title="scopeTime.row.siteName"></i>
+                              <i class="error-span success" v-show="scopeTime.row.time<200" :data-nodeid="devItem.NodeID"
+                                :data-site="scopeTime.row.site" :data-area="devItem.areaIP"
+                                :data-title="scopeTime.row.siteName"></i>
+                            </td>
+                          </template>
+                        </el-table-column>
+                      </el-table>
+                    </template>
+                  </el-table-column>
+                </el-table-column>
+              </el-table>
+            </div>
+          </div>
+    </div>
+    <script src="./js/es6-shim.min.js"></script>
+    <script src="./js/vue.js"></script>
+    <script src="./js/element.js"></script>
+    <script src="./js/echarts/dist/echarts.min.js"></script>
+    <script>
+        var v = new Vue({
+            el: "#main", data: {
+                showRule: {
+                    type: "img",
+                    text: "数值显示"
+                },
+                entityArea: [{ name: "ed" }],
+                mainData: { "name": "机房出口网络探针", "entityArea": [{ "NodeID": 20005, "NodeName": "湖南省移动公司", "entityHarvester": [{ "MID": 21, "NodeID": 20005, "areaIP": "192.3.68.2", "DevName": "85", "items": [] }, { "MID": 22, "NodeID": 20005, "areaIP": "12.3.5.8", "DevName": "852", "items": [] }, { "MID": 23, "NodeID": 20005, "areaIP": "111.23.13.142", "DevName": "东片区9楼可视化平台探针", "items": [{ "time": "2", "site": "36.158.194.137", "siteName": "test" }] }, { "MID": 24, "NodeID": 20005, "areaIP": "183.214.2.182", "DevName": "东片区8楼可视化平台探针", "items": [{ "time": "2", "site": "36.158.194.137", "siteName": "test" }] }, { "MID": 25, "NodeID": 20005, "areaIP": "111.8.3.62", "DevName": "星沙3楼可视化平台探针", "items": [{ "time": "2", "site": "36.158.194.137", "siteName": "test" }] }, { "MID": 27, "NodeID": 20005, "areaIP": "36.158.195.26", "DevName": "湘潭3楼可视化平台探针", "items": [{ "time": "0", "site": "36.158.194.137", "siteName": "test" }] }] }, { "NodeID": 20005, "NodeName": "湖南省移动公司", "entityHarvester": [{ "MID": 21, "NodeID": 20005, "areaIP": "192.3.68.2", "DevName": "85", "items": [] }, { "MID": 22, "NodeID": 20005, "areaIP": "12.3.5.8", "DevName": "852", "items": [] }, { "MID": 23, "NodeID": 20005, "areaIP": "111.23.13.142", "DevName": "东片区9楼可视化平台探针", "items": [{ "time": "2", "site": "36.158.194.137", "siteName": "test" }] }, { "MID": 24, "NodeID": 20005, "areaIP": "183.214.2.182", "DevName": "东片区8楼可视化平台探针", "items": [{ "time": "2", "site": "36.158.194.137", "siteName": "test" }] }, { "MID": 25, "NodeID": 20005, "areaIP": "111.8.3.62", "DevName": "星沙3楼可视化平台探针", "items": [{ "time": "2", "site": "36.158.194.137", "siteName": "test" }] }, { "MID": 27, "NodeID": 20005, "areaIP": "36.158.195.26", "DevName": "湘潭3楼可视化平台探针", "items": [{ "time": "0", "site": "36.158.194.137", "siteName": "test" }] }] }, { "NodeID": 20006, "NodeName": "长沙市移动分公司", "entityHarvester": [{ "MID": 14, "NodeID": 20006, "areaIP": "192.168.111.10", "DevName": "采集机", "items": [{ "time": "34", "site": "61.139.2.69", "siteName": "SC_DNS" }] }] }] }
+
+            }, mounted: function () {
+                let that = this;
+                // that.getMainData();
+                // that.getNode();
+                // that.getDevList();
+            },
+        });
+    </script>
+</body>
+
+</html>

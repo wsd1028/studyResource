@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link rel="stylesheet" href="./css/element.css">
+    <link rel="stylesheet" href="./css/iconfont/iconfont.css">
+    <title>仪表盘</title>
+    <style>
+        #main {
+            display: flex;
+            flex-wrap: wrap;
+        }
+
+        .item {
+            flex-shrink: 0;
+            width: 300px;
+            height: 300px;
+            border: 1px solid #ccc;
+
+        }
+    </style>
+</head>
+
+<body>
+    <div id="main">
+        <div id="gauge1" class="item"></div>
+        <div id="gauge2" class="item"></div>
+    </div>
+    <script src="./js/es6-shim.min.js"></script>
+    <script src="./js/vue.js"></script>
+    <script src="./js/element.js"></script>
+    <script src="./js/echarts/dist/echarts.min.js"></script>
+    <script>
+        var v = new Vue({
+            el: "#main",
+            data: {},
+            methods: {
+                drawGauge1: function () {
+                    let data = {
+                        min: 0,
+                        max: 2700,
+                        name: "陈家坪",
+                        value: 800
+                    };
+                    let myChart = echarts.init(document.getElementById("gauge1"));
+                    let option = {
+                        backgroundColor: "rgb(10,78,180)",
+                        title: {
+                            textStyle: {
+                                color: "#fff",
+                                fontSize: "24"
+                            }
+                        },
+                        series: {
+                            name: "城市",
+                            title: {
+                                textStyle: {
+                                    color: "#fff"
+                                },
+                                fontSize: 24,
+                                offsetCenter: [0, "20%"]
+                            },
+                            type: "gauge",
+                            splitNumber: 1, //刻度数量
+                            min: data.min,
+                            max: data.max,
+                            padding: 0,
+                            center: ["50%", "50%"],
+                            radius: "80%",
+                            detail: {
+                                offsetCenter: [0, "-20%"],
+                                formatter: "已用{value}%",
+                                textStyle: {
+                                    fontSize: 14,
+                                    color: "white"
+                                }
+                            },
+                            axisLine: {
+                                show: false,
+                                lineStyle: {
+                                    // 属性lineStyle控制线条样式
+                                    color: [
+                                        [(data.value / data.max).toFixed(1), "#11a8ab"],
+                                        [1, "rgba(255,255,255,0.3)"]
+                                    ],
+                                    width: 12,
+                                    borderRadius: 30
+                                }
+                            },
+                            axisTick: {
+                                show: false,
+                                borderRadius: 30,
+                                lineStyle: {
+                                    color: "#ddd",
+                                    width: 1
+                                },
+                                length: -2,
+                                splitNumber: 3
+                            },
+                            pointer: {
+                                show: false
+                            },
+                            splitLine: {
+                                show: false,
+                                length: -5,
+                                lineStyle: {
+                                    color: "#ddd"
+                                }
+                            },
+                            axisLabel: {
+                                distance: -20,
+                                textStyle: {
+                                    color: "#fff",
+                                    fontSize: "14"
+                                }
+                            },
+                            data: [{
+                                value: ((data.value / data.max) * 100).toFixed(1),
+                                name: data.name
+                            }]
+                        }
+                    };
+                    myChart.setOption(option, true);
+                },
+                drawGauge2: function () {
+                    let myChart = echarts.init(document.getElementById("gauge2"));
+                    let _data = [{
+                            ShowValue: "0.6",
+                            ShowName: "湘潭",
+                            Id: 5
+                        },
+                        {
+                            ShowValue: "0.95",
+                            ShowName: "云谷",
+                            Id: 4
+                        },
+                        {
+                            ShowValue: "1.22",
+                            ShowName: "东片区",
+                            Id: 1
+                        },
+                        {
+                            ShowValue: "1.7",
+                            ShowName: "西片区",
+                            Id: 2
+                        },
+                        {
+                            ShowValue: "1.8",
+                            ShowName: "分公司",
+                            Id: 6
+                        },
+                        {
+                            ShowValue: "2.6",
+                            ShowName: "星沙",
+                            Id: 3
+                        }
+                    ];
+                    var name = [],
+                        arr = [],
+                        pin = 0;
+                    _data.forEach(function (item, i) {
+                        name.push(item.ShowName);
+                        arr.push(item.ShowValue);
+                        pin += parseInt(item.ShowValue);
+                    });
+                    let option = {
+                        backgroundColor: "rgb(10,78,180)",
+                        title: {
+                            text: "带宽使用概况",
+                            left: "center",
+                            textStyle: {
+                                color: "#fff",
+                                fontSize: 16,
+                                fontWeight: "normal"
+                            }
+                        },
+                        series: {
+                            title: {
+                                show: false
+                            },
+                            type: "gauge",
+                            splitNumber: 1, //刻度数量
+                            min: 0,
+                            max: 9.2,
+                            padding: 0,
+                            center: ["50%", "50%"],
+                            radius: "80%",
+                            detail: {
+                                offsetCenter: [0, 0],
+                                formatter: "已用{value|{value}}%",
+                                textStyle: {
+                                    fontSize: 14,
+                                    color: "white"
+                                },
+                                rich: {
+                                    value: {
+                                        color: "#11a8ab",
+                                        fontSize: 28
+                                    }
+                                }
+                            },
+                            axisLine: {
+                                show: false,
+                                lineStyle: {
+                                    // 属性lineStyle控制线条样式
+                                    color: [
+                                        [((pin / _data.length).toFixed(1) / pin).toFixed(1),
+                                            "#11a8ab"
+                                        ],
+                                        [1, "rgba(255,255,255,0.3)"]
+                                    ],
+                                    width: 14
+                                }
+                            },
+                            axisTick: {
+                                show: false,
+                                lineStyle: {
+                                    color: "#ddd",
+
+                                    width: 1
+                                },
+                                length: -2,
+                                splitNumber: 3
+                            },
+                            pointer: {
+                                show: false
+                            },
+                            splitLine: {
+                                show: false,
+                                length: -5,
+                                lineStyle: {
+                                    color: "#ddd"
+                                }
+                            },
+                            axisLabel: {
+                                distance: -20,
+                                textStyle: {
+                                    color: "#fff",
+                                    fontSize: "14"
+                                }
+                            },
+                            data: [{
+                                value: (pin / _data.length).toFixed(1),
+                                name: "w4sd"
+                            }]
+                        }
+                    };
+
+                    myChart.setOption(option, true);
+                },
+            },
+            mounted: function () {
+                this.drawGauge1();
+                this.drawGauge2();
+            }
+        })
+    </script>
+</body>
+
+</html>

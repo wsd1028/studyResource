@@ -1,0 +1,12 @@
+﻿@charset "utf-8";
+/*
+™ Author:Mr Wdder,Mr zhangshoufu
+* Mail:wdder@163.com
+© Blog:http://story.wdder.cn
+* QQ:601168065/wdder@163.com
+® Creat Date:2017-04-05
+布局、版面 layout.css
+*/
+.wrapper { width: 100%; }
+.header { width: 100%; height: auto; margin: 0 auto; overflow: hidden; }
+.container { width: 1180px; height: auto; margin: 0 auto; padding: 0; }

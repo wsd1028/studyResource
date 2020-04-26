@@ -1,0 +1,1142 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>大屏</title>
+    <link rel="stylesheet" href="./css/element.css">
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+        }
+
+        [v-cloak] {
+            display: none;
+        }
+
+        html,
+        body {
+            height: 100%;
+        }
+
+        .tittle {
+            color: #fff;
+            font-size: 18px;
+            text-align: center;
+            font-weight: bold;
+            height: 4%;
+        }
+
+        .w {
+            overflow: hidden;
+            height: 100%;
+            width: 100%;
+            padding: 20px;
+            box-sizing: border-box;
+            background: url(./images/new_bj.jpg);
+            background-size: cover;
+        }
+
+        .contTab {
+            width: 100%;
+            height: 96%;
+        }
+
+        /*网管监控*/
+        .wg .a,
+        .wg .b {
+            float: left;
+            height: 100%;
+            width: 49.5%;
+            margin-left: 1%;
+            box-sizing: border-box;
+        }
+
+        .wg .a {
+            margin-left: 0;
+        }
+
+        /*.wg .b{background: url(/mf/Images/boxLine.png) !important;background-size: 100% 100% !important}*/
+        .leftFirst,
+        #Eb {
+            height: 49%;
+            width: 100%;
+            background: rgba(14, 41, 128, 0.5) !important;
+            box-shadow: 0px 1px 5px rgba(0, 0, 0, 0.3);
+            margin-top: 1%;
+            margin-bottom: 2.3%;
+            padding: 20px;
+            box-sizing: border-box;
+
+        }
+
+        #Eb div:first-child {
+            height: 100% !important;
+            width: 100% !important;
+        }
+
+        canvas {
+            height: 100% !important;
+            width: 100% !important;
+        }
+
+        .leftFirst {
+            margin-top: 0;
+            overflow: hidden;
+            position: relative;
+        }
+
+        #Ea {
+            height: 100%;
+            width: 100%;
+        }
+
+        .selectBox {
+            position: absolute;
+            right: 20px;
+            top: 20px;
+        }
+
+        .selectBox .el-input__inner {
+            background-color: rgba(255, 255, 255, 0);
+            color: #fff;
+        }
+
+        .selectBox .el-input {
+            width: 100px;
+        }
+
+        .el-select-dropdown {
+            width: 100px;
+        }
+
+        .rt,
+        .rb {
+            height: 49%;
+            width: 100%;
+            margin-top: 1%;
+            margin-bottom: 2.3%;
+            background: rgba(14, 41, 128, 0.5) !important;
+            box-shadow: 0px 1px 5px rgba(0, 0, 0, 0.3);
+            border-radius: 5px;
+        }
+
+        .rb {
+            position: relative;
+            padding: 20px;
+            box-sizing: border-box;
+        }
+
+        .rb .ll_p {
+            position: absolute;
+            right: 10px;
+            top: 18px;
+            color: white;
+            font-size: 14px;
+        }
+
+        .rb .ll_p img {
+            width: 20px;
+            margin-right: 5px;
+            vertical-align: middle;
+        }
+
+        #gauge0,
+        #gauge1,
+        #gauge2,
+        #gauge3 {
+            height: 49.3%;
+            width: 49.3%;
+            float: left;
+            margin-left: 0.8%;
+            padding: 10px;
+            box-sizing: border-box;
+        }
+
+        #gauge0,
+        #gauge1 {
+            margin-top: 1.4%;
+        }
+
+        .rt {
+            margin-top: 0;
+            position: relative;
+        }
+
+        #gauge0,
+        #gauge2 {
+            margin-left: 0;
+        }
+
+        #Eg,
+        #Eh,
+        #Ei,
+        #Ej,
+        #Ek {
+            height: 100%;
+            width: 19.5%;
+            float: left;
+            margin-right: 0.5%;
+        }
+
+        .customerTop {
+            position: absolute;
+            top: 10px;
+            left: 20px;
+            color: #fff;
+            font-size: 14px;
+            font-weight: 600;
+        }
+
+        /*top5切换*/
+        .l_l,
+        .r_r {
+            float: left;
+            height: 100%;
+            position: relative;
+        }
+
+        .l_l {
+            width: 55%;
+            margin-right: 1%;
+        }
+
+        .r_r {
+            width: 44%;
+        }
+
+        .r_r {
+            margin-right: 0;
+        }
+
+        .l_top,
+        .l_down,
+        .r_top,
+        .r_down {
+            width: 100%;
+            height: 49.5%;
+            margin-top: 1%;
+            overflow: hidden;
+        }
+
+        .l_top,
+        .l_down {
+            background: #192b48 !important;
+            padding: 10px;
+            box-sizing: border-box;
+        }
+
+        .l_top,
+        .r_top {
+            margin-top: 0;
+        }
+
+        .r1,
+        .r2,
+        .r3,
+        .r4 {
+            width: 49.5%;
+            height: 100%;
+            margin-right: 1%;
+            background: #192b48 !important;
+            float: left;
+            padding: 10px;
+            box-sizing: border-box;
+        }
+
+        .r2,
+        .r4 {
+            margin-right: 0;
+        }
+
+        #gauge1_d1,
+        #gauge1_d2 {
+            height: 100%;
+            width: 50%;
+            float: left;
+        }
+
+        .el-tabs__item {
+            color: white;
+        }
+
+        .el-tabs__nav-wrap::after {
+            background-color: #0d4261;
+        }
+
+
+        #custFlux {
+            width: 100%;
+            height: 90%;
+        }
+
+        .el-tabs__item:hover {
+            color: #0ca87d;
+        }
+
+        .el-tabs__item.is-active {
+            color: #0ca87d;
+        }
+
+        .el-tabs__active-bar {
+            background-color: #0ca87d;
+        }
+
+        .el-tabs__nav-wrap::after {
+            background-color: #1c75d1;
+        }
+
+        .el-select .el-input.is-focus .el-input__inner {
+            border-color: #fff;
+        }
+
+        .el-select .el-input__inner:focus {
+            border-color: #fff;
+        }
+
+        .rightFirst {
+            position: absolute;
+            width: 100%;
+            padding: 10px 20px;
+            box-sizing: border-box;
+            color: white;
+        }
+
+        .rightFirst .p1 {
+            font-size: 16px;
+            float: left;
+            font-weight: 600;
+        }
+
+        .rightFirst .p2 {
+            font-size: 12px;
+            float: right;
+        }
+
+        .detail {
+            color: #fff;
+            clear: both;
+            text-align: center;
+        }
+
+        .rightFirst .p2 .s1,
+        .rightFirst .p2 .s3 {
+            width: 23px;
+            height: 13px;
+            display: inline-block;
+            vertical-align: middle;
+            border-radius: 3px;
+            background: #0ca87d;
+        }
+
+        .rightFirst .p2 .s1 {
+            background: #5a6fb2;
+            margin-right: 5px;
+        }
+
+        .rightFirst .p2 .s2 {
+            margin-right: 8px;
+        }
+
+        .el-carousel__mask,
+        .el-cascader-menu,
+        .el-cascader-menu__item.is-disabled:hover,
+        .el-collapse-item__header,
+        .el-collapse-item__wrap {
+            background-color: transparent;
+        }
+    </style>
+</head>
+<!-- /images/bigScreen/body_blank.jpg -->
+
+<body>
+    <div class="w" id="app" v-cloak>
+        <div class="tittle">与现实生活的流程、逻辑保持一致，遵循用户习惯的语言和概念</div>
+        <div class="contTab wg">
+            <div class="a">
+                <div class="leftFirst">
+                    <div id="Ea"></div>
+                </div>
+                <div id="Eb"></div>
+            </div>
+            <div class="b">
+                <div class="rt">
+                    <div class="rightFirst">
+                        <p class="p1">重点机房出口流量</p>
+                        <p class="p2">
+                            <span class="s1"></span>
+                            <span class="s2">剩余流量(G)</span>
+                            <span class="s3"></span>
+                            <span class="s4">已用流量(G)</span>
+                        </p>
+                    </div>
+                    <div id="gauge0"></div>
+                    <div id="gauge1"></div>
+                    <div id="gauge2"></div>
+                    <div id="gauge3"></div>
+                </div>
+                <div class="rb">
+                    <el-tabs v-model="activeName" v-on:tab-click="handleClick">
+                        <el-tab-pane v-for="(tableList,index) in tableDate" :key="index" :label="tableList"
+                            :name="index+''" :lazy="true">
+                        </el-tab-pane>
+                    </el-tabs>
+                    <div id="custFlux"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script src="./data/data.js"></script>
+    <script src="./js/echarts/dist/echarts.min.js"></script>
+    <script src="./js/linq.min.js"></script>
+    <script src="./js/vue.js"></script>
+    <script src="./js/element.js"></script>
+    <script src="./js/moment.js"></script>
+    <script>
+        var app = new Vue({
+            el: "#app",
+            data: {
+                activeName: "0",
+                tableDate: [],
+                custFlux: null,
+                Ea: null,
+                Eb: null,
+                gauge0: null,
+                gauge1: null,
+                gauge2: null,
+                gauge3: null,
+                custFluxTime: null,
+                gaugeTime: null,
+            },
+            methods: {
+                //右上
+                getGauge() {
+                    let that = this;
+                    let data = {
+                        "Code": 1,
+                        "Data": [{
+                            "Name": "全省出口",
+                            "GatherId": 23775,
+                            "FluxData": {
+                                "Speed": 9600000000000.0,
+                                "Flux": 4263214676181.0654
+                            },
+                            "Compare": -1
+                        }, {
+                            "Name": "九华",
+                            "GatherId": 23479,
+                            "FluxData": {
+                                "Speed": 1000000000000.0,
+                                "Flux": 591237561499.57336
+                            },
+                            "Compare": -1
+                        }, {
+                            "Name": "麓谷",
+                            "GatherId": 100051,
+                            "FluxData": {
+                                "Speed": 6800000000000.0,
+                                "Flux": 2711235610831.9512
+                            },
+                            "Compare": -1
+                        }, {
+                            "Name": "星沙",
+                            "GatherId": 24596,
+                            "FluxData": {
+                                "Speed": 1800000000000.0,
+                                "Flux": 998701290543.46619
+                            },
+                            "Compare": 1
+                        }, {
+                            "Name": "星沙2",
+                            "GatherId": 24596,
+                            "FluxData": {
+                                "Speed": 1800000000000.0,
+                                "Flux": 998701290543.46619
+                            },
+                            "Compare": 1
+                        }],
+                        "Descr": null
+                    };
+                    var _data = data;
+                    var pro = 1000000000;
+                    let index = 0;
+                    let title = "", id = "", use = 0, all = 0, state = 0;
+                    for (let i = index; i < 4; i++) {
+                        if (data.Data[i]) {
+                            index = i;
+                            id = "gauge" + i;
+                            title = data.Data[i].Name;
+                            state = data.Data[i].Compare;
+                            use = parseInt((data.Data[i].FluxData.Flux / pro).toFixed(0));
+                            all = parseInt((data.Data[i].FluxData.Speed / pro).toFixed(0));
+                            that.drawGauge({ id, title, use, all, state })
+                        }
+                    }
+                    this.gaugeTime = setInterval(function () {
+                        for (let i = 0; i < 4; i++) {
+                            index++;
+                            if (!data.Data[index]) {
+                                index = 0;
+                            }
+                            id = "gauge" + i;
+                            title = data.Data[index].Name;
+                            state = data.Data[index].Compare;
+                            use = parseInt((data.Data[index].FluxData.Flux / pro).toFixed(0));
+                            all = parseInt((data.Data[index].FluxData.Speed / pro).toFixed(0));
+                            that.drawGauge({ id, title, use, all, state });
+                        }
+                    }, 1000 * 30);
+                },
+                drawGauge(data) {
+                    let {
+                        id,
+                        state,
+                        use,
+                        title,
+                        all
+                    } = data;
+                    this[id] = echarts.init(document.getElementById(id));
+                    let option = {
+                        title: {
+                            text: title,
+                            textStyle: {
+                                color: "#fff",
+                                fontSize: "16"
+                            },
+                            top: "35%",
+                            left: "15%",
+                            subtext: use + "(G) {b|}",
+                            subtextStyle: {
+                                rich: {
+                                    b: {
+                                        backgroundColor: {
+                                            image: state == 1 ?
+                                                "./images/room_up.png" :
+                                                "./images/room_down.png"
+                                        }
+                                    }
+                                },
+                                color: "#fff",
+                                fontSize: 12
+                            }
+                        },
+
+                        series: {
+                            name: "业务指标",
+                            type: "gauge",
+                            splitNumber: 1, //刻度数量
+                            min: 0,
+                            max: all.toFixed(1),
+                            textStyle: {
+                                fontSize: 12
+                            },
+                            center: ["70%", "60%"],
+                            radius: "80%",
+                            detail: {
+                                offsetCenter: [0, 0],
+                                formatter: "{value}%",
+                                textStyle: {
+                                    fontSize: 28,
+                                    color: "white"
+                                },
+                                top: "-20%"
+                            },
+                            title: {
+                                textStyle: {
+                                    color: "#fff"
+                                },
+                                offsetCenter: [0, "70%"]
+                            },
+                            axisLine: {
+                                show: false,
+                                lineStyle: {
+                                    // 属性lineStyle控制线条样式
+                                    color: [
+                                        [
+                                            (
+                                                use /
+                                                all
+                                            ).toFixed(1),
+                                            "#12a87f"
+                                        ],
+                                        [1, "#5a6fb2"]
+                                    ],
+                                    width: 10
+                                }
+                            },
+                            axisTick: {
+                                show: false,
+                                lineStyle: {
+                                    color: "#ddd",
+                                    width: 1
+                                },
+                                length: -2,
+                                splitNumber: 3
+                            },
+                            pointer: {
+                                show: false
+                            },
+                            splitLine: {
+                                show: false,
+                                length: -5,
+                                lineStyle: {
+                                    color: "#ddd"
+                                }
+                            },
+                            axisLabel: {
+                                distance: -20,
+                                textStyle: {
+                                    color: "white",
+                                    fontSize: "16"
+                                }
+                            },
+
+                            data: [{
+                                value: ((use / all) * 100).toFixed(0)
+                            }]
+                        }
+                    };
+                    this[id].setOption(option, true);
+                },
+                //右下
+                getCtsuFlux(index) {
+                    let that = this;
+                    data = getgatherflux;
+                    var _data = JSON.parse(getgatherflux);
+                    var name = [],
+                        inData = [],
+                        outData = [],
+                        time = [],
+                        time = [];
+                    var num = 1000000000;
+                    _data.Data.forEach(function (item, i) {
+                        name.push(item.ClientName);
+                    });
+                    _data.Data[index].InData.forEach(function (item) {
+                        time.push(moment(item.Time).format("HH:mm:ss"));
+                        inData.push((item.Flux / num).toFixed(2));
+                    });
+                    _data.Data[index].OutData.forEach(function (item) {
+                        outData.push((item.Flux / num).toFixed(2));
+                    });
+                    this.tableDate = name;
+                    this.drawCustFlux({
+                        id: 'custFlux',
+                        title: name[index],
+                        time,
+                        inData,
+                        outData
+                    });
+                    //时间延时
+                    this.custFluxTime = setInterval(function () {
+                        inData = [],
+                            outData = [],
+                            index++;
+                        if (index == name.length) {
+                            index = 0;
+                        }
+                        that.activeName = index + "";
+                        _data.Data[index].InData.forEach(function (item) {
+                            inData.push((item.Flux / num).toFixed(2));
+                        });
+                        _data.Data[index].OutData.forEach(function (item) {
+                            outData.push((item.Flux / num).toFixed(2));
+                        });
+                        that.drawCustFlux({
+                            id: 'custFlux',
+                            title: name[index],
+                            time,
+                            inData,
+                            outData
+                        });
+                    }, 1000 * 30);
+                },
+                drawCustFlux(data) {
+                    let {
+                        id,
+                        title,
+                        time,
+                        inData,
+                        outData
+                    } = data;
+                    this[id] = echarts.init(document.getElementById(id));
+                    let option = {
+                        title: {
+                            text: title,
+                            textStyle: {
+                                fontSize: 16,
+                                color: "#fff"
+                            },
+                            x: "left",
+                            y: "top",
+                            subtext: "单位(G)",
+                            subtextStyle: {
+                                color: "#ddd",
+                                fontSize: "12"
+                            }
+                        },
+                        tooltip: {
+                            trigger: "axis",
+                            axisPointer: {
+                                type: "cross",
+                                label: {
+                                    backgroundColor: "#6a7985"
+                                }
+                            }
+                        },
+                        legend: {
+                            right: 0,
+                            icon: "rect",
+                            itemWidth: 23,
+                            itemHeight: 13,
+                            barBorderRadius: 3,
+                            itemGap: 10,
+                            data: ["流入流量", "流出流量"],
+                            textStyle: {
+                                color: "white",
+                                barBorderRadius: "3"
+                            }
+                        },
+                        color: ["#0ca87d", "#1c9aee"],
+                        toolbox: {
+                            feature: {}
+                        },
+                        grid: {
+                            left: "3%",
+                            right: "4%",
+                            bottom: "10%",
+                            containLabel: true
+                        },
+                        xAxis: [{
+                            type: "category",
+                            boundaryGap: false,
+                            data: time,
+                            axisLine: {
+                                lineStyle: {
+                                    color: "#fff"
+                                }
+                            },
+                            axisLabel: {
+                                textStyle: {
+                                    color: "#fff"
+                                }
+                            }
+                        }],
+                        yAxis: [{
+                            type: "value",
+                            axisLine: {
+                                lineStyle: {
+                                    color: "#fff",
+                                    zIndex: 100
+                                }
+                            },
+                            axisLabel: {
+                                textStyle: {
+                                    color: "#fff"
+                                }
+                            }
+                        }],
+                        series: [{
+                            name: "流入流量",
+                            type: "line",
+                            stack: "总量",
+                            areaStyle: {
+                                normal: {
+                                    opacity: "0.9",
+                                    color: "#0ca87d"
+                                }
+                            },
+                            data: inData,
+                            lineStyle: {
+                                normal: {
+                                    color: "#03e2e2",
+                                    width: 2,
+                                    opacity: "1"
+                                }
+                            }
+                        },
+                        {
+                            name: "流出流量",
+                            type: "line",
+                            areaStyle: {
+                                normal: {
+                                    opacity: "0.9",
+                                    color: "#1c9aee"
+                                }
+                            },
+                            data: outData,
+                            lineStyle: {
+                                normal: {
+                                    color: "blue",
+                                    width: 2,
+                                    opacity: "1"
+                                }
+                            }
+                        }
+                        ]
+                    };
+                    this[id].setOption(option);
+                },
+                handleClick: function (tab) {
+                    clearInterval(this.custFluxTime);
+                    this.getCtsuFlux(parseInt(tab.name))
+                },
+                // 左上
+                chartEa: function (id) {
+                    /*端口实时流量*/
+                    this[id] = echarts.init(document.getElementById(id));
+                    var _data = JSON.parse(GetGatherGroupData);
+                    var name = [],
+                        inData = [],
+                        outData = [],
+                        inDataFull = [],
+                        outDataFull = [],
+                        next = [],
+                        _dis = {},
+                        time = [],
+                        InPercent = [],
+                        OutPercent = []; //加入流入流出增长率
+
+                    var num = 1000000000;
+                    var newNum = 100;
+                    _data.Data.OutData.forEach(function (item) {
+                        next.push(item.time);
+                        outData.push((item.data / num).toFixed(2));
+                    });
+                    _data.Data.InData.forEach(function (item) {
+                        inData.push((item.data / num).toFixed(2));
+                    });
+                    //  增长率处理
+                    _data.Data.percentData.forEach(function (item) {
+                        InPercent.push((item.inPercent * newNum).toFixed(2));
+                    });
+
+                    _data.Data.percentData.forEach(function (item) {
+                        OutPercent.push((item.outPercent * newNum).toFixed(2));
+                    });
+
+                    let option = {
+                        // 鼠标滑过阴影
+                        axisPointer: {
+                            type: "shadow"
+                        },
+                        title: {
+                            text: "全省出口流量",
+                            textStyle: {
+                                fontSize: 16,
+                                color: "#fff"
+                            },
+                            x: "left",
+                            y: "top",
+                            subtextStyle: {
+                                color: "#ddd",
+                                fontSize: "12"
+                            }
+                        },
+                        tooltip: {
+                            trigger: "axis",
+                            axisPointer: {
+                                type: "cross",
+                                label: {
+                                    backgroundColor: "#6a7985"
+                                }
+                            }
+                        },
+                        legend: {
+                            top: 0,
+                            itemWidth: 23,
+                            itemHeight: 13,
+                            itemGap: 10,
+                            data: [
+                                "流入流量(G)",
+                                "流出流量(G)",
+                            ],
+                            textStyle: {
+                                color: "white"
+                            }
+                        },
+                        color: [
+                            "#12A87F",
+                            "#2196F3",
+                            "#F154B1",
+                            "#ffffff",
+                            "#1f8ae6",
+                            "#12a87f"
+                        ],
+                        toolbox: {
+                            feature: {}
+                        },
+                        grid: {
+                            left: "3%",
+                            right: "4%",
+                            bottom: "3%",
+                            containLabel: true
+                        },
+                        xAxis: [{
+                            splitLine: {
+                                show: false
+                            }, //去除网格线
+
+                            type: "category",
+                            data: next,
+                            axisLine: {
+                                lineStyle: {
+                                    color: "#fff"
+                                }
+                            },
+                            axisLabel: {
+                                textStyle: {
+                                    color: "#fff"
+                                }
+                            }
+                        }],
+                        yAxis: [{
+                            name: "单位(G)",
+                            splitLine: {
+                                show: false
+                            }, //去除网格线
+                            type: "value",
+                            axisLine: {
+                                lineStyle: {
+                                    color: "#fff",
+                                    zIndex: 100
+                                }
+                            },
+                            axisLabel: {
+                                textStyle: {
+                                    color: "#fff"
+                                }
+                            }
+                        }],
+                        series: [{
+                            name: "流出流量(G)",
+                            type: "line",
+                            data: outData,
+                            lineStyle: {
+                                normal: {
+                                    color: "#12A87F",
+                                    width: 2,
+                                    opacity: "1"
+                                }
+                            }
+                        },
+                        {
+                            name: "流入流量(G)",
+                            type: "line",
+                            stack: "总量",
+                            data: inData,
+                            lineStyle: {
+                                normal: {
+                                    color: "#2196F3",
+                                    width: 2,
+                                    opacity: "1"
+                                }
+                            }
+                        },
+                        ]
+                    };
+                    this[id].setOption(option);
+                },
+                // 左下
+                chartEb: function () {
+                    var _data = JSON.parse(getgathermaxfluxtopn);
+                    var name = [],
+                        now = [],
+                        all = [],
+                        left = [],
+                        per = [],
+                        time = [],
+                        s = 1000000000;
+                    _data.Data.forEach(function (item) {
+                        let GatherName = item.GatherName.replace(/\（[^\)]*\）/g, "");
+                        GatherName = GatherName.replace(/\([^\)]*\)/g, "");
+                        name.push(GatherName.substring(0, 6));
+                        now.push((item.MaxFlux / s).toFixed(0));
+                        all.push((item.BandWidth / s).toFixed(0));
+                        left.push(((item.BandWidth - item.MaxFlux) / s).toFixed(0));
+                    });
+                    Eb = echarts.init(document.getElementById("Eb"));
+                    optionTop = {
+                        title: {
+                            text: "客户实时流量",
+                            textStyle: {
+                                color: "#fff",
+                                fontSize: "16"
+                            }
+                        },
+                        grid: {
+                            left: "3%",
+                            right: "4%",
+                            bottom: "3%",
+                            containLabel: true
+                        },
+                        tooltip: {
+                            trigger: "axis",
+                            axisPointer: {
+                                type: "shadow",
+                                textStyle: {
+                                    color: "#fff"
+                                }
+                            }
+                        },
+                        legend: {
+                            top: "5%",
+                            textStyle: {
+                                color: "white"
+                            },
+                            data: [
+                                "空闲带宽(G)",
+                                "计费流量(G)",
+                                "带宽总量(G)",
+                            ]
+                        },
+                        calculable: true,
+                        xAxis: [{
+                            type: "category",
+                            axisLine: {
+                                lineStyle: {
+                                    color: "white"
+                                }
+                            },
+                            splitLine: {
+                                show: false
+                            },
+                            axisTick: {
+                                show: true
+                            },
+                            splitArea: {
+                                show: false
+                            },
+                            axisLabel: {
+                                interval: 0
+                            },
+                            data: name
+                        }],
+                        yAxis: [{
+                            type: "value",
+                            splitLine: {
+                                show: true
+                            },
+                            axisLine: {
+                                lineStyle: {
+                                    color: "white"
+                                }
+                            },
+                            axisTick: {
+                                show: true
+                            },
+                            axisLabel: {
+                                interval: 0
+                            },
+                            splitArea: {
+                                show: false
+                            }
+                        },],
+                        series: [{
+                            name: "计费流量(G)",
+                            type: "bar",
+                            stack: "总量",
+                            barMaxWidth: 50,
+                            itemStyle: {
+                                normal: {
+                                    color: "#12a87f",
+                                    barBorderRadius: 0,
+                                    label: {
+                                        show: true,
+                                        position: "inside",
+                                        textStyle: {
+                                            color: "white"
+                                        },
+                                        formatter: function (p) {
+                                            return p.value > 0 ? p.value : "";
+                                        }
+                                    }
+                                }
+                            },
+                            data: now
+                        },
+                        {
+                            name: "空闲带宽(G)",
+                            type: "bar",
+                            stack: "总量",
+                            barMaxWidth: 50,
+                            itemStyle: {
+                                normal: {
+                                    color: "#1f8ae6",
+                                    barBorderRadius: 0,
+                                    label: {
+                                        show: true,
+                                        position: "inside",
+                                        textStyle: {
+                                            color: "white"
+                                        },
+                                        formatter: function (p) {
+                                            return p.value > 0 ? p.value : "";
+                                        }
+                                    }
+                                }
+                            },
+                            data: left
+                        },
+                        {
+                            name: "带宽总量(G)",
+                            type: "line",
+                            smooth: true,
+                            itemStyle: {
+                                normal: {
+                                    color: "#0ca87d",
+                                    barBorderRadius: 0,
+                                    label: {
+                                        show: true,
+                                        position: "top",
+                                        formatter: function (p) {
+                                            return p.value > 0 ? p.value : "";
+                                        }
+                                    }
+                                }
+                            },
+                            data: all
+                        }
+                        ]
+                    };
+                    Eb.setOption(optionTop);
+                },
+            },
+            mounted: function () {
+                let that = this;
+                that.chartEb();
+                that.getGauge();
+                that.chartEa("Ea");
+                that.getCtsuFlux(0);
+                setInterval(function () {
+                    clearInterval(that.gaugeTime);
+                    clearInterval(that.custFluxTime);
+                    that.chartEb();
+                    that.getGauge();
+                    that.chartEa("Ea");
+                    that.getCtsuFlux(0);
+                }, 1000 * 60 * 5);
+                window.addEventListener("resize", function () {
+                    if (that.Ea)
+                        that.Ea.resize();
+                    if (that.Eb)
+                        that.Ea.resize();
+                    if (that.gauge0)
+                        that.gauge0.resize();
+                    if (that.gauge1)
+                        that.gauge1.resize();
+                    if (that.gauge2)
+                        that.gauge2.resize();
+                    if (that.gauge3)
+                        that.gauge3.resize();
+                    if (that.custFlux)
+                        that.custFlux.resize();
+                })
+            }
+        });
+    </script>
+</body>
+
+</html>

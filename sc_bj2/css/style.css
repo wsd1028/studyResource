@@ -1,0 +1,68 @@
+﻿@charset "utf-8";
+/*
+™ Author:Mr Wdder
+* Mail:wdder@163.com
+© Blog:http://story.wdder.cn
+* QQ:601168065/wdder@163.com
+基本共用 style.css
+*/
+@import url("master.css");
+@import url("animates.css");
+body {
+  margin: 0;
+  padding: 0;
+  border: 0;
+  font-size: 100%;
+  font-family: "\5FAE\8F6F\96C5\9ED1", "\5B8B\4F53", "\9ED1\4F53";
+  background-image: url(../images/body_blank.jpg);
+  background-size: cover;
+  color: #f9f9f9;
+  background-position: top;
+}
+body a {
+  outline: none;
+  blr: expression(this.onFocus=this.blur());
+}
+/*IE6.0访问提示*/
+#ie6-warning {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  padding: 5px 0;
+  text-align: center;
+  font-size: 12px;
+  color: #333;
+  background: #FFFFFF url(../images/blank.png);
+  z-index: 9999;
+}
+#ie6-warning a {
+  color: #333333;
+}
+#ie6-warning a:link {
+  color: #333333;
+}
+#ie6-warning a:visited {
+  color: #333333;
+}
+#ie6-warning a:hover {
+  color: #00bbf3;
+}
+#ie6-warning a:active {
+  color: #333333;
+}
+/*页面全局结束end*/
+.container {
+  width: 100%;
+  height: 100%;
+  background: rgba(14, 41, 128, 0.5) !important;
+  box-shadow: 0px 1px 5px rgba(0, 0, 0, 0.3);
+  padding: 15px;
+  margin: 25px 0 25px 0;
+  border-radius: 4px;
+}
+.container:last-child {}
+.content {
+  height: 273px;
+  margin: 20px 0 10px 0;
+}
