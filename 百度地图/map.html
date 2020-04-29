@@ -4,23 +4,49 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="../css/element.css">
     <title>地图</title>
+    <style>
+        .map {
+            height: 400px;
+        }
+
+        .searchMap {
+            max-height: 300px
+        }
+    </style>
 </head>
 
 <body>
     <div id="main">
-        <baidu-map :center="mapConfig.center" :zoom="mapConfig.zoom" v-on:click="getPoint" v-on:ready="mapReady"
-            class="map" style="width: 100%;height: 500px;margin-top: 0;">
-            <bm-marker :position="postionMap">
-                <bm-info-window :show="show" v-on:close="infoWindowClose" v-on:open="infoWindowOpen"
-                    style="font-size: 14px">
-                    <p>站点：{{ add.siteName }}</p>
-                    <p>站点地址：{{ add.site }}</p>
+        <div>
+            地址：
+            <el-input placeholder="请输入搜索地址" prefix-icon="el-icon-search" v-model="mapConfig.keyword"
+                class="input-with-select">
+                <el-button slot="append" icon="el-icon-search"></el-button>
+            </el-input>
+        </div>
+        <div>
+            地址：
+            <el-input placeholder="当前选中地址" prefix-icon="el-icon-location" v-model="mapConfig.chooseAddress"
+                class="input-with-select">
+            </el-input>
+        </div>
+        <baidu-map :center="mapConfig.center" :scroll-wheel-zoom="true" :zoom="mapConfig.zoom" @click="getPoint"
+            @ready="onBaiduMapReady" class="bm-view">
+            <bm-view class="map"></bm-view>
+            <bm-marker :dragging="true" :position="mapConfig.position" @dragend="getPoint">
+                <bm-info-window :show="mapConfig.showMark" style="font-size: 14px" v-on:close="infoWindowClose">
+                    <p>地址：{{ mapConfig.markAddress }}</p>
                 </bm-info-window>
             </bm-marker>
+            <bm-local-search :auto-viewport="true" :keyword="mapConfig.keyword" @infohtmlset="handelSearch"
+                class="searchMap"></bm-local-search>
         </baidu-map>
     </div>
     <script src="../js/vue.js"></script>
+    <script src="../js/element.js"></script>
+
     <script src="../js/baidu-map0.21.2.js"></script>
 
     <script>
@@ -31,76 +57,56 @@
             el: '#main',
             data: {
                 mapConfig: {
-                    center: {
-                        lng: 106.51956,
-                        lat: 29.624133
-                    },
-                    zoom: 15
-                },
-
-                jgNameDialog: false,
-                show: true,
-                postionMap: { //地图坐标
-                    lng: 106.51956,
-                    lat: 29.624133
-                },
-                location: '',
-                keyword: '', //搜索框关键词
-                zoom: 12.8, //放大比例
-                address: '', //位置详细信息
-                add: {
-                    siteName: '',
-                    site: '',
-                    jd: '',
-                    wd: '',
-                    desce: '',
-                    type: '',
-                    jgName: '',
-                    jgNum: '',
-                },
-                organizationData: [],
-                jgName: '',
-                jgNum: '',
+                    zoom: 15,
+                    center: {}, //地图中心
+                    position: {}, //定位
+                    showMark: false,
+                    markAddress: '', //点击地图获得的地址
+                    loaction: '', //搜索的城市
+                    keyword: '', //详细地址
+                    chooseAddress: '' //详细地址
+                }
 
             },
             methods: {
-                getPoint: function (e) {
-                    this.show = true;
-                    this.postionMap.lng = e.point.lng; //通过  e.point.lng获取经度
-                    this.postionMap.lat = e.point.lat; //通过  e.point.lat获取纬度
-                    this.add.jd = e.point.lng;
-                    this.add.wd = e.point.lat;
-                    this.zoom = e.target.getZoom()
-
-                    let geocoder = new BMap.Geocoder(); //创建地址解析器的实例
+                showMap() {
+                    this.mapDia = !this.mapDia
+                },
+                //点击地图
+                getPoint(e) {
+                    let geocoder = new BMap.Geocoder() //创建地址解析器的实例
                     geocoder.getLocation(e.point, rs => {
-                        this.add.site = rs.address;
                         //地址描述
-                        // console.log(rs.address);    //这里打印可以看到里面的详细地址信息，可以根据需求选择想要的
-                        // console.log(rs.addressComponents);//结构化的地址描述(object)
-                        // console.log(rs.addressComponents.province); //省
-                        // console.log(rs.addressComponents.city); //城市
-                        // console.log(rs.addressComponents.district); //区县
-                        // console.log(rs.addressComponents.street); //街道
-                        // console.log(rs.addressComponents.streetNumber); //门牌号
-                        // console.log(rs.surroundingPois); //附近的POI点(array)
-                        // console.log(rs.business); //商圈字段，代表此点所属的商圈(string)
-                    });
+                        this.mapConfig.position = e.point
+                        this.mapConfig.chooseAddress = rs.address
+                        this.mapConfig.markAddress = rs.address
+                    })
+                    this.mapConfig.showMark = true
                 },
+                //关闭mark层
                 infoWindowClose() {
-                    this.show = false
+                    this.mapConfig.showMark = false
                 },
-                infoWindowOpen() {
-                    //这里有个问题纠结了很久，百度的信息窗口默认有个点击其他地方就消失的事件，我没有找到
-                    //并且信息窗口点击一次显示，一次消失
-                    //于是我加了一个100毫秒的定时器，保证每次点击地图都可以展示信息窗口
-                    // setInterval(() => {
-                    //     this.show = true
-                    // }, 100)
+                //点击搜索的地区
+                handelSearch(e) {
+                    this.mapConfig.chooseAddress = (e.province || '') + (e.city || '') + e.address
                 },
-                mapReady: function () {
-                    // 设置mapConfig
-                }
+                //地图初始化时,定位当前位置
+                onBaiduMapReady(e) {
+                    const that = this
+                    this.BMap = e.BMap
+                    if (this.BMap) {
+                        const geolocation = new this.BMap.Geolocation()
+                        geolocation.getCurrentPosition(res => {
+                            const { lng, lat } = res.point
+                            this.mapConfig.center = res.point
+                            this.mapConfig.position = res.point
+                            const { province, city, district, street, street_number } = res.address
+                            this.mapConfig.keyword = province + city
+                        })
+                    }
+                },
+                /*地图方法*/
             }
         })
     </script>
