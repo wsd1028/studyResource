@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="../css/element.css">
+    <title>地图</title>
+    <style>
+        .map {
+            height: 400px;
+        }
+
+        .searchMap {
+            max-height: 300px
+        }
+    </style>
+</head>
+
+<body>
+    <div id="main">
+        解决app端，点击地图无法生效
+        <div>
+            地址：
+            <el-input placeholder="请输入搜索地址" prefix-icon="el-icon-search" v-model="mapConfig.keyword"
+                class="input-with-select">
+                <el-button slot="append" icon="el-icon-search"></el-button>
+            </el-input>
+        </div>
+        <div>
+            地址：
+            <el-input placeholder="当前选中地址" prefix-icon="el-icon-location" v-model="mapConfig.chooseAddress"
+                class="input-with-select">
+            </el-input>
+        </div>
+        <baidu-map :center="mapConfig.center" :dragging="mapConfig.dragging" :scroll-wheel-zoom="true"
+            :zoom="mapConfig.zoom" @click="getPoint" @ready="onBaiduMapReady" @touchend="mapTouchend"
+            @touchmove="mapTouchmove" class="bm-view">
+            <bm-view class="map"></bm-view>
+            <bm-marker :dragging="true" :position="mapConfig.position" @dragend="getPoint">
+                <bm-info-window :show="mapConfig.showMark" style="font-size: 14px" v-on:close="infoWindowClose">
+                    <p>地址：{{ mapConfig.markAddress }}</p>
+                </bm-info-window>
+            </bm-marker>
+            <bm-local-search :auto-viewport="true" :keyword="mapConfig.keyword" @infohtmlset="handelSearch"
+                class="searchMap"></bm-local-search>
+        </baidu-map>
+    </div>
+    <script src="../js/vue.js"></script>
+    <script src="../js/element.js"></script>
+
+    <script src="../js/baidu-map0.21.2.js"></script>
+
+    <script>
+        Vue.use(VueBaiduMap.default, {
+            ak: 'VlEiPanKyj6oLyHE4jLGlZgAIUkBjN69'
+        })
+        var app = new Vue({
+            el: '#main',
+            data: {
+                mapConfig: {
+                    zoom: 15,
+                    dragging: false,
+                    center: {}, //地图中心
+                    position: {}, //定位
+                    showMark: false,
+                    markAddress: '', //点击地图获得的地址
+                    loaction: '', //搜索的城市
+                    keyword: '', //详细地址
+                    chooseAddress: '' //详细地址
+                }
+
+            },
+            methods: {
+                //触摸移动时触发此事件
+                mapTouchmove(e) {
+                    this.mapConfig.dragging = true
+                },
+                //触摸结束时触发此事件
+                mapTouchend(e) {
+                    this.mapConfig.dragging = false
+                },
+                //点击地图
+                getPoint(e) {
+                    let geocoder = new BMap.Geocoder() //创建地址解析器的实例
+                    geocoder.getLocation(e.point, rs => {
+                        //地址描述
+                        this.mapConfig.position = e.point
+                        this.mapConfig.chooseAddress = rs.address
+                        this.mapConfig.markAddress = rs.address
+                    })
+                    this.mapConfig.showMark = true
+                },
+                //关闭mark层
+                infoWindowClose() {
+                    this.mapConfig.showMark = false
+                },
+                //点击搜索的地区
+                handelSearch(e) {
+                    this.mapConfig.chooseAddress = (e.province || '') + (e.city || '') + e.address
+                },
+                //地图初始化时,定位当前位置
+                onBaiduMapReady(e) {
+                    const that = this
+                    this.BMap = e.BMap
+                    if (this.BMap) {
+                        const geolocation = new this.BMap.Geolocation()
+                        geolocation.getCurrentPosition(res => {
+                            const { lng, lat } = res.point
+                            this.mapConfig.center = res.point
+                            this.mapConfig.position = res.point
+                            const { province, city, district, street, street_number } = res.address
+                            this.mapConfig.keyword = province + city
+                        })
+                    }
+                },
+                /*地图方法*/
+            }
+        })
+    </script>
+</body>
+
+</html>
