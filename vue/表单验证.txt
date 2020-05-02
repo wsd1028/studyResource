@@ -1,23 +1,23 @@
- //±íµ¥ÑéÖ¤
+ //è¡¨å•éªŒè¯
   private checkPhone(rule, value, callback){
     if (!value) {
-      callback(new Error("ÊÖ»úºÅ²»ÄÜÎª¿Õ"));
+      callback(new Error("æ‰‹æœºå·ä¸èƒ½ä¸ºç©º"));
     } else {
       if (/^(13[0-9]{9})|(15[89][0-9]{8})$/.test(value)) {
         callback();
       } else {
-        callback(new Error("ÊÖ»úºÅ¸ñÊ½²»ÕıÈ·"));
+        callback(new Error("æ‰‹æœºå·æ ¼å¼ä¸æ­£ç¡®"));
       }
     }
   };
 
   private checkEmail(rule, value, callback) {
     if (!value) {
-      callback(new Error("ÓÊÏä²»ÄÜÎª¿Õ"));
+      callback(new Error("é‚®ç®±ä¸èƒ½ä¸ºç©º"));
     } else {
       var reg = /^[A-Za-z0-9\u4e00-\u9fa5]+@[a-zA-Z0-9_-]+(\.[a-zA-Z0-9_-]+)+$/;
       if (!reg.test(value)) {
-        callback(new Error("ÇëÊäÈëÓĞĞ§µÄÓÊÏä"));
+        callback(new Error("è¯·è¾“å…¥æœ‰æ•ˆçš„é‚®ç®±"));
       } else {
         callback();
       }
@@ -26,25 +26,25 @@
   private checkNumber(rule, value, callback) {
       console.log("value",value)
     if (!value) {
-      callback(new Error("ÊäÈë²»ÄÜÎª¿Õ"));
+      callback(new Error("è¾“å…¥ä¸èƒ½ä¸ºç©º"));
     } else {
       if (/^[0-9]+\.[0-9]{1,}$|^(0|\+?[1-9][0-9]*)$/.test(value)) {
         callback();
       } else {
-        callback(new Error("ÇëÊäÈëÊı×Ö"));
+        callback(new Error("è¯·è¾“å…¥æ•°å­—"));
       }s
     }
   }
   
   private formRules = {
-    empty: [{ required: true, message: "ÊäÈë²»ÄÜÎª¿Õ", trigger: "blur" }],
+    empty: [{ required: true, message: "è¾“å…¥ä¸èƒ½ä¸ºç©º", trigger: "blur" }],
     phone: [{ validator: this.checkPhone, trigger: "blur" }],
     email: [{ validator: this.checkEmail, trigger: "blur" }],
     number: [{validator: this.checkNumber,trigger: "blur"}]
   };
 
 
-ÃÜÂë±ØĞë°üº¬×ÖÄ¸¡¢Êı×ÖºÍÌØÊâ·ûºÅ(8-20)Î»
+å¯†ç å¿…é¡»åŒ…å«å­—æ¯ã€æ•°å­—å’Œç‰¹æ®Šç¬¦å·(8-20)ä½
 /^(?=.*[a-zA-Z])(?=.*\d)(?=.*[~!@#$%^&*()_+`\-={}:";'<>?,.\/]).{8,20}$/.test("552wefdwe")
 
-formRules µÄ¼ü±ØĞëÓëinput°ó¶¨µÄÖµ Ãû³ÆÏàÍ¬
+formRules çš„é”®å¿…é¡»ä¸inputç»‘å®šçš„å€¼ åç§°ç›¸åŒ

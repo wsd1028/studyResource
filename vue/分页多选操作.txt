@@ -3,11 +3,11 @@
       :data="PageData"
       class="marginTop"
       v-loading="loading"
-      element-loading-text="¼ÓÔØÖÐ"
+      element-loading-text="åŠ è½½ä¸­"
       element-loading-spinner="el-icon-loading"
       border
       style="width: 100%"
-      row-key="id"°ó¶¨Ã¿ÌõÊý¾ÝµÄÎ¨Ò»±êÊ¶·û
+      row-key="id"ç»‘å®šæ¯æ¡æ•°æ®çš„å”¯ä¸€æ ‡è¯†ç¬¦
       @selection-change="handleSelectionChange"
     >
       <el-table-column type="selection" width="55" :reserve-selection="true"></el-table-column>

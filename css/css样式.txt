@@ -1,4 +1,4 @@
-/* ½ÚµãÊ÷ÑùÊ½ */
+/* èŠ‚ç‚¹æ ‘æ ·å¼ */
 .el-tree-node__label {
     color: #6d6d6d;
 }
@@ -75,9 +75,9 @@
     height: 200px;
 }
 
-/* ½ÚµãÊ÷ÑùÊ½ */
+/* èŠ‚ç‚¹æ ‘æ ·å¼ */
 
-Ã½Ìå²éÑ¯-sass
+åª’ä½“æŸ¥è¯¢-sass
 @mixin bigPC {
     @media (min-width: 501px) and (max-width: 1024px) {
         @content;
@@ -87,12 +87,12 @@
     background: red;
   }
 
-/* ÎÄ×ÖÑùÊ½ */
+/* æ–‡å­—æ ·å¼ */
 *{
 font-family:"\5FAE\8F6F\96C5\9ED1", "\5B8B\4F53", "\9ED1\4F53";
 }
 
-/* ¹ö¶¯ÌõÑùÊ½ */
+/* æ»šåŠ¨æ¡æ ·å¼ */
 *::-webkit-scrollbar-thumb {
       background-color: #999;
       border-radius: 10px;

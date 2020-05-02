@@ -1,3 +1,0 @@
-function renderLayer04Left() {
-   
-}

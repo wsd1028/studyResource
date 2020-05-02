@@ -1,14 +1,14 @@
-const rectItem = e.target;»ñÈ¡Ä¿±êÔªËØ
-    const stage = this.$refs.rackStage.getNode();»ñÈ¡»­²¼
+const rectItem = e.target;è·å–ç›®æ ‡å…ƒç´ 
+    const stage = this.$refs.rackStage.getNode();è·å–ç”»å¸ƒ
     console.log("selectItem", rectItem);
 
     // moving to another layer will improve dragging performance
-    rectItem.setAttrs({¸øÄ¿±êÔªËØÉèÖÃÊôĞÔ
+    rectItem.setAttrs({ç»™ç›®æ ‡å…ƒç´ è®¾ç½®å±æ€§
       fill: "red",
       
     });
-    stage.draw();ÉèÖÃÍêÊôĞÔ±ØĞëÖØĞÂ»æÖÆ
+    stage.draw();è®¾ç½®å®Œå±æ€§å¿…é¡»é‡æ–°ç»˜åˆ¶
 
-Á´½ÓµØÖ·£ºhttps://konvajs.org/docs/vue/index.html
+é“¾æ¥åœ°å€ï¼šhttps://konvajs.org/docs/vue/index.html
 
-shape.getAttr("startScale"),µÃµ½ÊôĞÔ
+shape.getAttr("startScale"),å¾—åˆ°å±æ€§

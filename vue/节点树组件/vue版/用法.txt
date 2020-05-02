@@ -1,1 +1,0 @@
-          <nodeTree :defaultTitle="userNodeName" :options="nodeTree" :props="nodeProps" @getValue="changeNodeId"></nodeTree>
