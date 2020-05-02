@@ -6,7 +6,7 @@
 //   pageSize: 10,
 //   pageIndex: 1
 // });
-//分页删除最后一项注意
+// 分页删除最后一项注意
 // if (this.pageIndex - 1 == this.dataCount / this.pageSize) {
 //   this.pageIndex--;
 // }
