@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="../css/element.css">
+    <title>mapPC单点-海量点</title>
+    <style>
+        .bm-view,
+        .map {
+            height: 400px;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="main">
+        <baidu-map class="map" :scroll-wheel-zoom="true" :center="{lng: 116.404, lat: 39.915}" :zoom="15">
+            <bm-marker :position="{lng: 116.404, lat: 39.9215}" :dragging="true" animation="BMAP_ANIMATION_BOUNCE"
+                :icon="{url: 'http://developer.baidu.com/map/jsdemo/img/fox.gif', size: {width: 300, height: 157}}">
+            </bm-marker>
+            <bm-marker :position="{lng: 116.404, lat: 39.915}" :dragging="true" animation="BMAP_ANIMATION_BOUNCE"
+                :icon="{url: 'http://developer.baidu.com/map/jsdemo/img/fox.gif', size: {width: 300, height: 157}}">
+            </bm-marker>
+        </baidu-map>
+    </div>
+    <script src="../js/vue.js"></script>
+    <script src="../js/element.js"></script>
+
+    <script src="../js/baidu-map0.21.2.js"></script>
+
+    <script>
+        Vue.use(VueBaiduMap.default, {
+            ak: 'VlEiPanKyj6oLyHE4jLGlZgAIUkBjN69'
+        })
+        var app = new Vue({
+            el: '#main',
+            data: {
+
+            },
+            methods: {}
+        })
+    </script>
+</body>
+
+</html>

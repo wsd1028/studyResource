@@ -27,7 +27,7 @@
     <div id="main">
         <div id="bar1" class="item"></div>
         <div id="bar2" class="item"></div>
-
+        <div id="bar3" class="item"></div>
     </div>
     <script src="./js/es6-shim.min.js"></script>
     <script src="./js/vue.js"></script>
@@ -43,40 +43,40 @@
                     let _data = {
                         Count: 10,
                         List: [{
-                                AllCount: 140,
-                                SelledCount: 37,
-                                WaitSellCount: 103,
-                                ShowName: "西",
-                                Id: 10
-                            },
-                            {
-                                AllCount: 215,
-                                SelledCount: 171,
-                                WaitSellCount: 44,
-                                ShowName: "机房",
-                                Id: 11
-                            },
-                            {
-                                AllCount: 0,
-                                WaitSellCount: 0,
-                                ShowName: "岳阳",
-                                SelledCount: 5,
-                                Id: 12
-                            },
-                            {
-                                AllCount: 60,
-                                SelledCount: 0,
-                                WaitSellCount: 60,
-                                ShowName: "二楼",
-                                Id: 13
-                            },
-                            {
-                                AllCount: 56,
-                                SelledCount: 0,
-                                WaitSellCount: 56,
-                                ShowName: "益",
-                                Id: 14
-                            }
+                            AllCount: 140,
+                            SelledCount: 37,
+                            WaitSellCount: 103,
+                            ShowName: "西",
+                            Id: 10
+                        },
+                        {
+                            AllCount: 215,
+                            SelledCount: 171,
+                            WaitSellCount: 44,
+                            ShowName: "机房",
+                            Id: 11
+                        },
+                        {
+                            AllCount: 0,
+                            WaitSellCount: 0,
+                            ShowName: "岳阳",
+                            SelledCount: 5,
+                            Id: 12
+                        },
+                        {
+                            AllCount: 60,
+                            SelledCount: 0,
+                            WaitSellCount: 60,
+                            ShowName: "二楼",
+                            Id: 13
+                        },
+                        {
+                            AllCount: 56,
+                            SelledCount: 0,
+                            WaitSellCount: 56,
+                            ShowName: "益",
+                            Id: 14
+                        }
                         ]
                     };
                     var name = ["西", "机房", "岳阳", "二楼", "益"],
@@ -167,51 +167,51 @@
                             }
                         }],
                         series: [{
-                                name: "已用(个)",
-                                type: "bar",
-                                stack: "总量",
-                                barMaxWidth: 50,
-                                itemStyle: {
-                                    normal: {
-                                        color: "#11a8ab",
-                                        barBorderRadius: 0,
-                                        label: {
-                                            show: true,
-                                            position: "inside",
-                                            textStyle: {
-                                                color: "white"
-                                            },
-                                            formatter: function (p) {
-                                                return p.value > 0 ? p.value : "";
-                                            }
+                            name: "已用(个)",
+                            type: "bar",
+                            stack: "总量",
+                            barMaxWidth: 50,
+                            itemStyle: {
+                                normal: {
+                                    color: "#11a8ab",
+                                    barBorderRadius: 0,
+                                    label: {
+                                        show: true,
+                                        position: "inside",
+                                        textStyle: {
+                                            color: "white"
+                                        },
+                                        formatter: function (p) {
+                                            return p.value > 0 ? p.value : "";
                                         }
                                     }
-                                },
-                                data: SelledCount
+                                }
                             },
-                            {
-                                name: "未用(个)",
-                                type: "bar",
-                                stack: "总量",
-                                barMaxWidth: 50,
-                                itemStyle: {
-                                    normal: {
-                                        color: "rgba(255,255,255,0.3)",
-                                        barBorderRadius: 0,
-                                        label: {
-                                            show: true,
-                                            position: "inside",
-                                            textStyle: {
-                                                color: "white"
-                                            },
-                                            formatter: function (p) {
-                                                return p.value > 0 ? p.value : "";
-                                            }
+                            data: SelledCount
+                        },
+                        {
+                            name: "未用(个)",
+                            type: "bar",
+                            stack: "总量",
+                            barMaxWidth: 50,
+                            itemStyle: {
+                                normal: {
+                                    color: "rgba(255,255,255,0.3)",
+                                    barBorderRadius: 0,
+                                    label: {
+                                        show: true,
+                                        position: "inside",
+                                        textStyle: {
+                                            color: "white"
+                                        },
+                                        formatter: function (p) {
+                                            return p.value > 0 ? p.value : "";
                                         }
                                     }
-                                },
-                                data: WaitSellCount
-                            }
+                                }
+                            },
+                            data: WaitSellCount
+                        }
                         ]
                     };
                     myChart.setOption(option, true);
@@ -264,36 +264,36 @@
                             },
                         },
                         series: [{
-                                name: '',
-                                type: 'bar',
-                                // data: [183, 239, 855, 104, 174]
-                                data: [{
-                                        value: 10,
-                                        detail:{
-                                            //随便写参数
-                                            name:"b哥"
-                                        }
+                            name: '',
+                            type: 'bar',
+                            // data: [183, 239, 855, 104, 174]
+                            data: [{
+                                value: 10,
+                                detail: {
+                                    //随便写参数
+                                    name: "b哥"
+                                }
 
-                                    },
-                                    {
-                                        value: 10,
-                                        detail:{
-                                            //随便写参数
-                                            name:"bfd哥"
-                                        }
-                                    },
-                                    {
-                                        value: 10
-                                    },
-                                    {
-                                        value: 10
-                                    },
-                                    {
-                                        value: 10
-                                    },
-
-                                ]
                             },
+                            {
+                                value: 10,
+                                detail: {
+                                    //随便写参数
+                                    name: "bfd哥"
+                                }
+                            },
+                            {
+                                value: 10
+                            },
+                            {
+                                value: 10
+                            },
+                            {
+                                value: 10
+                            },
+
+                            ]
+                        },
 
                         ]
                     };
@@ -303,12 +303,100 @@
                         //参数在params的data里
                     })
                 },
-
+                drawBar3: function () {
+                    let max = 100, value = 50, color = '#fc7403'
+                    let myChart = echarts.init(document.getElementById('bar3'))
+                    let option = {
+                        tooltip: {
+                            show: false
+                        },
+                        grid: {
+                            top: 0,
+                            left: 0,
+                            right: 0,
+                            bottom: 0
+                        },
+                        xAxis: {
+                            type: 'value',
+                            axisLabel: {
+                                show: false
+                            },
+                            splitLine: {
+                                show: false
+                            },
+                            axisLine: {
+                                show: false
+                            },
+                            axisTick: {
+                                show: false
+                            },
+                            splitArea: {
+                                show: false
+                            }
+                        },
+                        yAxis: {
+                            type: 'category',
+                            axisLabel: {
+                                show: false
+                            },
+                            data: [],
+                            axisLine: {
+                                show: false
+                            },
+                            axisTick: {
+                                show: false
+                            }
+                        },
+                        series: [
+                            {
+                                type: 'pictorialBar',
+                                symbol: 'roundRect',
+                                symbolRepeat: 'fixed',
+                                symbolSize: [4, 16],
+                                symbolMargin: 2,
+                                symbolBoundingData: max,
+                                barWidth: '50%',
+                                itemStyle: {
+                                    normal: {
+                                        color: '#e8e8e8'
+                                    }
+                                },
+                                label: {
+                                    show: false
+                                },
+                                data: [max],
+                                animation: false,
+                                z: 1
+                            },
+                            {
+                                name: 'lalal',
+                                type: 'pictorialBar',
+                                symbol: 'roundRect',
+                                symbolRepeat: true,
+                                symbolSize: [4, 16],
+                                symbolMargin: 2,
+                                symbolBoundingData: max,
+                                barWidth: '50%',
+                                label: {
+                                    show: false
+                                },
+                                data: [value],
+                                itemStyle: {
+                                    normal: {
+                                        color: color
+                                    }
+                                },
+                                z: 2
+                            }
+                        ]
+                    }
+                    myChart.setOption(option, true)
+                }
             },
             mounted: function () {
                 this.drawBar1();
                 this.drawBar2();
-
+                this.drawBar3()
             }
         })
     </script>

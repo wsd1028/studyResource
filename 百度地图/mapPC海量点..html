@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="../css/element.css">
+    <title>地图海亮点</title>
+    <style>
+        .bm-view {
+            height: 400px;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="main">
+        <baidu-map :center="mapConfig.center" :scroll-wheel-zoom="true" :zoom="mapConfig.zoom" @click="getPoint"
+            @ready="onBaiduMapReady" class="bm-view">
+            <bm-point-collection :points="dotPoints" shape="BMAP_POINT_SHAPE_STAR" color="red"
+                size="BMAP_POINT_SIZE_HUGE" @click="clickHandler"></bm-point-collection>
+            <bm-point-collection :points="dotPoints2" shape="BMAP_POINT_SHAPE_STAR" color="black"
+                size="BMAP_POINT_SIZE_HUGE" @click="clickHandler"></bm-point-collection>
+            </bm-marker>
+        </baidu-map>
+    </div>
+    <script src="../js/vue.js"></script>
+    <script src="../js/element.js"></script>
+
+    <script src="../js/baidu-map0.21.2.js"></script>
+
+    <script>
+        Vue.use(VueBaiduMap.default, {
+            ak: 'VlEiPanKyj6oLyHE4jLGlZgAIUkBjN69'
+        })
+        var app = new Vue({
+            el: '#main',
+            data: {
+                dotPoints: [{
+                    lng: '104.63301906',
+                    lat: '28.76967480'
+                }],//标点
+                dotPoints2: [{
+                    lng: '104.633',
+                    lat: '28.769'
+                }],//标点
+                mapConfig: {
+                    zoom: 15,
+                    center: {}, //地图中心
+                    position: {}, //定位
+                    showMark: false,
+                    markAddress: '', //点击地图获得的地址
+                    loaction: '', //搜索的城市
+                    keyword: '', //详细地址
+                    chooseAddress: '' //详细地址
+                }
+            },
+            methods: {
+                //点击地图
+                getPoint(e) {
+                    let geocoder = new BMap.Geocoder() //创建地址解析器的实例
+                    geocoder.getLocation(e.point, rs => {
+                        //地址描述
+                        this.mapConfig.position = e.point
+                        this.mapConfig.chooseAddress = rs.address
+                        this.mapConfig.markAddress = rs.address
+                    })
+                    this.mapConfig.showMark = true
+                },
+                //地图初始化时,定位当前位置
+                onBaiduMapReady(e) {
+                    const that = this
+                    this.BMap = e.BMap
+                    if (this.BMap) {
+                        const geolocation = new this.BMap.Geolocation()
+                        geolocation.getCurrentPosition(res => {
+                            console.log('resp', res);
+                            const { lng, lat } = res.point
+                            this.mapConfig.center = res.point
+                            this.mapConfig.position = res.point
+                            const { province, city, district, street, street_number } = res.address
+                            this.mapConfig.keyword = province + city
+                        })
+                    }
+                },
+                //点击标点
+                clickHandler(e) {
+                    console.log('点击标点clickHandler', e)
+                }
+            }
+        })
+    </script>
+</body>
+
+</html>

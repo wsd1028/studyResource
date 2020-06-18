@@ -5,271 +5,95 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Document</title>
+    <title>CANVAS</title>
+    <style>
+        #myCanvas,
+        #myCanvas2 {
+            border: 1px solid black;
+        }
+    </style>
 </head>
 
 <body>
-    <p id="wsd"></p>
-</body>
-<script>
-    let obj = {
-        class: "GraphLinksModel",
-        linkFromPortIdProperty: "fromPort",
-        linkToPortIdProperty: "toPort",
-        nodeDataArray: [{
-                key: 1,
-                category: "Start",
-                loc: "-7.105427357601002e-15 -28",
-                color: "",
-                text: "开始",
-                state: 1
-            },
-            {
-                key: 2,
-                category: "Step",
-                loc: "0 70",
-                color: "",
-                text: "提交申请",
-                state: 1
-            },
-            {
-                key: 3,
-                category: "Step",
-                loc: "336 70",
-                color: "",
-                text: "网管审核",
-                state: 1
-            },
-            {
-                key: 4,
-                category: "Conditional",
-                loc: "336.00000000000006 159.00000000000003",
-                color: "",
-                text: "审核是否通过",
-                state: 1
-            },
-            {
-                key: 5,
-                category: "Step",
-                loc: "336.00000000000006 278",
-                color: "",
-                text: "工程师配置",
-                state: 2
-            },
-            {
-                key: 6,
-                category: "Conditional",
-                loc: "5.000000000000057 157.00000000000006",
-                color: "",
-                text: "调整申请",
-                state: 1
-            },
-            {
-                key: 7,
-                category: "Step",
-                loc: "133 278.00000000000006",
-                color: "",
-                text: "业务完成确认",
-                state: 0
-            },
-            {
-                key: 8,
-                category: "Step",
-                loc: "358 366.99999999999983",
-                color: "",
-                text: "备案",
-                state: 0
-            },
-            {
-                key: 9,
-                category: "End",
-                loc: "5 461",
-                color: "",
-                text: "结束",
-                state: 0
-            }
-        ],
-        linkDataArray: [{
-                from: 0,
-                to: 1,
-                fromPort: "B",
-                toPort: "T",
-                visible: false,
-                text: ""
-            },
-            {
-                from: 1,
-                to: 2,
-                fromPort: "B",
-                toPort: "T",
-                visible: false,
-                text: "",
-                points: [0, -8, 0, 2, 0, 21, 0, 21, 0, 40, 0, 50]
-            },
-            {
-                from: 2,
-                to: 3,
-                fromPort: "R",
-                toPort: "L",
-                visible: false,
-                text: "",
-                points: [60, 70, 70, 70, 168, 70, 168, 70, 266, 70, 276, 70]
-            },
-            {
-                from: 3,
-                to: 4,
-                fromPort: "B",
-                toPort: "T",
-                visible: false,
-                text: "",
-                points: [336, 90, 336, 100, 336, 114.5, 336, 114.5, 336, 129, 336, 139]
-            },
-            {
-                from: 4,
-                to: 5,
-                fromPort: "B",
-                toPort: "T",
-                visible: true,
-                text: "是",
-                points: [336, 179, 336, 189, 336, 218.5, 336, 218.5, 336, 248, 336, 258]
-            },
-            {
-                from: 5,
-                to: 7,
-                fromPort: "L",
-                toPort: "R",
-                visible: false,
-                text: "",
-                points: [
-                    276,
-                    278,
-                    266,
-                    278,
-                    234.75,
-                    278,
-                    234.75,
-                    278,
-                    203.5,
-                    278,
-                    193.5,
-                    278
-                ]
-            },
-            {
-                from: 7,
-                to: 8,
-                fromPort: "B",
-                toPort: "L",
-                visible: false,
-                text: "",
-                points: [
-                    133,
-                    298.5,
-                    133,
-                    308.5,
-                    133,
-                    367,
-                    210.25,
-                    367,
-                    287.5,
-                    367,
-                    297.5,
-                    367
-                ]
-            },
-            {
-                from: 8,
-                to: 9,
-                fromPort: "B",
-                toPort: "R",
-                visible: false,
-                text: "",
-                points: [
-                    358,
-                    387.5,
-                    358,
-                    397.5,
-                    358,
-                    461,
-                    216.75,
-                    461,
-                    75.5,
-                    461,
-                    65.5,
-                    461
-                ]
-            },
-            {
-                from: 4,
-                to: 6,
-                fromPort: "L",
-                toPort: "R",
-                visible: true,
-                text: "否",
-                points: [276, 159, 266, 159, 170.5, 159, 170.5, 157, 75, 157, 65, 157]
-            },
-            {
-                from: 6,
-                to: 2,
-                fromPort: "L",
-                toPort: "L",
-                visible: true,
-                text: "是",
-                points: [-55, 157, -65, 157, -70, 157, -70, 113.5, -70, 70, -60, 70]
-            },
-            {
-                from: 6,
-                to: 9,
-                fromPort: "B",
-                toPort: "T",
-                visible: true,
-                text: "否",
-                points: [5, 177, 5, 187, 5, 308.75, 5, 308.75, 5, 430.5, 5, 440.5]
-            }
-        ]
-    };
-    let obj2 = obj.linkDataArray;
-    let arr = [];
-    function AddChildNode(node) {
-        node.Childs = [];
-        obj2.forEach((item, index) => {
-            if (item.from == node.key) {
-                let child = {
-                    key: item.to,
-                    from: item.from,
-                    to: item.to,
-                    Id: item.to,
-                    Fatherid: item.from,
-                    fromPort: item.fromPort,
-                    toPort: item.toPort,
-                    LineTitle: item.text,
+    <canvas id="myCanvas" width="500" height="500"></canvas>
+    <canvas id="myCanvas2" width="500" height="500"></canvas>
 
-                    points: item.points
+    <script src="./myDrawCanvas.js"></script>
+    <script>
+        // canvas基础样式
+        // let itemWidth = 80; //每一项的宽
+        // let itemHeight = 40; //每一项的高
+        // let rowWidth = 30; //行间距
+        // let coleWidth = 40; //列间距
+        let data = [{
+            id: "3-3",
+            type: "rule",
+            text: "是少时所所否",
+            row: 3,
+            cole: 3,
+            line: [{
+                targetId: "1-3",
+                direction: [{
+                    type: "top",
+                    value: 1
+                }]
+            }],
+        }, {
+            id: "1-3",
+            type: "step",
+            text: "是少时诵诗书所所所否",
+            row: 2,
+            cole: 3,
+            line: [{
+                targetId: "",
+                direction: []
+            }],
+        },]
+        let canvas = document.getElementById('myCanvas');
+        let context = canvas.getContext('2d');
+        for (let i = 0; i < data.length; i++) {
+            let item = data[i];
+            if (item.type == "step") {
+                drawStep(context, item)
+            }
+            if (item.type == "start" || item.type == "end") {
+                drawStartEnd(context, item)
+            }
+            if (item.type == "rule") {
+                drawRhombus(context, item)
+            }
+            if (item.line.length > 0) {
+                let startLocation = {
+                    x1: (item.cole - 1) * (itemWidth + coleWidth) + itemWidth / 2,
+                    y1: (item.row - 1) * (itemHeight + rowWidth)
                 };
-                node.Childs.push(child);
-                arr.push(node.key);
-                if (findLoop(arr, child.to)) AddChildNode(child);
+                let endLocation = {
+                    x2: 0,
+                    y2: 0
+                };
+                for (let m = 0; m < item.line.length; m++) {
+                    let xIndex = parseInt(item.line[m].targetId.split("-")[0]);
+                    let yIndex = parseInt(item.line[m].targetId.split("-")[1]);
+
+                    for (let n = 0; n < item.line[m].direction.length; n++) {
+                        if (item.line[m].direction[n].type == "top") {
+                            endLocation.x2 = startLocation.x1;
+                            endLocation.y2 = startLocation.y1 - item.value * (itemHeight +
+                                rowWidth) - itemHeight;
+                            drawLine(context, startLocation, endLocation);
+                            startLocation.x1 = endLocation.x2;
+                            startLocation.y1 = endLocation.y2;
+                        }
+                    }
+                }
             }
-        });
-        return node;
-    }
-
-    function findLoop(loopObj, item) {
-        if (loopObj.indexOf(item) > -1) {
-            return false;
         }
-        return true;
-    }
-
-
-    document.getElementById("wsd").innerHTML = JSON.stringify(AddChildNode({
-        key: 1,
-        category: "Start",
-        loc: "-7.105427357601002e-15 -28",
-        color: "",
-        text: "开始",
-        state: 1
-    }))
-</script>
+        let canvas2 = document.getElementById('myCanvas2');
+        let context2 = canvas2.getContext('2d');
+        context2.arc(25, 25, 10, 180, 180, true);
+        context2.fillStyle = "red";
+        context2.fill();
+    </script>
+</body>
 
 </html>

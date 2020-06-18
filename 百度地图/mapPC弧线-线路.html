@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="../css/element.css">
+    <title>mapPC弧线-线路</title>
+    <style>
+        .bm-view,
+        .map {
+            height: 400px;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="main">
+        <baidu-map class="map" :center="{lng: 118.454, lat: 32.955}" :zoom="5">
+            <bml-curve-line :points="points" :editing="true" @lineupdate="update"></bml-curve-line>
+        </baidu-map>
+    </div>
+    <script src="../js/vue.js"></script>
+    <script src="../js/element.js"></script>
+    <script src="https://unpkg.com/vue-baidu-map"></script>
+    <!-- <script src="../js/baidu-map0.21.2.js"></script> -->
+
+    <script type="module">
+        Vue.use(VueBaiduMap.default, {
+            ak: 'VlEiPanKyj6oLyHE4jLGlZgAIUkBjN69'
+        })
+        var app = new Vue({
+            el: '#main',
+            data: {
+                points: [
+                    { lng: 116.432045, lat: 39.910683 },
+                    { lng: 120.129721, lat: 30.314429 },
+                    { lng: 121.491121, lat: 25.127053 }
+                ]
+            },
+            components: {
+                BmlCurveLine: VueBaiduMap.BmlCurveLine
+            },
+            methods: {
+                update(e) {
+                    this.points = e.target.cornerPoints
+                }
+            }
+        })
+    </script>
+</body>
+
+</html>
