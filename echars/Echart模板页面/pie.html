@@ -316,71 +316,89 @@
                 },
                 drawPie4: function () {
                     let myChart = echarts.init(document.getElementById("pie4"));
-                    let data1 = [];
-                    let value = 50;
-                    let max = 100;
-                    for (let i = max; i >= 0; i--) {
-                        if (i <= value) {
-                            data1.push({
-                                value: 1,
-                                itemStyle: {
-                                    color: '#29E8E9',
-                                    borderWidth: 1,
-                                    borderColor: '#fff',
-                                    margiLeft: 10
+                    let value = 50
+                    let max = 100
+                    function _pie3() {
+                        let dataArr = []
+                        for (var i = 0; i < max; i++) {
+                            if (i <= value) {
+                                dataArr.push({
+                                    value: 10,
+                                    itemStyle: {
+                                        normal: {
+                                            color: 'rgb(126,190,255)',
+                                            borderColor: 'rgba(0,0,0,0)'
+                                        }
+                                    }
+                                })
+                                if (i % 2 === 0) {
+                                    dataArr.push({
+                                        value: 10,
+                                        itemStyle: {
+                                            normal: {
+                                                color: 'rgba(0,0,0,0)',
+                                                borderColor: 'rgba(0,0,0,0)'
+                                            }
+                                        }
+                                    })
                                 }
-                            })
+                            } else {
+                                dataArr.push({
+                                    name: (i + 1).toString(),
+                                    value: 10,
+                                    itemStyle: {
+                                        normal: {
+                                            color: 'rgba(0,0,0,0)',
+                                            borderColor: 'rgba(0,0,0,0)'
+                                        }
+                                    }
+                                })
+                            }
                         }
-                        if (i > value && i <= 100) {
-                            data1.push({
-                                value: 1,
-                                itemStyle: {
-                                    color: "#cbcbcb",
-                                    borderWidth: 1,
-                                    borderColor: '#ffffff',
-                                }
-                            })
-                        }
-
+                        return dataArr
                     }
                     let option = {
-                        title: [{
-                            text: "剩余",
-                            subtext: value + '天',
-                            x: '25%',
-                            y: '45%',
-                            textAlign: 'center',
-                            textStyle: {
-                                color: '#9a9a9a',
-                                fontSize: 14,
-                            },
-                            subtextStyle: {
-                                color: '#2f2f2f',
-                                fontSize: 20,
-                                fontWeight: 'bold'
+                        title: [
+                            {
+                                text: '',
+                                subtext: '',
+                                x: '25%',
+                                y: '45%',
+                                textAlign: 'center',
+                                textStyle: {
+                                    color: '#9a9a9a',
+                                    fontSize: 14
+                                },
+                                subtextStyle: {
+                                    color: '#2f2f2f',
+                                    fontSize: 20,
+                                    fontWeight: 'bold'
+                                }
                             }
-                        }],
+                        ],
                         tooltip: {
                             show: false
                         },
-                        series: [{
-                            type: 'pie',
-                            radius: ['400', '30%'],
-                            center: ['50%', '50%'],
-                            clockwise: false,
-                            data: data1,
-                            hoverAnimation: false,
-                            label: {
-                                show: false,
-                            },
-                            labelLine: {
-                                show: false
-                            },
-
-                        }
-
+                        series: [
+                            {
+                                type: 'pie',
+                                zlevel: 3,
+                                silent: true,
+                                radius: ['50%', '84%'],
+                                label: {
+                                    normal: {
+                                        show: false
+                                    }
+                                },
+                                labelLine: {
+                                    normal: {
+                                        show: false
+                                    }
+                                },
+                                data: _pie3()
+                            }
                         ]
-                    };
+                    }
                     myChart.setOption(option, true);
                 }
             },
