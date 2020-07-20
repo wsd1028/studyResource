@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="../css/element.css">
+    <title>mapv地图</title>
+    <style>
+        .map {
+            height: 400px;
+        }
+
+        .searchMap {
+            max-height: 300px
+        }
+    </style>
+</head>
+
+<body>
+    <div id="main">
+        <baidu-map :center="options.center" :scroll-wheel-zoom="true" :zoom="15" @click="$log($event)" @ready="ready"
+            class="baidu-map">
+            <bm-boundary :fillOpacity="0.08" :strokeWeight="2" fillColor="#F56C6C" name="宜宾市" strokeColor="#F56C6C">
+            </bm-boundary>
+            <!-- 覆盖信息物(海量点) -->
+            <bm-point-collection :points="[{ lat: 28.707837, lng: 104.528671 }]" @click="$log($event)"
+                size="BMAP_POINT_SIZE_BIG"></bm-point-collection>
+        </baidu-map>
+    </div>
+    <script src="../js/vue.js"></script>
+    <script src="../js/element.js"></script>
+
+    <script src="../js/baidu-map0.21.2.js"></script>
+
+    <script>
+        Vue.use(VueBaiduMap.default, {
+            ak: 'VlEiPanKyj6oLyHE4jLGlZgAIUkBjN69'
+        })
+        var app = new Vue({
+            el: '#main',
+            data() {
+                // 地图配置项
+                const options = {
+                    center: '宜宾'
+                }
+
+                return {
+                    options,
+                    //当前地图对象
+                    map: null,
+                    BMap: null,
+                    BMapConvertor: null,
+                    carImg: null,
+                    //车辆数据
+                    carList: [],
+                    //车辆图标对象
+                    carDateSet: null,
+                    //车辆图标覆盖物
+                    iconMapLayer: null,
+                    //车辆轨迹数据
+                    carLineObj: null,
+                    //车辆轨迹对象
+                    carLineDataSet: null,
+                    //车辆轨迹覆盖物
+                    lineMapLayer: null,
+                    // WebSocket实例
+                    WS: null
+                }
+            },
+
+            props: {
+                markerPoints: Object
+            },
+
+            methods: {
+                async getTestData() {
+                    let resp = await this.$http.get('/carp/gps/test1')
+                },
+                setCenter(data) {
+                    this.sendMessage(data)
+                },
+                fixCarData(carList = []) {
+                    let carData = []
+                    for (let i = 0; i < carList.length; i++) {
+                        carData.push({
+                            geometry: {
+                                type: 'Point',
+                                coordinates: [carList[i].longitude, carList[i].latitude]
+                            },
+                            icon: this.carImg,
+                            phone: carList[i].phone
+                        })
+                    }
+                    return carData
+                },
+                //绘制车辆
+                drawCar(carList) {
+                    this.carImg = new Image()
+                    this.carImg.src = require('@/assets/images/svg/car.svg')
+                    this.carImg.onload = () => {
+                        this.carDateSet = new this.DataSet(this.fixCarData(carList))
+                        let carOptions = {
+                            draw: 'icon',
+                            width: 40,
+                            height: 40
+                        }
+                        this.iconMapLayer = new this.baiduMapLayer(this.map, this.carDateSet, carOptions)
+                    }
+                },
+                fixLineData(lineObj) {
+                    let lineData = []
+                    for (const key in lineObj) {
+                        let coordinates = []
+                        for (let i = 0; i < lineObj[key].length; i++) {
+                            coordinates.push([lineObj[key][i].longitude, lineObj[key][i].latitude])
+                        }
+                        lineData.push({
+                            geometry: {
+                                type: 'LineString',
+                                coordinates: coordinates,
+                                count: 30
+                            }
+                        })
+                    }
+                    return lineData
+                },
+                //绘制车辆轨迹
+                drawLine(lineObj) {
+                    this.carLineDataSet = new this.DataSet(this.fixLineData(lineObj))
+                    let lineOptions = {
+                        strokeStyle: '#409EFF',
+                        lineWidth: 4
+                    }
+                    this.lineMapLayer = new this.baiduMapLayer(this.map, this.carLineDataSet, lineOptions)
+                },
+                // 百度地图初始化完成
+                ready(res) {
+                    this.BMap = res.BMap
+                    this.map = res.map
+                    this.BMapConvertor = new this.BMap.Convertor()
+                    // 引入mapv
+                    const { DataSet, baiduMapLayer, utilCityCenter } = require('mapv')
+                    this.DataSet = DataSet
+                    this.baiduMapLayer = baiduMapLayer
+                    this.utilCityCenter = utilCityCenter
+                },
+                // 坐标转化
+                pointConvertor(points) {
+                    return new Promise(resolve => {
+                        this.BMapConvertor.translate(points, 1, 5, ({ points }) => {
+                            resolve(points)
+                        })
+                    })
+                },
+                // 车辆gps数据监听
+                getCarGpsPoint() {
+                    this.WS = this.$ws(`ws://${location.host}/carp/gps/k/q/socket`)
+                        .catch(err => {
+                            console.log('链接错误', err)
+                        })
+                        .then(resp => {
+                            //0:链接成功
+                            //1.初始点位,实时点位上一个
+                            //2.实时点位
+                            if (resp.code == 1) {
+                                this.carList = resp.data
+                                //第一次组装线条数据
+                                let carLineObj = {}
+                                for (let i = 0; i < resp.data.length; i++) {
+                                    carLineObj[resp.data[i].phone] = [
+                                        {
+                                            latitude: resp.data[i].latitude,
+                                            longitude: resp.data[i].longitude
+                                        }
+                                    ]
+                                }
+                                this.carLineObj = carLineObj
+                                //清空车辆与线条
+                                if (this.carDateSet) {
+                                    this.carDateSet.set(this.fixCarData(this.carList))
+                                } else {
+                                    //第一次绘制车辆
+                                    this.drawCar(resp.data)
+                                }
+                                if (this.carLineDataSet) {
+                                    this.carLineDataSet.set(this.fixLineData(this.carLineObj))
+                                } else {
+                                    //第一次绘制车辆
+                                    this.drawLine(this.carLineObj)
+                                }
+                            }
+                            if (resp.code == 2) {
+                                //修改车辆位置信息
+                                for (let i = 0; i < this.carList.length; i++) {
+                                    if (this.carList[i].phone == resp.data.phone) {
+                                        this.carList[i].latitude = resp.data.latitude
+                                        this.carList[i].longitude = resp.data.longitude
+                                    }
+                                }
+                                if (this.carDateSet) this.carDateSet.set(this.fixCarData(this.carList))
+                                //修改车辆轨迹信息
+                                if (this.carLineObj[resp.data.phone])
+                                    this.carLineObj[resp.data.phone].push({
+                                        latitude: resp.data.latitude,
+                                        longitude: resp.data.longitude
+                                    })
+                                ////绘制线条
+                                if (this.carLineDataSet) this.carLineDataSet.set(this.fixLineData(this.carLineObj))
+                            }
+                        })
+                },
+                //设置监听车辆
+                sendMessage(data) {
+                    this.WS.send(
+                        JSON.stringify({
+                            code: 0,
+                            data: data,
+                            message: ''
+                        })
+                    )
+                }
+            },
+
+            mounted() {
+                // 车辆gps数据监听
+                this.getCarGpsPoint()
+            },
+
+            beforeDestroy() {
+                // 关闭WebSocket
+                console.log('destroyed')
+                this.WS.close()
+            }
+        })
+    </script>
+</body>
+
+</html>
