@@ -101,7 +101,7 @@ function singleArrObj(oldArr, rule) {
  * @parm updown （up 升序 down 降序）
  */
 function sortByKey(array, key, updown) {
-  return array.sort(function(a, b) {
+  return array.sort(function (a, b) {
     var x = a[key]
     var y = b[key]
     if (updown == 'up') {
@@ -148,11 +148,26 @@ function filterText(data) {
   return arr
 }
 
+//Promise实现async/await rturn
+function getImg(name) {
+  let img = await new Promise((resolve, reject) => {
+    var image = new Image()
+    //异步
+    image.src = require('@/assets/images/svg/' + name + '.svg')
+    if (image) {
+      resolve(image)
+    } else {
+      reject(false)
+    }
+  })
+  return img
+}
 exports = {
   getPageData,
   getCookie,
   getQueryString,
   singleArrObj,
   sortByKey,
-  filterText
+  filterText,
+  getImg
 }
