@@ -1,7 +1,7 @@
 <template>
   <div class="CreatForm">
-    <Title titleName="创建联单"></Title>
-    <div>
+    <myTitle class="mainBox2" titleName="创建联单"></myTitle>
+    <div class="mt50">
       <div class="head">排放企业</div>
       <van-divider />
       <div class="project-info">
@@ -22,7 +22,6 @@
 </template>
 
 <script>
-import Title from '@/components/Title'
 export default {
   data() {
     return {
@@ -61,9 +60,7 @@ export default {
       }
     }
   },
-  components: {
-    Title
-  },
+  components: {},
   mounted() {
     this.metaForm.projectId = this.$store.state.user.project.projectId
     this.metaForm.accountId = this.$store.state.user.user.accountTypeDto.accountId
@@ -100,9 +97,6 @@ export default {
         this.$http.post('/carp/business/a/q/start/form/electronic', this.$qs.stringify(this.metaForm)).then(resp => {
           that.btnLoading = false
           if (resp.code == 0) {
-            if (window.jsCall) {
-              // window.jsCall.openWeb('', '/main/formDetail?formUrl=createForm&eleData=' + JSON.stringify(resp.data))
-            }
             this.$router.replace({
               name: 'formDetail',
               params: {
@@ -157,7 +151,6 @@ export default {
     font-size: 18px;
     margin-left: 21px;
     font-weight: 800;
-    text-indent: 12px;
     text-align: left;
   }
   .project-info {

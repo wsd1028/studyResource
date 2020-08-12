@@ -1,13 +1,7 @@
 <template>
   <div class="company-workBusiness">
-    <header>
-      <van-nav-bar @click-left="$router.go(-1)" class="nav" title="工作台">
-        <template #left>
-          <van-icon class-prefix="iconfont" color="#333" name="fanhui" size="22" />
-        </template>
-      </van-nav-bar>
-    </header>
-    <van-tabs @change="changeTab" color="#4683f1" swipeable v-model="active">
+    <myTitle class="mainBox2" titleName="工作台"></myTitle>
+    <van-tabs class="mt50" @change="changeTab" color="#4683f1" swipeable v-model="active">
       <van-tab name="wait" title="待办">
         <van-pull-refresh @refresh="changeTab" v-model="refreshloading">
           <div class="all">
@@ -292,20 +286,6 @@ export default {
   background-color: #f9f9f9;
   min-height: 100%;
   text-align: left;
-  header {
-    background-color: #fff;
-    .nav {
-      text-align: left;
-      line-height: 42px;
-      i {
-        color: #666;
-      }
-      .van-nav-bar__title {
-        font-weight: 800;
-        font-size: 18px !important;
-      }
-    }
-  }
   .all {
     padding: 10px;
     min-height: 400px;

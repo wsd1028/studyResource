@@ -1,19 +1,10 @@
 <template>
   <div class="Feedback">
-    <header>
-      <van-nav-bar @click-left="$router.go(-1)" class="nav" title="用户反馈">
-        <template #left>
-          <van-icon class-prefix="iconfont" color="#333" name="fanhui" size="22" />
-        </template>
-      </van-nav-bar>
-    </header>
-    <div class="boxItem">
+    <myTitle class="mainBox2" titleName="用户反馈" v-if="$store.state.user.user.accountTypeDto.type == $dictionaries.userType.garbage"></myTitle>
+    <div class="boxItem mt50">
       <p class="text">图片</p>
-      <div class="itemContent">
-        <div style="display:flex;flexWrap:wrap;width:100%">
-          <van-image :key="index" :src="item" height="80" style="margin:5px;flexShrink:0" v-for="(item, index) in hasUploadImg" width="80" />
-          <van-uploader :accept="'image/*'" :after-read="afterRead" multiple style="margin:5px;flexShrink:0" v-model="fileList" />
-        </div>
+      <div class="itemContent" style="padding:10px">
+        <MyUpload :limit="3" @uploadYes="uploadYes"></MyUpload>
       </div>
     </div>
     <div class="boxItem">
@@ -49,11 +40,11 @@
 
 <script>
 import { checkPhone, checkEmail } from '@/assets/js/pattern.js'
+import MyUpload from '@/components/MyUpload.vue'
+
 export default {
   data() {
     return {
-      //图片上传列表
-      fileList: [],
       //图片以及上传列表
       hasUploadImg: [],
       checkPhone,
@@ -70,8 +61,14 @@ export default {
     }
   },
   mounted() {},
-  components: {},
+  components: {
+    MyUpload
+  },
   methods: {
+    //上传图片
+    uploadYes(fileList) {
+      this.hasUploadImg = fileList
+    },
     //保存
     async updateYes() {
       this.updateData.userId = this.$store.state.user.user.id
@@ -107,27 +104,6 @@ export default {
           confirmButtonColor: 'red'
         })
       }
-    },
-    //文件选中之后调用
-    async afterRead(file) {
-      let imgList = [file.content]
-      //给上传中的文件添加上传表示
-      this.fileList[0].message = '上传中...'
-      this.fileList[0].status = 'uploading'
-      let resp = await this.$http.post('/carp/business/a/q/upload/uploadImgs', JSON.stringify(imgList), { headers: { 'Content-Type': 'application/json' } })
-      if (resp.code == 0) {
-        this.$dialog.alert({
-          message: '上传成功',
-          confirmButtonColor: 'green'
-        })
-        this.hasUploadImg.push(resp.data[0])
-      } else {
-        this.$dialog.alert({
-          message: '上传失败:' + resp.message,
-          confirmButtonColor: 'red'
-        })
-      }
-      this.fileList = []
     }
   }
 }
@@ -138,20 +114,6 @@ export default {
   text-align: left;
   background-color: #f9f9f9;
   min-height: 100%;
-  header {
-    background-color: #fff;
-    .nav {
-      text-align: left;
-      line-height: 42px;
-      i {
-        color: #666;
-      }
-      .van-nav-bar__title {
-        font-weight: 800;
-        font-size: 18px !important;
-      }
-    }
-  }
   .boxItem {
     margin-top: 30px;
     p {

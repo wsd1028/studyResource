@@ -3,14 +3,8 @@
     <van-popup class="myDia" position="top" v-model="mapDia">
       <MyMap :needCode="true" @chooseAddress="chooseAddress"></MyMap>
     </van-popup>
-    <header>
-      <van-nav-bar @click-left="$router.go(-1)" class="nav" title="新建问题上报">
-        <template #left>
-          <van-icon class-prefix="iconfont" color="#333" name="fanhui" size="22" />
-        </template>
-      </van-nav-bar>
-    </header>
-    <div class="boxItem">
+    <myTitle class="mainBox2" titleName="新建问题上报"></myTitle>
+    <div class="boxItem mt50">
       <div class="itemContent problemType" style="padding:0 0px 10px">
         <p>问题类型</p>
         <div>
@@ -176,20 +170,6 @@ export default {
   .myDia {
     padding: 10px;
     padding-top: 20px;
-  }
-  header {
-    background-color: #fff;
-    .nav {
-      text-align: left;
-      line-height: 42px;
-      i {
-        color: #666;
-      }
-      .van-nav-bar__title {
-        font-weight: 800;
-        font-size: 18px !important;
-      }
-    }
   }
   .boxItem {
     background-color: #fff;

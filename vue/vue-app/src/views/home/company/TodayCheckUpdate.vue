@@ -1,13 +1,7 @@
 <template>
   <div class="company-TodayCheckUpdate">
-    <header>
-      <van-nav-bar @click-left="$router.go(-1)" class="nav" title="每日巡检">
-        <template #left>
-          <van-icon class-prefix="iconfont" color="#333" name="fanhui" size="22" />
-        </template>
-      </van-nav-bar>
-    </header>
-    <div class="boxItem">
+    <myTitle class="mainBox2" titleName="每日巡检"></myTitle>
+    <div class="boxItem mt50">
       <p class="title">
         <span class="box"></span>
         <span>巡检基本信息</span>
@@ -42,7 +36,7 @@
         </van-grid>
         <div class="itemContent" style="padding:10px" v-if="!item.checkState">
           <p style="margin:10px 0">重新上传图片</p>
-          <MyUpload :limit="4" @uploadYes="uploadYes($event, index)" :module="$dictionaries.imgType.today"></MyUpload>
+          <MyUpload :limit="4" :module="$dictionaries.imgType.today" @uploadYes="uploadYes($event, index)"></MyUpload>
         </div>
         <div class="remark">
           <p>
@@ -89,6 +83,7 @@ export default {
             todaysImgEntityList: [
               {
                 id: null, //不传
+                visible: true,
                 todayCheckId: null, //每日巡检id（主表id）不传
                 imageUrl: '', //图片地址
                 todayContentId: null, //巡检内容表id不传
@@ -102,15 +97,16 @@ export default {
       },
       updateData2: {
         areaCode: 0, //区域code
-        checkPeopleId: null, //巡检人ID1
+        checkPeopleId: null, //巡检人ID
         initiatorPeopleId: null, //发起者ID
-        checkPeopleName: '', //巡检人名字1
-        createDate: '', //创建巡检时间1
+        examinePeopleId: '', //审核人
+        checkPeopleName: '', //巡检人名字
+        createDate: '', //创建巡检时间
         id: null, //不传
-        departmentState: this.$dictionaries.machineType.government, //部门状态1
-        workStationId: null, //项目/消纳站ID1
+        departmentState: this.$dictionaries.machineType.government, //部门状态
+        workStationId: null, //项目/消纳站ID
         checkType: 1,
-        state: this.$dictionaries.todayCheck.finish, //巡检状态1
+        state: this.$dictionaries.todayCheck.finish, //巡检状态
         todaysCheckContentDtoList: [
           {
             checkRemark: '', //巡检状态评价
@@ -121,6 +117,7 @@ export default {
             todaysImgEntityList: [
               {
                 id: null, //不传
+                visible: true,
                 todayCheckId: null, //每日巡检id（主表id）不传
                 imageUrl: '', //图片地址
                 todayContentId: null, //巡检内容表id不传
@@ -159,6 +156,7 @@ export default {
             bool = true
             todaysImgEntityList.push({
               id: null, //不传
+              visible: true,
               todayCheckId: this.updateData.todaysCheckContentDtoList[i].todayCheckId, //每日巡检id（主表id）不传
               imageUrl: this.updateData2.todaysCheckContentDtoList[i].todaysImgEntityList[j], //图片地址
               todayContentId: this.updateData.todaysCheckContentDtoList[i].id, //巡检内容表id不传
@@ -205,6 +203,7 @@ export default {
             if (resp.data.contentList[i].dictId == resp.data.imgList[j].typeCode) {
               todaysImgEntityList.push({
                 id: resp.data.imgList[j].id, //不传
+                visible: true,
                 todayCheckId: resp.data.imgList[j].todayCheckId, //每日巡检id（主表id）不传
                 imageUrl: resp.data.imgList[j].imageUrl, //图片地址
                 todayContentId: resp.data.imgList[j].todayContentId, //巡检内容表id不传
@@ -228,11 +227,12 @@ export default {
           areaCode: this.mainData.areaCode, //区域code
           checkPeopleId: this.mainData.checkPeopleId, //巡检人ID1
           initiatorPeopleId: this.mainData.initiatorPeopleId, //发起者ID
+          examinePeopleId: this.mainData.examinePeopleId, //审核人
           checkPeopleName: this.mainData.checkPeopleName, //巡检人名字1
           createDate: this.mainData.createDate, //创建巡检时间1
           id: this.mainData.id, //不传
           departmentState: this.mainData.departmentState, //部门状态1
-          workStationId: this.mainData.projectId, //项目ID1
+          workStationId: this.mainData.workStationId, //项目ID1
           state: this.mainData.state, //巡检状态1
           todaysCheckContentDtoList: todaysCheckContentDtoList,
           visible: this.mainData.visible

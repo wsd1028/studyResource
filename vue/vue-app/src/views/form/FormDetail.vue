@@ -1,9 +1,7 @@
 <template>
   <div class="main">
-    <div>
-      <Title titleName="创建联单"></Title>
-    </div>
-    <div class="section">
+    <myTitle titleName="创建联单" class="mainBox2"></myTitle>
+    <div class="section mt50">
       <div class="sectionItem">
         <div class="top">
           <div class="box"></div>
@@ -206,7 +204,6 @@
 </template>
 
 <script>
-import Title from '@/components/Title.vue'
 import MyUpload from '@/components/MyUpload.vue'
 
 export default {
@@ -255,7 +252,6 @@ export default {
     this.getMainData()
   },
   components: {
-    Title,
     MyUpload
   },
   methods: {

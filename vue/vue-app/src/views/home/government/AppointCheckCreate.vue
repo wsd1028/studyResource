@@ -1,13 +1,7 @@
 <template>
   <div class="government-appointCheckCreate">
-    <header>
-      <van-nav-bar @click-left="goBack" class="nav" title="新建指派点检">
-        <template #left>
-          <van-icon class-prefix="iconfont" color="#333" name="fanhui" size="22" />
-        </template>
-      </van-nav-bar>
-    </header>
-    <section>
+    <myTitle class="mainBox2" titleName="新建指派点检"></myTitle>
+    <section class="mt50">
       <van-tabs @change="changeTab" color="#4683f1" swipeable v-model="updateData.type">
         <van-tab :name="$dictionaries.machineType.company" title="排放源"></van-tab>
         <van-tab :name="$dictionaries.machineType.garbage" title="消纳源"></van-tab>
@@ -296,20 +290,6 @@ export default {
   text-align: left;
   background-color: #f9f9f9;
   min-height: 100%;
-  header {
-    background-color: #fff;
-    .nav {
-      text-align: left;
-      line-height: 42px;
-      i {
-        color: #666;
-      }
-      .van-nav-bar__title {
-        font-weight: 800;
-        font-size: 18px !important;
-      }
-    }
-  }
   .itemBox {
     background-color: #fff;
     margin-top: 20px;

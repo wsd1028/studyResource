@@ -14,14 +14,8 @@
         </div>
       </div>
     </van-dialog>
-    <header>
-      <van-nav-bar @click-left="$router.go(-1)" class="nav" title="督办派单详情">
-        <template #left>
-          <van-icon class-prefix="iconfont" color="#333" name="fanhui" size="22" />
-        </template>
-      </van-nav-bar>
-    </header>
-    <div class="top">
+    <myTitle class="mainBox2" titleName="督办派单详情"></myTitle>
+    <div class="top mt50">
       <div class="project">
         <span class="projectName textFlow">督办案件:{{ mainData.id }}</span>
         <p class="carCreat">
@@ -62,7 +56,7 @@
     </div>
     <section>
       <van-tabs color="#4683f1" swipeable>
-        <van-tab title="督办是由">
+        <van-tab title="督办事由">
           <div class="item">
             <van-field disabled label="创建时间" v-model="mainData.createDate" />
             <van-field disabled label="市区县" v-model="mainData.areaName" />
@@ -363,20 +357,6 @@ export default {
       text-align: center;
       font-weight: 800;
       padding: 0 10px;
-    }
-  }
-  header {
-    background-color: #fff;
-    .nav {
-      text-align: left;
-      line-height: 42px;
-      i {
-        color: #666;
-      }
-      .van-nav-bar__title {
-        font-weight: 800;
-        font-size: 18px !important;
-      }
     }
   }
   .top {

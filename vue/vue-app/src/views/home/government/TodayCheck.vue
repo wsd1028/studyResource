@@ -58,6 +58,8 @@
 </template>
 
 <script>
+import { getList } from '@/assets/js/commonAxios'
+
 export default {
   data() {
     return {
@@ -155,30 +157,41 @@ export default {
       if (page) {
         this.searchData.page = page
       }
-      let resp = await this.$http.get('/carp/business/a/q/todays/check/page', {
-        params: this.searchData
-      })
-      if (resp.code == 0) {
-        if (page) {
-          this.list = []
-        }
-        this.list = this.list.concat(resp.data.records)
-        // 加载状态结束
-        this.loading = false
-        this.refreshloading = false
-        this.searchData.page = this.searchData.page + 1
-        if (this.list.length == resp.data.total) {
-          // 数据全部加载完成
-          this.finished = true
-        } else {
-          this.finished = false
-        }
-      } else {
-        this.$dialog.alert({
-          message: '获取每日巡检失败:' + resp.message,
-          confirmButtonColor: 'red'
-        })
+      let url = '/carp/business/a/q/todays/check/page'
+      let data = {
+        list: this.list,
+        page: this.searchData.page
       }
+      let result = await getList(url, data, '每日巡检', this.searchData)
+      this.list = result.list
+      this.searchData.page = result.page
+      this.refreshloading = result.refreshloading
+      this.loading = result.loading
+      this.finished = result.finished
+      //let resp = await this.$http.get('/carp/business/a/q/todays/check/page', {
+      //  params: this.searchData
+      //})
+      //if (resp.code == 0) {
+      //  if (this.searchData.page) {
+      //    this.list = []
+      //  }
+      //  this.list = this.list.concat(resp.data.records)
+      //  // 加载状态结束
+      //  this.loading = false
+      //  this.refreshloading = false
+      //  this.searchData.page = this.searchData.page + 1
+      //  if (this.list.length == resp.data.total) {
+      //    // 数据全部加载完成
+      //    this.finished = true
+      //  } else {
+      //    this.finished = false
+      //  }
+      //} else {
+      //  this.$dialog.alert({
+      //    message: '获取每日巡检失败:' + resp.message,
+      //    confirmButtonColor: 'red'
+      //  })
+      //}
     }
   }
 }
@@ -189,20 +202,6 @@ export default {
   text-align: left;
   background-color: #f9f9f9;
   min-height: 100%;
-  header {
-    background-color: #fff;
-    .nav {
-      text-align: left;
-      line-height: 42px;
-      i {
-        color: #666;
-      }
-      .van-nav-bar__title {
-        font-weight: 800;
-        font-size: 18px !important;
-      }
-    }
-  }
   section {
     .item {
       background-color: #fff;

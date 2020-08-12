@@ -1,9 +1,7 @@
 <template>
   <div class="main">
-    <div>
-      <Title titleName="联单点检"></Title>
-    </div>
-    <div class="section">
+    <myTitle titleName="联单点检" class="mainBox2"></myTitle>
+    <div class="section mt50">
       <div class="sectionItem">
         <div class="top">
           <div class="box"></div>
@@ -140,7 +138,7 @@
             <div style="display:flex;flexWrap:wrap;width:100%">
               <van-image
                 :key="index"
-                :src="$dictionaries.imgBaseUrl + item"
+                :src="$dictionaries.imgBaseUrl2 + item"
                 height="80"
                 style="margin:5px;flexShrink:0"
                 v-for="(item, index) in formDetail.carPhoto"
@@ -153,7 +151,7 @@
             <div style="display:flex;flexWrap:wrap;width:100%">
               <van-image
                 :key="index"
-                :src="$dictionaries.imgBaseUrl + item"
+                :src="$dictionaries.imgBaseUrl2 + item"
                 height="80"
                 style="margin:5px;flexShrink:0"
                 v-for="(item, index) in formDetail.adminPhoto"
@@ -216,7 +214,6 @@
 </template>
 
 <script>
-import Title from '@/components/Title.vue'
 import MyUpload from '@/components/MyUpload.vue'
 
 export default {
@@ -266,7 +263,6 @@ export default {
     })
   },
   components: {
-    Title,
     MyUpload
   },
   methods: {
@@ -383,7 +379,7 @@ export default {
         photoAddress: this.photoList,
         garbageStationId: this.formDetail.garbageId,
         driverAccountId: this.$store.state.user.user.accountTypeDto.accountId,
-        endDate: this.$moment().format('YYYY-MM-DD hh:mm:ss'),
+        endDate: this.$moment().format('YYYY-MM-DD HH:mm:ss'),
         garbageTypeCode: this.garbageTypeCode,
         longitude: this.position.longitude,
         latitude: this.position.latitude

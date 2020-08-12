@@ -88,7 +88,11 @@ export default {
         pm10 = []
       if (resp.code == 0) {
         for (let i = 0; i < resp.data.date.length; i++) {
-          resp.data.date[i] = this.$moment(resp.data.date[i]).format('HH:mm')
+          if (this.dustTime == 12) {
+            resp.data.date[i] = this.$moment(resp.data.date[i]).format('HH:mm')
+          } else {
+            resp.data.date[i] = this.$moment(resp.data.date[i]).format('MM-DD')
+          }
         }
         time = resp.data.date
         pm25 = resp.data.pm25
@@ -254,7 +258,11 @@ export default {
         voice = []
       if (resp.code == 0) {
         for (let i = 0; i < resp.data.date.length; i++) {
-          resp.data.date[i] = this.$moment(resp.data.date[i]).format('HH:mm')
+          if (this.dustTime == 12) {
+            resp.data.date[i] = this.$moment(resp.data.date[i]).format('HH:mm')
+          } else {
+            resp.data.date[i] = this.$moment(resp.data.date[i]).format('MM-DD')
+          }
         }
         time = resp.data.date
         voice = resp.data.voice

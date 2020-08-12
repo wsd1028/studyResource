@@ -873,4 +873,11 @@ let PortFluxData = {
   inData,
   outData
 };
-exports = { PortFluxData };
+let wsd={
+  name:'wsd',
+  age:'18'
+}
+exports = { wsd };
+//exports.testx=3
+//exports.testy=4
+

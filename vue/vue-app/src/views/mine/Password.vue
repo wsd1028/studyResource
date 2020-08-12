@@ -1,13 +1,7 @@
 <template>
   <div class="Password">
-    <header>
-      <van-nav-bar @click-left="$router.go(-1)" class="nav" title="修改密码">
-        <template #left>
-          <van-icon class-prefix="iconfont" color="#333" name="fanhui" size="22" />
-        </template>
-      </van-nav-bar>
-    </header>
-    <div class="update" style="marginTop:20px">
+    <myTitle class="mainBox2" titleName="修改密码"></myTitle>
+    <div class="update mt50" style="marginTop:20px">
       <van-field label="原密码" placeholder="请输入原密码" type="password" v-model="oldPassword" />
       <van-field label="新密码" placeholder="请输入新密码" type="password" v-model="newPassword" />
       <van-field label="确认密码" placeholder="请再次输入新密码" type="password" v-model="newPassword2" />
@@ -76,20 +70,6 @@ export default {
   text-align: left;
   background-color: #f9f9f9;
   min-height: 100%;
-  header {
-    background-color: #fff;
-    .nav {
-      text-align: left;
-      line-height: 42px;
-      i {
-        color: #666;
-      }
-      .van-nav-bar__title {
-        font-weight: 800;
-        font-size: 18px !important;
-      }
-    }
-  }
   .update {
     p {
       color: #999;

@@ -5,7 +5,21 @@
         <myTitle titleName="车辆识别"></myTitle>
         <van-icon @click="goCreatForm" class="plusIcon" name="plus" v-if="!isAbsorption" />
       </div>
-      <van-search @search="select(1)" input-align="center" placeholder="请输入搜索关键词" shape="round" show-action v-model="searchData.license">
+      <div class="msgBox">
+        <div style="width:33%;text-align:center">
+          <p class="label">全部车辆</p>
+          <p class="titleOne" v-text="allCount.allNumber"></p>
+        </div>
+        <div style="width:33%;text-align:center">
+          <p class="label">名录车</p>
+          <p class="titleOne blue" v-text="allCount.carNumber"></p>
+        </div>
+        <div style="width:33%;text-align:center">
+          <p class="label">非名录车</p>
+          <p class="titleOne red" v-text="allCount.noNumber"></p>
+        </div>
+      </div>
+      <van-search @search="select(1)" input-align="center" placeholder="请输入搜索车牌号" shape="round" show-action v-model="searchData.license">
         <template #action>
           <div @click="select(1)">搜索</div>
         </template>
@@ -61,10 +75,13 @@
 </template>
 
 <script>
+import { getList } from '@/assets/js/commonAxios'
+
 export default {
   components: {},
   data() {
     return {
+      allCount: {},
       list: [], //车辆识别列表
       tabList: [
         {
@@ -101,6 +118,7 @@ export default {
       this.searchData.type = this.$dictionaries.machineType.garbage
       this.isAbsorption = true
     }
+    this.getCount()
   },
   methods: {
     //滑动
@@ -123,33 +141,58 @@ export default {
         }
       }
     },
+    //得到统计数据
+    async getCount() {
+      let resp = await this.$http.get(
+        `/carp/business/a/q/license/record/statistics?workplaceId=${this.searchData.workplaceId}&year=${this.$moment().format('YYYY')}`
+      )
+      if (resp.code == 0) {
+        this.allCount = resp.data
+      } else {
+        this.$dialog.alert({
+          message: '获取统计数据失败:' + resp.message,
+          confirmButtonColor: 'red'
+        })
+      }
+    },
     //查询数据
     async select(page) {
       if (page) {
         this.searchData.page = 1
       }
-      let resp = await this.$http.get('/carp/business/a/q/license/record/current/page', {
-        params: this.searchData
-      })
-      if (resp.code == 0) {
-        if (page) {
-          this.list = []
-        }
-        this.list = this.list.concat(resp.data.records)
-        // 加载状态结束
-        this.loading = false
-        this.refreshloading = false
-        this.searchData.page = this.searchData.page + 1
-        if (this.list.length == resp.data.total) {
-          // 数据全部加载完成
-          this.finished = true
-        }
-      } else {
-        this.$dialog.alert({
-          message: '获取车辆识别失败:' + resp.message,
-          confirmButtonColor: 'red'
-        })
+      let url = '/carp/business/a/q/license/record/current/page'
+      let data = {
+        list: this.list,
+        page: this.searchData.page
       }
+      let result = await getList(url, data, '车辆识别', this.searchData)
+      this.list = result.list
+      this.searchData.page = result.page
+      this.refreshloading = result.refreshloading
+      this.loading = result.loading
+      this.finished = result.finished
+      //let resp = await this.$http.get('/carp/business/a/q/license/record/current/page', {
+      //  params: this.searchData
+      //})
+      //if (resp.code == 0) {
+      //  if (page) {
+      //    this.list = []
+      //  }
+      //  this.list = this.list.concat(resp.data.records)
+      //  // 加载状态结束
+      //  this.loading = false
+      //  this.refreshloading = false
+      //  this.searchData.page = this.searchData.page + 1
+      //  if (this.list.length == resp.data.total) {
+      //    // 数据全部加载完成
+      //    this.finished = true
+      //  }
+      //} else {
+      //  this.$dialog.alert({
+      //    message: '获取车辆识别失败:' + resp.message,
+      //    confirmButtonColor: 'red'
+      //  })
+      //}
     },
     //跳转联单点检界面
     create(item) {
@@ -179,6 +222,24 @@ export default {
 .work-carIdentify {
   background-color: #f9f9f9;
   min-height: 100%;
+  .msgBox {
+    padding: 10px 10px 0;
+    background-color: #fff;
+    display: flex;
+    .label {
+      color: #c5c5c5;
+      font-size: 16px;
+    }
+    .red {
+      color: #fa302b;
+    }
+    .blue {
+      color: #3882ea;
+    }
+    .green {
+      color: #0cc15d;
+    }
+  }
   .head {
     position: relative;
     .plusIcon {

@@ -1,13 +1,7 @@
 <template>
   <div class="company-todayCheckDetail">
-    <header>
-      <van-nav-bar @click-left="$router.go(-1)" class="nav" title="每日巡检详情">
-        <template #left>
-          <van-icon class-prefix="iconfont" color="#333" name="fanhui" size="22" />
-        </template>
-      </van-nav-bar>
-    </header>
-    <div class="boxItem">
+    <myTitle class="mainBox2" titleName="每日巡检详情"></myTitle>
+    <div class="boxItem mt50">
       <p class="text">基本信息</p>
       <div class="itemContent">
         <van-field :value="mainData.name" disabled label="巡检项目" type="text" />
@@ -106,20 +100,6 @@ export default {
   background-color: #f9f9f9;
   min-height: 100%;
   padding-bottom: 30px;
-  header {
-    background-color: #fff;
-    .nav {
-      text-align: left;
-      line-height: 42px;
-      i {
-        color: #666;
-      }
-      .van-nav-bar__title {
-        font-weight: 800;
-        font-size: 18px !important;
-      }
-    }
-  }
   .boxItem {
     margin-top: 30px;
     .text {

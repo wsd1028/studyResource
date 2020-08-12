@@ -47,6 +47,7 @@ export default {
         if (resp.code == 0) {
           this.$store.commit('setToken', resp.data.token) //设置token
           this.$store.commit('setUser', resp.data.user) //保存用户信息到store
+          if (window.jsCall) window.jsCall.setToken(resp.data.token)
           let homeUrl = '/main/company/home'
           this.$store.commit('setHomeUrl', homeUrl) // 需要根据账号类型判断homeurl
           this.userDetail = resp.data

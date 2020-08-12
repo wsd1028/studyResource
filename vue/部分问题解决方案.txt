@@ -1,0 +1,2 @@
+1.app视频播放video标签，播放时总是在最上层
+解决：给video标签设置x5-video-player-type="h5"属性，但是不能有x5-playsinline="true"属性

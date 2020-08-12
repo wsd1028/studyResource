@@ -74,6 +74,8 @@
 </template>
 
 <script>
+import { getList } from '@/assets/js/commonAxios'
+
 export default {
   components: {},
   data() {
@@ -103,6 +105,9 @@ export default {
       },
       myTimeout: null
     }
+  },
+  mounted() {
+    this.searchData.areaCode = this.$store.state.user.user.accountTypeDto.code
   },
   methods: {
     goBack() {
@@ -154,33 +159,39 @@ export default {
         //非名录车
         url = '/carp/business/a/q/warning/list/page'
       }
-      let resp = await this.$http.get(url, {
-        params: this.searchData
-      })
-      if (resp.code == 0) {
-        if (page) {
-          this.list = []
-        }
-        this.list = this.list.concat(resp.data.records)
-        // 加载状态结束
-        this.loading = false
-        this.refreshloading = false
-        this.searchData.page = this.searchData.page + 1
-        if (this.list.length == resp.data.total) {
-          // 数据全部加载完成
-          this.finished = true
-        }
-      } else {
-        this.$dialog.alert({
-          message: '获取车辆识别失败:' + resp.message,
-          confirmButtonColor: 'red'
-        })
+      let data = {
+        list: this.list,
+        page: this.searchData.page
       }
+      let result = await getList(url, data, '车辆识别', this.searchData)
+      this.list = result.list
+      this.searchData.page = result.page
+      this.refreshloading = result.refreshloading
+      this.loading = result.loading
+      this.finished = result.finished
+      //let resp = await this.$http.get(url, {
+      //  params: this.searchData
+      //})
+      //if (resp.code == 0) {
+      //  if (this.searchData.page == 1) {
+      //    this.list = []
+      //  }
+      //  this.list = this.list.concat(resp.data.records)
+      //  // 加载状态结束
+      //  this.loading = false
+      //  this.refreshloading = false
+      //  this.searchData.page = this.searchData.page + 1
+      //  if (this.list.length == resp.data.total) {
+      //    // 数据全部加载完成
+      //    this.finished = true
+      //  }
+      //} else {
+      //  this.$dialog.alert({
+      //    message: '获取车辆识别失败:' + resp.message,
+      //    confirmButtonColor: 'red'
+      //  })
+      //}
     }
-  },
-  filters: {},
-  mounted() {
-    this.searchData.areaCode = this.$store.state.user.user.accountTypeDto.code
   }
 }
 </script>

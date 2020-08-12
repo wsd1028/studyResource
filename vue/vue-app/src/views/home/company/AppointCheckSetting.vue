@@ -11,14 +11,8 @@
       ></MyUpload>
       <van-button @click="uploadVideo" icon="play-circle" type="primary">上传视频</van-button>
     </van-popup>
-    <header>
-      <van-nav-bar @click-left="$router.go(-1)" class="nav" title="指派点检">
-        <template #left>
-          <van-icon class-prefix="iconfont" color="#333" name="fanhui" size="22" />
-        </template>
-      </van-nav-bar>
-    </header>
-    <div class="boxItem">
+    <myTitle class="mainBox2" titleName="指派点检"></myTitle>
+    <div class="boxItem mt50">
       <p class="text">点检信息</p>
       <div class="itemContent">
         <van-field :value="mainData.workStationName" disabled label="点检项目" type="text" />
@@ -121,6 +115,7 @@ export default {
   async mounted() {
     this.paramsData = this.$route.params
     await this.getMainData()
+    this.$until.fixVideo()
     let geolocation = new BMap.LocalCity()
     geolocation.get(res => {
       let { lng, lat } = res.center
@@ -333,20 +328,6 @@ export default {
     background-color: #f7f8fa;
     i {
       line-height: 80px;
-    }
-  }
-  header {
-    background-color: #fff;
-    .nav {
-      text-align: left;
-      line-height: 42px;
-      i {
-        color: #666;
-      }
-      .van-nav-bar__title {
-        font-weight: 800;
-        font-size: 18px !important;
-      }
     }
   }
   .boxItem {

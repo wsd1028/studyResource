@@ -1,13 +1,7 @@
 <template>
   <div class="government-todayChecking">
-    <header>
-      <van-nav-bar @click-left="$router.go(-1)" class="nav" title="每日巡检">
-        <template #left>
-          <van-icon class-prefix="iconfont" color="#333" name="fanhui" size="22" />
-        </template>
-      </van-nav-bar>
-    </header>
-    <div class="boxItem">
+    <myTitle class="mainBox2" titleName="每日巡检"></myTitle>
+    <div class="boxItem mt50">
       <p class="title">
         <span class="box"></span>
         <span>巡检基本信息</span>
@@ -69,14 +63,16 @@ export default {
       },
       updateData: {
         areaCode: 0,
-        checkPeopleId: null, //巡检人ID1
+        checkPeopleId: null, //巡检人ID
         initiatorPeopleId: null, //发起者ID
-        checkPeopleName: '', //巡检人名字1
-        createDate: '', //创建巡检时间1
+        examinePeopleId: '', //审核人
+        checkPeopleName: '', //巡检人名字
+        createDate: '', //创建巡检时间
         id: null, //不传
-        departmentState: this.$dictionaries.machineType.government, //部门状态1
-        projectId: null, //项目ID1
-        state: this.$dictionaries.todayCheck.finish, //巡检状态1
+        departmentState: this.$dictionaries.machineType.government, //部门状态
+        workStationId: null, //项目/消纳站ID
+        checkType: 1,
+        state: this.$dictionaries.todayCheck.finish, //巡检状态
         todaysCheckContentDtoList: [
           {
             checkRemark: '', //巡检状态评价
@@ -87,6 +83,7 @@ export default {
             todaysImgEntityList: [
               {
                 id: null, //不传
+                visible: true,
                 todayCheckId: null, //每日巡检id（主表id）不传
                 imageUrl: '', //图片地址
                 todayContentId: null, //巡检内容表id不传
@@ -119,6 +116,7 @@ export default {
           this.updateData.state = this.$dictionaries.todayCheck.finish
         }
       }
+      this.updateData.examinePeopleId = this.userMsg.id
       let resp = await this.$http.put('/carp/business/a/q/todays/check/', this.updateData)
       if (resp.code == 0) {
         this.$dialog.alert({
@@ -146,6 +144,7 @@ export default {
             if (resp.data.contentList[i].dictId == resp.data.imgList[j].typeCode) {
               todaysImgEntityList.push({
                 id: resp.data.imgList[j].id, //不传
+                visible: true,
                 todayCheckId: resp.data.imgList[j].todayCheckId, //每日巡检id（主表id）不传
                 imageUrl: resp.data.imgList[j].imageUrl, //图片地址
                 todayContentId: resp.data.imgList[j].todayContentId, //巡检内容表id不传
@@ -167,14 +166,15 @@ export default {
         }
         this.updateData = {
           areaCode: this.mainData.areaCode,
-          checkPeopleId: this.mainData.checkPeopleId, //巡检人ID1
+          checkPeopleId: this.mainData.checkPeopleId, //巡检人ID
           initiatorPeopleId: this.mainData.initiatorPeopleId, //发起者ID
-          checkPeopleName: this.mainData.checkPeopleName, //巡检人名字1
-          createDate: this.mainData.createDate, //创建巡检时间1
+          examinePeopleId: this.mainData.examinePeopleId, //审核人
+          checkPeopleName: this.mainData.checkPeopleName, //巡检人名字
+          createDate: this.mainData.createDate, //创建巡检时间
           id: this.mainData.id, //不传
-          departmentState: this.mainData.departmentState, //部门状态1
-          projectId: this.mainData.projectId, //项目ID1
-          state: this.mainData.state, //巡检状态1
+          departmentState: this.mainData.departmentState, //部门状态
+          workStationId: this.mainData.workStationId, //项目/消纳站ID
+          state: this.mainData.state, //巡检状态
           todaysCheckContentDtoList: todaysCheckContentDtoList,
           visible: this.mainData.visible
         }
@@ -195,20 +195,6 @@ export default {
   background-color: #f9f9f9;
   min-height: 100%;
   padding-bottom: 40px;
-  header {
-    background-color: #fff;
-    .nav {
-      text-align: left;
-      line-height: 42px;
-      i {
-        color: #666;
-      }
-      .van-nav-bar__title {
-        font-weight: 800;
-        font-size: 18px !important;
-      }
-    }
-  }
   .boxItem {
     margin-top: 30px;
     .box {

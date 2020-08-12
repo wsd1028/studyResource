@@ -1,9 +1,9 @@
 <template>
   <div class="government-home">
     <GoTop></GoTop>
-    <div class="head">
-      <HomeTitle titleName="扬尘治理"></HomeTitle>
-      <div>
+    <van-pull-refresh @refresh="appMain" v-model="refreshloading">
+      <div class="head">
+        <HomeTitle titleName="扬尘治理"></HomeTitle>
         <div class="cell-box">
           <div class="top">
             <div class="msgItem">
@@ -22,131 +22,138 @@
               <van-icon class="myIcon" color="#6c6c6c" name="location" size="18" />
               <span class="text" v-text="user.areaName"></span>
             </div>
-            <div style="display:flex;width:100%;marginTop:20px;align-items:flex-end" @click="goSkip('government-dustWarn')">
+            <div @click="goSkip('government-dustWarn')" style="display:flex;width:100%;marginTop:20px;align-items:flex-end">
               <van-image :src="require(`@/assets/image/${weather.wea_img}.png`)" height="40" width="40" />
-              <p style="color:#4285F4;text-align:left">
+              <p style="color:#4285F4;text-align:left;margin-left:5px">
                 <span v-text="weather.wea"></span>
                 <br />
                 <span>{{ weather.tem2 }}°/{{ weather.tem1 }}°</span>
               </p>
-              <van-tag style="margin:0 10px;padding:2px 4px;font-size:16px" :color="getWeatherColor(weather.air_level)"
-                >{{ weather.air_pm25 }}{{ weather.air_level }}</van-tag
-              >
-              <span style="color:#666;margin-right:10px">风力{{ weather.win_speed }}</span>
+              <van-tag :color="getWeatherColor(weather.air_level)" style="margin:0 6px;padding:2px 4px;font-size:16px">
+                <!--eslint-->
+                {{ weather.air_pm25 }}{{ weather.air_level }}
+              </van-tag>
+              <span style="color:#666;margin-right:6px">风力{{ weather.win_speed }}</span>
               <span style="color:#666">湿度{{ weather.humidity }}</span>
             </div>
           </div>
         </div>
+        <div style="height:70px"></div>
+        <van-notice-bar :text="noticeText" color="#538dc3" speed="50">
+          <template #right-icon>
+            <div @click="goSkip('government-exposure')" class="exposureIcon">
+              <span class="text">更多</span>
+              <van-icon name="arrow" />
+            </div>
+          </template>
+          <template #left-icon>
+            <div>
+              <span class="exposureText">曝光台</span>
+            </div>
+          </template>
+        </van-notice-bar>
       </div>
-      <div style="height:60px"></div>
-      <van-notice-bar :text="noticeText" color="#538dc3" speed="50">
-        <template #right-icon>
-          <div @click="goSkip('government-exposure')" class="exposureIcon">
-            <span class="text">更多</span>
-            <van-icon name="arrow" />
+      <div class="box">
+        <div style="textAlign:left;lineHeight:40px">
+          <span class="title2">待办</span>
+          <van-divider></van-divider>
+        </div>
+        <div class="allIconBox">
+          <div @click="goSkip('government-dustWarn')" class="tac">
+            <div class="iconBox" style="color:#ee4634" v-text="dustWarnNum"></div>
+            <span class="text">扬尘告警</span>
           </div>
-        </template>
-        <template #left-icon>
-          <div>
-            <span class="exposureText">曝光台</span>
+          <div @click="goSkip('government-directoriesWarn')" class="tac">
+            <div class="iconBox" style="color:#ee4634" v-text="todayWait.carNumber"></div>
+            <span class="text">非名录车告警</span>
           </div>
-        </template>
-      </van-notice-bar>
-    </div>
-    <div class="box">
-      <div style="textAlign:left;lineHeight:40px">
-        <span class="title2">待办</span>
+          <div @click="goSkip('government-todayCheck')" class="tac">
+            <div class="iconBox" style="color:#333" v-text="todayWait.todayCheckNumber"></div>
+            <span class="text">每日巡检</span>
+          </div>
+          <div @click="goSkip('government-appointCheck')" class="tac">
+            <div class="iconBox" v-text="todayWait.assignCheckNumber"></div>
+            <span class="text">指派点检</span>
+          </div>
+          <div @click="goSkip('government-problemReport')" class="tac">
+            <div class="iconBox" v-text="todayWait.questionReportNumber"></div>
+            <span class="text">问题上报</span>
+          </div>
+          <div class="tac"></div>
+        </div>
+      </div>
+      <div class="box" style="paddingTop:0">
+        <van-cell is-link style="textAlign:left" to="/home/government/dispatch" value="更多">
+          <template #title>
+            <span class="title2">督办派单</span>
+          </template>
+        </van-cell>
         <van-divider></van-divider>
+        <div class="activeBtn">
+          <span :class="searchData.state === '' ? 'active' : ''" @click="handelActive('')">全部</span>
+          <span :class="searchData.state === $dictionaries.dispatch.wait ? 'active' : ''" @click="handelActive($dictionaries.dispatch.wait)">
+            <!-- eslint -->
+            待处理
+          </span>
+          <span :class="searchData.state === $dictionaries.dispatch.finish ? 'active' : ''" @click="handelActive($dictionaries.dispatch.finish)">已处理</span>
+        </div>
       </div>
-      <div class="allIconBox">
-        <div @click="goSkip('government-dustWarn')" class="tac">
-          <div class="iconBox" style="color:#ee4634" v-text="dustWarnNum"></div>
-          <span class="text">扬尘告警</span>
-        </div>
-        <div @click="goSkip('government-directoriesWarn')" class="tac">
-          <div class="iconBox" style="color:#ee4634" v-text="todayWait.carNumber"></div>
-          <span class="text">非名录车告警</span>
-        </div>
-        <div @click="goSkip('government-todayCheck')" class="tac">
-          <div class="iconBox" style="color:#333" v-text="todayWait.todayCheckNumber"></div>
-          <span class="text">每日巡检</span>
-        </div>
-        <div @click="goSkip('government-appointCheck')" class="tac">
-          <div class="iconBox" v-text="todayWait.assignCheckNumber"></div>
-          <span class="text">指派点检</span>
-        </div>
-        <div @click="goSkip('government-problemReport')" class="tac">
-          <div class="iconBox" v-text="todayWait.questionReportNumber"></div>
-          <span class="text">问题上报</span>
-        </div>
-        <div class="tac"></div>
-      </div>
-    </div>
-    <div class="box" style="paddingTop:0">
-      <van-cell is-link style="textAlign:left" to="/home/government/dispatch" value="更多">
-        <template #title>
-          <span class="title2">督办派单</span>
-        </template>
-      </van-cell>
-      <van-divider></van-divider>
-      <div class="activeBtn">
-        <span :class="searchData.state === '' ? 'active' : ''" @click="handelActive('')">全部</span>
-        <span :class="searchData.state === $dictionaries.dispatch.wait ? 'active' : ''" @click="handelActive($dictionaries.dispatch.wait)">
-          <!-- eslint -->
-          待处理
-        </span>
-        <span :class="searchData.state === $dictionaries.dispatch.finish ? 'active' : ''" @click="handelActive($dictionaries.dispatch.finish)">已完成</span>
-      </div>
-    </div>
-    <div class="box lincenseBox">
-      <van-list :finished="finished" @load="select" finished-text="没有更多了" v-model="loading">
-        <van-swipe-cell :key="index" v-for="(item, index) in list">
-          <van-row @click="goSkip('dispatchDetail', item)" class="item">
-            <van-col span="24">
-              <div class="top">
-                <div class="top-left">
-                  <p class="textFlowP">
-                    <span class="textFlow">督办案件:{{ item.id }}</span>
-                  </p>
-                  <span class="nofinish" v-if="item.finishType == $dictionaries.dispatch.finishNo">未完成</span>
-                  <span class="finish" v-if="item.finishType == $dictionaries.dispatch.finishYes">完成</span>
-                </div>
-                <p class="carCreat">
-                  <span class="state-span waitState" v-if="item.accountState == $dictionaries.dispatch.wait">待处理</span>
-                  <span class="state-span waitState" v-if="item.accountState == $dictionaries.dispatch.handleing">处理中</span>
-                  <span class="state-span finishState" v-if="item.accountState == $dictionaries.dispatch.finish">已完成</span>
-                </p>
-              </div>
-              <div class="bottom">
-                <p>
-                  案件地址:
-                  <span v-text="item.address"></span>
-                </p>
-                <div class="dfsb">
-                  <p>
-                    处理人:
-                    <span v-text="item.manager"></span>
-                  </p>
-                  <p>
-                    创建时间:
-                    <span v-text="item.createDate"></span>
+      <div class="box lincenseBox">
+        <van-list :finished="finished" @load="select" finished-text="没有更多了" v-model="loading">
+          <van-swipe-cell :key="index" v-for="(item, index) in list">
+            <van-row @click="goSkip('dispatchDetail', item)" class="item">
+              <van-col span="24">
+                <div class="top">
+                  <div class="top-left">
+                    <p class="textFlowP">
+                      <span class="textFlow">督办案件:{{ item.id }}</span>
+                    </p>
+                    <span class="nofinish" v-if="item.finishType == $dictionaries.dispatch.finishNo">未完成</span>
+                    <span class="finish" v-if="item.finishType == $dictionaries.dispatch.finishYes">完成</span>
+                  </div>
+                  <p class="carCreat">
+                    <span class="state-span waitState" v-if="item.accountState == $dictionaries.dispatch.wait">待处理</span>
+                    <span class="state-span waitState" v-if="item.accountState == $dictionaries.dispatch.handleing">处理中</span>
+                    <span
+                      class="state-span finishState"
+                      v-if="item.accountState == $dictionaries.dispatch.finish && item.state != $dictionaries.dispatch.finish"
+                    >
+                      <!--eslint-->
+                      已处理
+                    </span>
                   </p>
                 </div>
-                <p class="stateP">
-                  案件状态:
-                  <span class="wait-span" v-if="item.state == $dictionaries.dispatch.wait">待处理</span>
-                  <span class="handleing-span" v-if="item.state == $dictionaries.dispatch.handleing">处理中</span>
-                  <span class="waitcheck-span" v-if="item.state == $dictionaries.dispatch.waitCheck">待审核</span>
-                  <span class="update-span" v-if="item.state == $dictionaries.dispatch.reject">已驳回</span>
-                  <span class="finish-span" v-if="item.state == $dictionaries.dispatch.finish">已结案</span>
-                  <span class="update-span" v-if="item.state == $dictionaries.dispatch.cancel">已作废</span>
-                </p>
-              </div>
-            </van-col>
-          </van-row>
-        </van-swipe-cell>
-      </van-list>
-    </div>
+                <div class="bottom">
+                  <p>
+                    案件地址:
+                    <span v-text="item.address"></span>
+                  </p>
+                  <div class="dfsb">
+                    <p>
+                      处理人:
+                      <span v-text="item.manager"></span>
+                    </p>
+                    <p>
+                      创建时间:
+                      <span v-text="item.createDate"></span>
+                    </p>
+                  </div>
+                  <p class="stateP">
+                    案件状态:
+                    <span class="wait-span" v-if="item.state == $dictionaries.dispatch.wait">待处理</span>
+                    <span class="handleing-span" v-if="item.state == $dictionaries.dispatch.handleing">处理中</span>
+                    <span class="waitcheck-span" v-if="item.state == $dictionaries.dispatch.waitCheck">待审核</span>
+                    <span class="update-span" v-if="item.state == $dictionaries.dispatch.reject">已驳回</span>
+                    <span class="finish-span" v-if="item.state == $dictionaries.dispatch.finish">已结案</span>
+                    <span class="update-span" v-if="item.state == $dictionaries.dispatch.cancel">已作废</span>
+                  </p>
+                </div>
+              </van-col>
+            </van-row>
+          </van-swipe-cell>
+        </van-list>
+      </div>
+    </van-pull-refresh>
   </div>
 </template>
 
@@ -156,6 +163,7 @@ import GoTop from '@/components/GoTop.vue'
 export default {
   data() {
     return {
+      refreshloading: false,
       sex: true,
       exposureList: [], //曝光台列表
       exposureIndex: 0, //曝光台下标
@@ -189,25 +197,31 @@ export default {
     }
   },
   mounted() {
-    this.user.name = this.$store.state.user.user.accountBaseDto.name
-    this.searchData.accountId = this.$store.state.user.user.id
-    try {
-      this.user.organizationDto = this.$store.state.user.user.organizationDto.name
-      this.user.areaName = this.$store.state.user.user.organizationDto.areaName
-    } catch {}
-    try {
-      this.user.work = this.$store.state.user.user.jobTitleDtoList[0].name
-    } catch {}
-    this.getExposure()
-    this.getTodayWait()
-    this.getDustWarnNum()
-    this.getWeather()
+    this.appMain()
   },
   components: {
     HomeTitle,
     GoTop
   },
   methods: {
+    //程序入口
+    appMain() {
+      this.user.name = this.$store.state.user.user.accountBaseDto.name
+      this.searchData.accountId = this.$store.state.user.user.id
+      try {
+        this.user.organizationDto = this.$store.state.user.user.organizationDto.name
+        this.user.areaName = this.$store.state.user.user.organizationDto.areaName
+      } catch {}
+      try {
+        this.user.work = this.$store.state.user.user.jobTitleDtoList[0].name
+      } catch {}
+      this.getExposure()
+      this.getTodayWait()
+      //this.getDustWarnNum()//获取扬尘告警数量
+      this.getWeather()
+      this.refreshloading = false
+    },
+    //处理天气颜色
     getWeatherColor(name) {
       let color = '#17D687'
       if (name == '优') {
@@ -277,7 +291,7 @@ export default {
 
     //得到曝光台信息
     async getExposure() {
-      let resp = await this.$http.get('/carp/business/a/q/exposure/table/page?Page=1&Limit=9999')
+      let resp = await this.$http.get('/carp/business/a/q/exposure/table/page?Page=1&Limit=9999&showType=1')
       if (resp.code == 0) {
         this.exposureList = resp.data.records
         for (let i = 0; i < this.exposureList.length; i++) {
@@ -303,13 +317,12 @@ export default {
         params: this.searchData
       })
       if (resp.code == 0) {
-        if (page) {
+        if (this.searchData.page == 1) {
           this.list = []
         }
         this.list = this.list.concat(resp.data.records)
         // 加载状态结束
         this.loading = false
-        this.refreshloading = false
         this.searchData.page = this.searchData.page + 1
         if (this.list.length == resp.data.total) {
           // 数据全部加载完成
@@ -374,7 +387,7 @@ export default {
     margin: 0;
   }
   .head {
-    height: 200px;
+    height: 210px;
     margin-bottom: 100px;
   }
   .van-notice-bar {
@@ -410,7 +423,7 @@ export default {
       width: 93%;
       margin: auto;
       left: 0;
-      bottom: -50px;
+      bottom: -60px;
       right: 0;
       box-shadow: 0 0 7px #e5e5e5;
       .msgItem {

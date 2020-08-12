@@ -1,13 +1,7 @@
 <template>
   <div class="company-appointCheckDetail">
-    <header>
-      <van-nav-bar @click-left="$router.go(-1)" class="nav" title="指派点检详情">
-        <template #left>
-          <van-icon class-prefix="iconfont" color="#333" name="fanhui" size="22" />
-        </template>
-      </van-nav-bar>
-    </header>
-    <div class="boxItem">
+    <myTitle class="mainBox2" titleName="指派点检详情"></myTitle>
+    <div class="boxItem mt50">
       <p class="text2">
         <span class="spanBox"></span>
         基本信息
@@ -37,7 +31,7 @@
           </p>
         </div>
         <div :key="index" class="myVideo" v-for="(item, index) in item.video">
-          <video-player :options="getPlayerOptions(item)" :playsinline="true" webkit-playsinline="true"></video-player>
+          <video-player :options="getPlayerOptions(item)" :playsinline="true"></video-player>
         </div>
         <van-grid :border="false" :gutter="10">
           <van-grid-item :key="index" v-for="(item, index) in item.images">
@@ -62,9 +56,10 @@ export default {
       isFirst: true //判断是否是第一次
     }
   },
-  mounted() {
+  async mounted() {
     this.paramsData = this.$route.params
-    this.getMainData()
+    await this.getMainData()
+    this.$until.fixVideo()
   },
   components: {},
   methods: {
@@ -137,20 +132,6 @@ export default {
   background-color: #f9f9f9;
   min-height: 100%;
   padding-bottom: 30px;
-  header {
-    background-color: #fff;
-    .nav {
-      text-align: left;
-      line-height: 42px;
-      i {
-        color: #666;
-      }
-      .van-nav-bar__title {
-        font-weight: 800;
-        font-size: 18px !important;
-      }
-    }
-  }
   .boxItem {
     margin-top: 30px;
     .detail {

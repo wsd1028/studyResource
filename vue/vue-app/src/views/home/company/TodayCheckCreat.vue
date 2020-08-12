@@ -1,13 +1,7 @@
 <template>
   <div class="company-todayCheckCreat">
-    <header>
-      <van-nav-bar @click-left="$router.go(-1)" class="nav" title="新建每日巡检">
-        <template #left>
-          <van-icon class-prefix="iconfont" color="#333" name="fanhui" size="22" />
-        </template>
-      </van-nav-bar>
-    </header>
-    <div class="boxItem">
+    <myTitle class="mainBox2" titleName="新建每日巡检"></myTitle>
+    <div class="boxItem mt50">
       <p class="text">基本信息</p>
       <div class="itemContent">
         <van-field :value="project.name" disabled label="巡检项目" type="text" />
@@ -44,15 +38,16 @@ export default {
       btnLoading: false,
       updateData: {
         areaCode: 0, //区域code
-        checkPeopleId: null, //巡检人ID1
+        checkPeopleId: null, //巡检人ID
         initiatorPeopleId: null, //发起者ID
-        checkPeopleName: '', //巡检人名字1
-        createDate: '', //创建巡检时间1
+        examinePeopleId: '', //审核人
+        checkPeopleName: '', //巡检人名字
+        createDate: '', //创建巡检时间
         id: null, //不传
-        departmentState: this.$dictionaries.machineType.company, //部门状态1
-        workStationId: null, //项目/消纳站ID1
+        departmentState: this.$dictionaries.machineType.company, //部门状态
+        workStationId: null, //项目/消纳站ID
         checkType: 1, //1扬尘
-        state: this.$dictionaries.todayCheck.waitCheck, //巡检状态1
+        state: this.$dictionaries.todayCheck.waitCheck, //巡检状态
         todaysCheckContentDtoList: [
           {
             checkRemark: '', //巡检状态评价
@@ -63,6 +58,7 @@ export default {
             todaysImgEntityList: [
               {
                 id: null, //不传
+                visible: true,
                 todayCheckId: null, //每日巡检id（主表id）不传
                 imageUrl: '', //图片地址
                 todayContentId: null, //巡检内容表id不传
@@ -117,6 +113,7 @@ export default {
         for (let j = 0; j < this.checkings[i].checkPhoto.length; j++) {
           todaysImgEntityList.push({
             id: null, //不传
+            visible: true,
             todayCheckId: null, //每日巡检id（主表id）不传
             imageUrl: this.checkings[i].checkPhoto[j], //图片地址
             todayContentId: null, //巡检内容表id不传
@@ -186,20 +183,6 @@ export default {
   background-color: #f9f9f9;
   min-height: 100%;
   padding-bottom: 30px;
-  header {
-    background-color: #fff;
-    .nav {
-      text-align: left;
-      line-height: 42px;
-      i {
-        color: #666;
-      }
-      .van-nav-bar__title {
-        font-weight: 800;
-        font-size: 18px !important;
-      }
-    }
-  }
   .boxItem {
     margin-top: 30px;
     .text {

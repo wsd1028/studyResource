@@ -1,12 +1,6 @@
 <template>
   <div class="company-projectDetail">
-    <header>
-      <van-nav-bar @click-left="$router.go(-1)" class="nav" title="项目详情">
-        <template #left>
-          <van-icon class-prefix="iconfont" color="#333" name="fanhui" size="22" />
-        </template>
-      </van-nav-bar>
-    </header>
+    <myTitle class="mainBox2" titleName="项目详情"></myTitle>
     <van-popup class="mapDia" position="top" v-model="mapDia">
       <MyMap :address="mainData.address" :position="{ lng: mainData.longitude, lat: mainData.latitude }"></MyMap>
     </van-popup>
@@ -28,7 +22,7 @@
         </div>
       </div>
     </van-dialog>
-    <section>
+    <section class="mt50">
       <div class="top">
         <van-image :src="$dictionaries.imgBaseUrl + mainData.image" height="200px" width="100%" />
         <div class="msgItem">
@@ -165,20 +159,6 @@ export default {
   background-color: #f9f9f9;
   min-height: 100%;
   padding-bottom: 40px;
-  header {
-    background-color: #fff;
-    .nav {
-      text-align: left;
-      line-height: 42px;
-      i {
-        color: #666;
-      }
-      .van-nav-bar__title {
-        font-weight: 800;
-        font-size: 18px !important;
-      }
-    }
-  }
   section {
     .top {
       padding: 20px;

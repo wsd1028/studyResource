@@ -65,6 +65,8 @@
 </template>
 
 <script>
+import { getList } from '@/assets/js/commonAxios'
+
 export default {
   data() {
     return {
@@ -122,56 +124,47 @@ export default {
       this.DustList = [{}]
       this.dustLoading = false
       this.refreshloading = false
-      return
-      if (page) {
-        this.searchData.page = 1
-      }
-      let resp = await this.$http('/carp/device/a/q/dust/info/devices/' + this.searchData.workplaceId)
-      if (resp.code == 0) {
-        if (page) {
-          this.DustList = []
-        }
-        this.DustList = resp.data
-        // 加载状态结束
-        this.dustLoading = false
-        this.refreshloading = false
-        this.dustFinish = true
-      } else {
-        this.$dialog.alert({
-          message: '获取项目设备失败:' + resp.message,
-          confirmButtonColor: 'red'
-        })
-      }
     },
     //查询非名录车数据
     async getDirectoriesList(page) {
       if (page) {
         this.searchData.page = 1
       }
-      let resp = await this.$http.get(
-        `/carp/business/a/q/warning/list/page?disposeState=${this.$dictionaries.carWarn.waitCheck}&code=${this.$dictionaries.warnType.car}&limit=${this.searchData.limit}&page=${this.searchData.page}&workplaceId=${this.searchData.workplaceId}`
-      )
-      if (resp.code == 0) {
-        if (page) {
-          this.list = []
-        }
-        this.list = this.list.concat(resp.data.records)
-        // 加载状态结束
-        this.loading = false
-        this.refreshloading = false
-        this.searchData.page = this.searchData.page + 1
-        if (this.list.length == resp.data.total) {
-          // 数据全部加载完成
-          this.finished = true
-        } else {
-          this.finished = false
-        }
-      } else {
-        this.$dialog.alert({
-          message: '获取非目录车告警失败:' + resp.message,
-          confirmButtonColor: 'red'
-        })
+      let url = `/carp/business/a/q/warning/list/page?disposeState=${this.$dictionaries.carWarn.waitCheck}&code=${this.$dictionaries.warnType.car}&limit=${this.searchData.limit}&page=${this.searchData.page}&workplaceId=${this.searchData.workplaceId}`
+      let data = {
+        list: this.list,
+        page: this.searchData.page
       }
+      let result = await getList(url, data, '非目录车告警')
+      this.list = result.list
+      this.searchData.page = result.page
+      this.refreshloading = result.refreshloading
+      this.loading = result.loading
+      this.finished = result.finished
+      //let resp = await this.$http.get(
+      //  `/carp/business/a/q/warning/list/page?disposeState=${this.$dictionaries.carWarn.waitCheck}&code=${this.$dictionaries.warnType.car}&limit=${this.searchData.limit}&page=${this.searchData.page}&workplaceId=${this.searchData.workplaceId}`
+      //)
+      //if (resp.code == 0) {
+      //  if (page) {
+      //    this.list = []
+      //  }
+      //  this.list = this.list.concat(resp.data.records)
+      //  // 加载状态结束
+      //  this.loading = false
+      //  this.refreshloading = false
+      //  this.searchData.page = this.searchData.page + 1
+      //  if (this.list.length == resp.data.total) {
+      //    // 数据全部加载完成
+      //    this.finished = true
+      //  } else {
+      //    this.finished = false
+      //  }
+      //} else {
+      //  this.$dialog.alert({
+      //    message: '获取非目录车告警失败:' + resp.message,
+      //    confirmButtonColor: 'red'
+      //  })
+      //}
     }
   }
 }

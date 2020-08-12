@@ -12,8 +12,8 @@
         </div>
       </div>
     </van-dialog>
-    <myTitle titleName="工期管理"></myTitle>
-    <section>
+    <myTitle titleName="工期管理" class="mainBox2"></myTitle>
+    <section class="mt50">
       <div class="top">
         <MyImage :imgUrl="$dictionaries.imgBaseUrl + mainData.image" height="200px" width="100%" />
         <div class="msgItem">

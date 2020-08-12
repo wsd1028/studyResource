@@ -3,14 +3,8 @@
     <van-popup class="mapDia" position="top" v-model="mapDia">
       <MyMap :address="mainData.reportAddress" :position="{ lng: mainData.longitude, lat: mainData.latitude }"></MyMap>
     </van-popup>
-    <header>
-      <van-nav-bar @click-left="$router.go(-1)" class="nav" title="问题上报详情">
-        <template #left>
-          <van-icon class-prefix="iconfont" color="#333" name="fanhui" size="22" />
-        </template>
-      </van-nav-bar>
-    </header>
-    <div class="boxItem">
+    <myTitle titleName="问题上报详情" class="mainBox2"></myTitle>
+    <div class="boxItem mt50">
       <p class="text">基本信息</p>
       <div class="itemContent">
         <van-field disabled label="创建时间" type="text" v-model="mainData.createDate" />
@@ -93,20 +87,6 @@ export default {
   background-color: #f9f9f9;
   min-height: 100%;
   padding-bottom: 30px;
-  header {
-    background-color: #fff;
-    .nav {
-      text-align: left;
-      line-height: 42px;
-      i {
-        color: #666;
-      }
-      .van-nav-bar__title {
-        font-weight: 800;
-        font-size: 18px !important;
-      }
-    }
-  }
   .boxItem {
     margin-top: 20px;
     .text {

@@ -4,6 +4,13 @@
   </div>
 </template>
 
+<script>
+export default {
+  mounted() {}
+}
+</script>
+>
+
 <style lang="less">
 @import url('./assets/css/common.css');
 #app {

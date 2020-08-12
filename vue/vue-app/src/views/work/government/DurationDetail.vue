@@ -33,14 +33,8 @@
         </div>
       </div>
     </van-dialog>
-    <header>
-      <van-nav-bar @click-left="$router.go(-1)" class="nav" title="工期管理">
-        <template #left>
-          <van-icon class-prefix="iconfont" color="#333" name="fanhui" size="22" />
-        </template>
-      </van-nav-bar>
-    </header>
-    <section>
+    <myTitle class="mainBox2" titleName="工期管理"></myTitle>
+    <section class="mt50">
       <div class="top">
         <MyImage :imgUrl="$dictionaries.imgBaseUrl + mainData.image" height="200px" width="100%" />
         <div class="msgItem">
@@ -369,20 +363,6 @@ export default {
     display: inline-block;
     color: #fff;
     padding: 0 10px;
-  }
-  header {
-    background-color: #fff;
-    .nav {
-      text-align: left;
-      line-height: 42px;
-      i {
-        color: #666;
-      }
-      .van-nav-bar__title {
-        font-weight: 800;
-        font-size: 18px !important;
-      }
-    }
   }
   section {
     .top {

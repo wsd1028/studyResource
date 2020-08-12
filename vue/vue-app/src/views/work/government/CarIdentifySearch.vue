@@ -61,6 +61,8 @@
 </template>
 
 <script>
+import { getList } from '@/assets/js/commonAxios'
+
 export default {
   components: {},
   data() {
@@ -87,28 +89,39 @@ export default {
     //查询数据
     async select(page) {
       if (page) this.searchData.page = 1
-      let resp = await this.$http.get('/carp/business/a/q/license/record/current/page', {
-        params: this.searchData
-      })
-      if (resp.code == 0) {
-        if (this.searchData.page == 1) {
-          this.list = []
-        }
-        this.list = this.list.concat(resp.data.records)
-        // 加载状态结束
-        this.loading = false
-        this.refreshloading = false
-        this.searchData.page = this.searchData.page + 1
-        if (this.list.length == resp.data.total) {
-          // 数据全部加载完成
-          this.finished = true
-        }
-      } else {
-        this.$dialog.alert({
-          message: '获取车辆识别失败:' + resp.message,
-          confirmButtonColor: 'red'
-        })
+      let url = '/carp/business/a/q/license/record/current/page'
+      let data = {
+        list: this.list,
+        page: this.searchData.page
       }
+      let result = await getList(url, data, '车辆识别', this.searchData)
+      this.list = result.list
+      this.searchData.page = result.page
+      this.refreshloading = result.refreshloading
+      this.loading = result.loading
+      this.finished = result.finished
+      //let resp = await this.$http.get('/carp/business/a/q/license/record/current/page', {
+      //  params: this.searchData
+      //})
+      //if (resp.code == 0) {
+      //  if (this.searchData.page == 1) {
+      //    this.list = []
+      //  }
+      //  this.list = this.list.concat(resp.data.records)
+      //  // 加载状态结束
+      //  this.loading = false
+      //  this.refreshloading = false
+      //  this.searchData.page = this.searchData.page + 1
+      //  if (this.list.length == resp.data.total) {
+      //    // 数据全部加载完成
+      //    this.finished = true
+      //  }
+      //} else {
+      //  this.$dialog.alert({
+      //    message: '获取车辆识别失败:' + resp.message,
+      //    confirmButtonColor: 'red'
+      //  })
+      //}
     }
   },
   filters: {},

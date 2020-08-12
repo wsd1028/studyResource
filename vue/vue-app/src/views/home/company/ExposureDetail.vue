@@ -1,13 +1,7 @@
 <template>
   <div class="company-exposureDetail">
-    <header>
-      <van-nav-bar @click-left="$router.go(-1)" class="nav" title="曝光台">
-        <template #left>
-          <van-icon class-prefix="iconfont" color="#333" name="fanhui" size="22" />
-        </template>
-      </van-nav-bar>
-    </header>
-    <article>
+    <myTitle class="mainBox2" titleName="曝光台详情"></myTitle>
+    <article class="mt50">
       <h2 v-text="mainData.title"></h2>
       <div class="date">
         <p v-text="mainData.createDate"></p>
@@ -62,20 +56,6 @@ export default {
   background-color: #f9f9f9;
   min-height: 100%;
   padding-bottom: 40px;
-  header {
-    background-color: #fff;
-    .nav {
-      text-align: left;
-      line-height: 42px;
-      i {
-        color: #666;
-      }
-      .van-nav-bar__title {
-        font-weight: 800;
-        font-size: 18px !important;
-      }
-    }
-  }
   article {
     background-color: #fff;
     padding: 10px;

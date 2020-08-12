@@ -34,13 +34,10 @@
         </v-touch>
       </div>
     </van-popup>
-    <header>
-      <van-nav-bar @click-left="$router.go(-1)" class="nav" title="新建每日巡检">
-        <template #left>
-          <van-icon class-prefix="iconfont" color="#333" name="fanhui" size="22" />
-        </template>
-      </van-nav-bar>
-    </header>
+    <div class="mainBox2">
+      <myTitle titleName="新建每日巡检"></myTitle>
+    </div>
+    <div class="mt50"></div>
     <van-tabs color="#4683f1" swipeable v-model="chooseType">
       <van-tab :name="$dictionaries.machineType.company" title="项目">
         <div class="itemBox">
@@ -93,7 +90,6 @@
         </div>
       </van-tab>
     </van-tabs>
-
     <div :key="index" class="boxItem" v-for="(item, index) in checkList">
       <div class="text">
         <p class="textFlowP">
@@ -142,7 +138,6 @@ export default {
       searchData: {
         searchValue: '',
         searchCode: '',
-        searchId: '',
         limit: 10,
         page: 1
       },
@@ -150,15 +145,16 @@ export default {
       checkings: [],
       updateData: {
         areaCode: 0, //区域code
-        checkPeopleId: null, //巡检人ID1
+        checkPeopleId: null, //巡检人ID
         initiatorPeopleId: null, //发起者ID
-        checkPeopleName: '', //巡检人名字1
-        createDate: '', //创建巡检时间1
+        examinePeopleId: '', //审核人
+        checkPeopleName: '', //巡检人名字
+        createDate: '', //创建巡检时间
         id: null, //不传
-        departmentState: this.$dictionaries.machineType.company, //部门状态1
-        workStationId: null, //项目/消纳站ID1
+        departmentState: this.$dictionaries.machineType.company, //部门状态
+        workStationId: null, //项目/消纳站ID
         checkType: 1,
-        state: this.$dictionaries.todayCheck.finish, //巡检状态1
+        state: this.$dictionaries.todayCheck.finish, //巡检状态
         todaysCheckContentDtoList: [
           {
             checkRemark: '', //巡检状态评价
@@ -169,6 +165,7 @@ export default {
             todaysImgEntityList: [
               {
                 id: null, //不传
+                visible: true,
                 todayCheckId: null, //每日巡检id（主表id）不传
                 imageUrl: '', //图片地址
                 todayContentId: null, //巡检内容表id不传
@@ -185,14 +182,11 @@ export default {
   async mounted() {
     this.userMsg = this.$store.state.user.user
     this.searchData.searchCode = this.userMsg.accountTypeDto.code
-    this.searchData.searchId = this.userMsg.accountTypeDto.code
-    for (let i = this.userMsg.accountTypeDto.code.length; i < 12; i++) {
-      this.searchData.searchId += '0'
-    }
     this.getCheck()
     this.updateData.areaCode = this.$store.state.user.user.accountTypeDto.code
     this.updateData.checkPeopleId = this.$store.state.user.user.id
     this.updateData.initiatorPeopleId = this.$store.state.user.user.id
+    this.updateData.examinePeopleId = this.$store.state.user.user.id
     this.updateData.checkPeopleName = this.$store.state.user.user.accountBaseDto.name
     this.updateData.createDate = this.$moment().format('YYYY-MM-DD HH:mm:ss')
     await this.getArea()
@@ -248,6 +242,7 @@ export default {
         for (let j = 0; j < this.checkings[i].checkPhoto.length; j++) {
           todaysImgEntityList.push({
             id: null, //不传
+            visible: true,
             todayCheckId: null, //每日巡检id（主表id）不传
             imageUrl: this.checkings[i].checkPhoto[j], //图片地址
             todayContentId: null, //巡检内容表id不传
@@ -401,20 +396,6 @@ export default {
           color: #929292;
           font-size: 14px;
         }
-      }
-    }
-  }
-  header {
-    background-color: #fff;
-    .nav {
-      text-align: left;
-      line-height: 42px;
-      i {
-        color: #666;
-      }
-      .van-nav-bar__title {
-        font-weight: 800;
-        font-size: 18px !important;
       }
     }
   }

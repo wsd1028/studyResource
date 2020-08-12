@@ -1,13 +1,7 @@
 <template>
   <div class="government-directoriesWarnDetail mainBox">
     <div class="mainTop">
-      <header>
-        <van-nav-bar @click-left="$router.go(-1)" class="nav" title="非名录车告警">
-          <template #left>
-            <van-icon class-prefix="iconfont" color="#333" name="fanhui" size="22" />
-          </template>
-        </van-nav-bar>
-      </header>
+      <myTitle titleName="非名录车告警详情"></myTitle>
       <div class="projectName">
         <span class="box"></span>
         <span class="name textFlow">项目名称:{{ paramsData.name }}</span>
@@ -53,6 +47,7 @@
 </template>
 
 <script>
+import { getList } from '@/assets/js/commonAxios'
 export default {
   data() {
     return {
@@ -71,7 +66,7 @@ export default {
       }
     }
   },
-  mounted() {
+  async mounted() {
     this.paramsData = this.$route.params
     this.searchData.workplaceId = this.$route.params.id
   },
@@ -89,29 +84,18 @@ export default {
     async select(page) {
       if (page) {
         this.searchData.page = 1
-        this.list = []
       }
-      let resp = await this.$http.get(
-        `/carp/business/a/q/warning/list/page?disposeState=${this.searchData.disposeState}&code=${this.$dictionaries.warnType.car}&limit=${this.searchData.limit}&page=${this.searchData.page}&workplaceId=${this.searchData.workplaceId}`
-      )
-      if (resp.code == 0) {
-        this.list = this.list.concat(resp.data.records)
-        // 加载状态结束
-        this.loading = false
-        this.refreshloading = false
-        this.searchData.page = this.searchData.page + 1
-        if (this.list.length == resp.data.total) {
-          // 数据全部加载完成
-          this.finished = true
-        } else {
-          this.finished = false
-        }
-      } else {
-        this.$dialog.alert({
-          message: '获取非目录车告警失败:' + resp.message,
-          confirmButtonColor: 'red'
-        })
+      let url = `/carp/business/a/q/warning/list/page?disposeState=${this.searchData.disposeState}&code=${this.$dictionaries.warnType.car}&limit=${this.searchData.limit}&page=${this.searchData.page}&workplaceId=${this.searchData.workplaceId}`
+      let data = {
+        list: this.list,
+        page: this.searchData.page
       }
+      let result = await getList(url, data, '非目录车告警')
+      this.list = result.list
+      this.searchData.page = result.page
+      this.refreshloading = result.refreshloading
+      this.loading = result.loading
+      this.finished = result.finished
     }
   }
 }
@@ -122,20 +106,6 @@ export default {
   text-align: left;
   background-color: #f9f9f9;
   min-height: 100%;
-  header {
-    background-color: #fff;
-    .nav {
-      text-align: left;
-      line-height: 42px;
-      i {
-        color: #666;
-      }
-      .van-nav-bar__title {
-        font-weight: 800;
-        font-size: 18px !important;
-      }
-    }
-  }
   .projectName {
     background-color: #fff;
     padding: 20px;

@@ -52,6 +52,14 @@
           </div>
         </template>
       </van-cell>
+      <van-cell class="item" to="/mine/feedback" is-link>
+        <template #title>
+          <div>
+            <van-icon class-prefix="iconfont" class="yellow myIcon" name="xinxi" />
+            <span class="text">用户反馈</span>
+          </div>
+        </template>
+      </van-cell>
       <van-divider />
     </div>
     <div class="bottom">

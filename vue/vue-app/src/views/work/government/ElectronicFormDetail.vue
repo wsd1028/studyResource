@@ -1,13 +1,7 @@
 <template>
   <div class="workGov-electronicFormDetail">
-    <header>
-      <van-nav-bar @click-left="$router.go(-1)" class="nav" title="联单详情">
-        <template #left>
-          <van-icon class-prefix="iconfont" color="#333" name="fanhui" size="22" />
-        </template>
-      </van-nav-bar>
-    </header>
-    <div class="section">
+    <myTitle class="mainBox2" titleName="联单详情"></myTitle>
+    <div class="section mt50">
       <div class="sectionItem">
         <div class="top">
           <div class="box"></div>
@@ -241,20 +235,6 @@
           </div>
         </div>
       </div>
-      <!-- <div class="sectionItem" v-if="formDetail.state == $dictionaries.electronic.xiaona">
-        <div class="top">
-          <div class="box"></div>
-          <p class="title">消纳员签名</p>
-        </div>
-        <van-divider />
-        <div class="msg">
-          <div class="msgItem" style="alignItems:center">
-            <van-cell-group>
-              <van-field disabled style="width:100%" v-model="formDetail.endSignImage" />
-            </van-cell-group>
-          </div>
-        </div>
-      </div>-->
     </div>
   </div>
 </template>
@@ -305,20 +285,6 @@ export default {
   background-color: #f9f9f9;
   padding-bottom: 30px;
   text-align: left;
-  header {
-    background-color: #fff;
-    .nav {
-      text-align: left;
-      line-height: 42px;
-      i {
-        color: #666;
-      }
-      .van-nav-bar__title {
-        font-weight: 800;
-        font-size: 18px !important;
-      }
-    }
-  }
   .section {
     .sectionItem {
       margin-top: 10px;

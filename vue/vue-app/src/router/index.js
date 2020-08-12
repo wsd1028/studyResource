@@ -10,10 +10,15 @@ const routes = [
     name: 'demo',
     component: () => import('@/views/main/demo.vue')
   },
+  //音视频巡检-选择项目或者消纳站
+  {
+    path: '/work/government/chooseWorkplace',
+    name: 'workGov-chooseWorkplace',
+    component: () => import('@/views/work/government/ChooseWorkplace.vue')
+  },
   {
     //登录页
     path: '/',
-    name: 'login',
     redirect: '/login'
   },
   {
@@ -208,12 +213,6 @@ const routes = [
     name: 'company-projectDetail',
     component: () => import('@/views/home/company/ProjectDetail.vue')
   },
-  //项目详情
-  {
-    path: '/home/company/projectDetail',
-    name: 'company-projectDetail',
-    component: () => import('@/views/home/company/ProjectDetail.vue')
-  },
   //曝光台  企业
   {
     path: '/home/company/exposure',
@@ -262,12 +261,6 @@ const routes = [
     name: 'company-dustNowData',
     component: () => import('@/views/home/company/DustNowData.vue')
   },
-  //今日扬尘告警  企业
-  {
-    path: '/home/company/deviceDustWarn',
-    name: 'company-DeviceDustWarn',
-    component: () => import('@/views/home/company/DeviceDustWarn.vue')
-  },
   //扬尘告警  政府
   {
     path: '/home/government/dustWarn',
@@ -279,12 +272,6 @@ const routes = [
     path: '/home/government/dustDevice',
     name: 'government-dustDevice',
     component: () => import('@/views/home/government/DustDevice.vue')
-  },
-  //扬尘告警信息  政府
-  {
-    path: '/home/government/deviceDustWarn',
-    name: 'government-deviceDustWarn',
-    component: () => import('@/views/home/government/DeviceDustWarn.vue')
   },
   //非名录车告警  政府
   {
@@ -525,12 +512,6 @@ const routes = [
     path: '/main/createForm',
     name: 'createForm',
     component: () => import('@/views/form/CreateForm.vue')
-  },
-  {
-    //车牌识别
-    path: '/main/licensePlate',
-    name: 'licensePlate',
-    component: () => import('@/views/form/LicensePlate.vue')
   },
   {
     //联单点检

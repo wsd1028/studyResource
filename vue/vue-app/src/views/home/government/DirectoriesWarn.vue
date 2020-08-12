@@ -1,13 +1,7 @@
 <template>
   <div class="government-directoriesWarn mainBox">
     <div class="mainTop">
-      <header>
-        <van-nav-bar @click-left="$router.go(-1)" class="nav" title="非名录车告警">
-          <template #left>
-            <van-icon class-prefix="iconfont" color="#333" name="fanhui" size="22" />
-          </template>
-        </van-nav-bar>
-      </header>
+      <myTitle titleName="非名录车告警"></myTitle>
       <van-tabs @change="select(1)" color="#4683f1" swipeable v-model="searchData.areaCode">
         <van-tab :key="index" :name="item.value" :title="item.text" v-for="(item, index) in areaList"></van-tab>
       </van-tabs>
@@ -44,7 +38,7 @@
 </template>
 
 <script>
-import { getArea } from '@/assets/js/commonAxios'
+import { getArea, getList } from '@/assets/js/commonAxios'
 
 export default {
   data() {
@@ -103,32 +97,45 @@ export default {
       if (page) {
         this.searchData.page = 1
       }
-      let resp = await this.$http.get(
-        `/carp/business/a/q/warning/list/select/area?areaCode=${this.searchData.areaCode}&limit=${this.searchData.limit}&page=${
-          this.searchData.page
-        }&r=${Math.random()}`
-      )
-      if (resp.code == 0) {
-        if (page) {
-          this.list = []
-        }
-        this.list = this.list.concat(resp.data.records)
-        // 加载状态结束
-        this.loading = false
-        this.refreshloading = false
-        this.searchData.page = this.searchData.page + 1
-        if (this.list.length == resp.data.total) {
-          // 数据全部加载完成
-          this.finished = true
-        } else {
-          this.finished = false
-        }
-      } else {
-        this.$dialog.alert({
-          message: '获取车辆识别失败:' + resp.message,
-          confirmButtonColor: 'red'
-        })
+      let url = `/carp/business/a/q/warning/list/select/area?areaCode=${this.searchData.areaCode}&limit=${this.searchData.limit}&page=${
+        this.searchData.page
+      }&r=${Math.random()}`
+      let data = {
+        list: this.list,
+        page: this.searchData.page
       }
+      let result = await getList(url, data, '车辆识别')
+      this.list = result.list
+      this.searchData.page = result.page
+      this.refreshloading = result.refreshloading
+      this.loading = result.loading
+      this.finished = result.finished
+      //let resp = await this.$http.get(
+      //  `/carp/business/a/q/warning/list/select/area?areaCode=${this.searchData.areaCode}&limit=${this.searchData.limit}&page=${
+      //    this.searchData.page
+      //  }&r=${Math.random()}`
+      //)
+      //if (resp.code == 0) {
+      //  if (page) {
+      //    this.list = []
+      //  }
+      //  this.list = this.list.concat(resp.data.records)
+      //  // 加载状态结束
+      //  this.loading = false
+      //  this.refreshloading = false
+      //  this.searchData.page = this.searchData.page + 1
+      //  if (this.list.length == resp.data.total) {
+      //    // 数据全部加载完成
+      //    this.finished = true
+      //  } else {
+      //    this.finished = false
+      //  }
+      //} else {
+      //  this.$dialog.alert({
+      //    message: '获取车辆识别失败:' + resp.message,
+      //    confirmButtonColor: 'red'
+      //  })
+      //}
     }
   }
 }
@@ -139,20 +146,6 @@ export default {
   text-align: left;
   background-color: #f9f9f9;
   min-height: 100%;
-  header {
-    background-color: #fff;
-    .nav {
-      text-align: left;
-      line-height: 42px;
-      i {
-        color: #666;
-      }
-      .van-nav-bar__title {
-        font-weight: 800;
-        font-size: 18px !important;
-      }
-    }
-  }
   .van-info {
     top: 12px;
     right: -11px;

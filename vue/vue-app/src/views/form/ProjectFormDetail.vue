@@ -1,9 +1,7 @@
 <template>
   <div class="projecctFormetail">
-    <div>
-      <Title titleName="联单详情"></Title>
-    </div>
-    <div class="section">
+    <myTitle titleName="联单详情" class="mainBox2"></myTitle>
+    <div class="section mt50">
       <div class="sectionItem">
         <div class="top">
           <div class="box"></div>
@@ -246,7 +244,6 @@
 </template>
 
 <script>
-import Title from '@/components/Title.vue'
 export default {
   data() {
     return {
@@ -260,9 +257,7 @@ export default {
     this.paramsData = this.$route.params
     await this.getMainData()
   },
-  components: {
-    Title
-  },
+  components: {},
   methods: {
     //联单状态
     getActive(state) {

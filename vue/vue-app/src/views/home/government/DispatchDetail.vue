@@ -10,7 +10,19 @@
         <p class="tipsMsg" v-text="dialog.text"></p>
         <div class="tipsbtns">
           <van-button @click="dialog.state = false" block class="myBtn2" color="#ddd" round size="small">取消</van-button>
-          <van-button @click="handelPowerYes(dialog.type)" block class="myBtn" round size="small" type="info">确认</van-button>
+          <van-button
+            :loading="dialog.btnLoading"
+            :loading-text="dialog.title + '...'"
+            @click="handelPowerYes(dialog.type)"
+            block
+            class="myBtn"
+            round
+            size="small"
+            type="info"
+          >
+            <!--eslint-->
+            确认
+          </van-button>
         </div>
       </div>
     </van-dialog>
@@ -26,14 +38,8 @@
         <van-button @click="handelFinish(false)" block round size="large" style="margin-top:10px" type="danger">未完成任务结案</van-button>
       </div>
     </van-dialog>
-    <header>
-      <van-nav-bar @click-left="$router.go(-1)" class="nav" title="督办派单详情">
-        <template #left>
-          <van-icon class-prefix="iconfont" color="#333" name="fanhui" size="22" />
-        </template>
-      </van-nav-bar>
-    </header>
-    <div class="top">
+    <myTitle class="mainBox2" titleName="督办派单详情"></myTitle>
+    <div class="top mt50">
       <div class="project">
         <span class="projectName textFlow">督办案件:{{ mainData.id }}</span>
         <p class="carCreat">
@@ -74,7 +80,7 @@
     </div>
     <section>
       <van-tabs color="#4683f1" swipeable>
-        <van-tab title="督办是由">
+        <van-tab title="督办事由">
           <div class="item">
             <van-field disabled label="创建时间" v-model="mainData.createDate" />
             <van-field disabled label="市区县" v-model="mainData.areaName" />
@@ -209,6 +215,7 @@ export default {
       userMsg: {},
       finishDia: false,
       dialog: {
+        btnLoading: false,
         state: false,
         text: '',
         icon: '',
@@ -268,7 +275,10 @@ export default {
       if (type == '接单') {
         url = `/carp/business/a/q/task/receiveTask?accountId=${this.userMsg.id}&taskId=${this.paramsData.id}`
       }
+      this.dialog.btnLoading = true
+      this.$forceUpdate()
       resp = await this.$http.post(url)
+      this.dialog.btnLoading = false
       if (resp.code == 0) {
         this.$dialog.alert({
           message: type + '成功',
@@ -438,20 +448,6 @@ export default {
       text-align: center;
       font-weight: 800;
       padding: 0 10px;
-    }
-  }
-  header {
-    background-color: #fff;
-    .nav {
-      text-align: left;
-      line-height: 42px;
-      i {
-        color: #666;
-      }
-      .van-nav-bar__title {
-        font-weight: 800;
-        font-size: 18px !important;
-      }
     }
   }
   .top {

@@ -1,31 +1,13 @@
 <template>
   <div class="government-dustDevice mainBox">
-    <header class="mainTop">
-      <van-nav-bar @click-left="$router.go(-1)" class="nav" title="扬尘告警">
-        <template #left>
-          <van-icon class-prefix="iconfont" color="#333" name="fanhui" size="22" />
-        </template>
-      </van-nav-bar>
-    </header>
+    <myTitle class="mainTop" titleName="扬尘告警"></myTitle>
     <div class="all mainBottom">
       <van-pull-refresh @refresh="getDustList(1)" v-model="refreshloading">
-        <van-list :finished="dustFinish" @load="getDustList" finished-text="没有更多了" v-model="dustLoading">
+        <van-list :finished="dustFinish" @load="getDustList" finished-text="没有更多了" v-model="loading">
           <div :key="index" class="deviceItem" v-for="(item, index) in DustList">
             <P class="deviceSN">IMEI:{{ item.sn }}</P>
             <P class="deviceDate">{{ item.createDate }}</P>
             <div class="allBox">
-              <div class="box">
-                <div :class="['boxImg', item.online ? 'green' : 'grey']">
-                  <van-image :src="require('@/assets/image/喷淋.png')" height="20" width="20" />
-                </div>
-                <span class="boxTitle">喷淋开</span>
-              </div>
-              <div class="box">
-                <div :class="['boxImg', item.online ? 'red' : 'grey']">
-                  <van-image :src="require('@/assets/image/喷淋.png')" height="20" width="20" />
-                </div>
-                <span class="boxTitle">喷淋关</span>
-              </div>
               <div @click="goSkip('company-dustNowData', item)" class="box">
                 <div :class="['boxImg', item.online ? 'blue' : 'grey']">
                   <van-image :src="require('@/assets/image/实时数据.png')" height="20" width="20" />
@@ -55,7 +37,7 @@ export default {
       DustList: [],
       refreshloading: false,
       finished: false,
-      dustLoading: false,
+      loading: false,
       dustFinish: false,
       paramsData: {},
       searchData: {
@@ -94,7 +76,7 @@ export default {
         }
         this.DustList = resp.data
         // 加载状态结束
-        this.dustLoading = false
+        this.loading = false
         this.refreshloading = false
         this.dustFinish = true
       } else {
@@ -113,20 +95,6 @@ export default {
   text-align: left;
   background-color: #f9f9f9;
   min-height: 100%;
-  header {
-    background-color: #fff;
-    .nav {
-      text-align: left;
-      line-height: 42px;
-      i {
-        color: #666;
-      }
-      .van-nav-bar__title {
-        font-weight: 800;
-        font-size: 18px !important;
-      }
-    }
-  }
   .all {
     .deviceItem {
       background-color: #fff;

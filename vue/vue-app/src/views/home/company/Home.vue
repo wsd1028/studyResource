@@ -1,9 +1,9 @@
 <template>
   <div class="company-home">
     <GoTop></GoTop>
-    <div class="head">
-      <HomeTitle titleName="扬尘治理"></HomeTitle>
-      <div>
+    <van-pull-refresh @refresh="appMain" v-model="refreshloading">
+      <div class="head">
+        <HomeTitle titleName="扬尘治理"></HomeTitle>
         <div class="cell-box">
           <div class="top">
             <div class="msgItem">
@@ -25,111 +25,124 @@
                 <span class="text textFlow" v-text="project.address"></span>
               </p>
             </div>
-            <div style="display:flex;width:100%;marginTop:30px">
+            <div @click="goSkip('company-dustNoise')" style="display:flex;width:100%;marginTop:20px;align-items:flex-end">
+              <van-image :src="require(`@/assets/image/${weather.wea_img}.png`)" height="40" width="40" />
+              <p style="color:#4285F4;text-align:left;margin-left:5px">
+                <span v-text="weather.wea"></span>
+                <br />
+                <span>{{ weather.tem2 }}°/{{ weather.tem1 }}°</span>
+              </p>
+              <van-tag :color="getWeatherColor(weather.air_level)" style="margin:0 6px;padding:2px 4px;font-size:16px"
+                >{{ weather.air_pm25 }}{{ weather.air_level }}</van-tag
+              >
+              <span style="color:#666;margin-right:6px">风力{{ weather.win_speed }}</span>
+              <span style="color:#666">湿度{{ weather.humidity }}</span>
+            </div>
+            <!--<div style="display:flex;width:100%;marginTop:30px">
               <div @click="goSkip('company-dustNoise')" class="chartItems" style="marginRight:10px">
                 <span style="color:#fc7403">pm25:{{ polluteData.pm25 }}</span>
               </div>
               <div @click="goSkip('company-dustNoise')" class="chartItems" style="marginLeft:10px">
                 <span style="color:#f42037">PM10:{{ polluteData.pm10 }}μg/m3</span>
               </div>
-            </div>
+            </div>-->
           </div>
         </div>
+        <div style="height:70px"></div>
+        <van-notice-bar :text="noticeText" color="#538dc3" speed="50">
+          <template #right-icon>
+            <div @click="goSkip('company-exposure')" class="exposureIcon">
+              <span class="text">更多</span>
+              <van-icon name="arrow" />
+            </div>
+          </template>
+          <template #left-icon>
+            <div>
+              <span class="exposureText">曝光台</span>
+            </div>
+          </template>
+        </van-notice-bar>
       </div>
-      <div style="height:60px"></div>
-      <van-notice-bar :text="noticeText" color="#538dc3" speed="50">
-        <template #right-icon>
-          <div @click="goSkip('company-exposure')" class="exposureIcon">
-            <span class="text">更多</span>
-            <van-icon name="arrow" />
+      <div class="box">
+        <div style="textAlign:left;lineHeight:40px">
+          <span class="title2">今日待办</span>
+          <van-divider></van-divider>
+        </div>
+        <div class="allIconBox">
+          <div @click="goSkip('company-todayWarn', { active: 'dust' })" class="tac">
+            <div class="iconBox" style="color:#ee4634" v-text="dustWarnNum"></div>
+            <span class="text">扬尘告警</span>
           </div>
-        </template>
-        <template #left-icon>
-          <div>
-            <span class="exposureText">曝光台</span>
+          <div @click="goSkip('company-todayWarn', { active: 'directories' })" class="tac">
+            <div class="iconBox" style="color:#ee4634" v-text="todayWait.carNumber"></div>
+            <span class="text">非名录车告警</span>
           </div>
-        </template>
-      </van-notice-bar>
-    </div>
-    <div class="box">
-      <div style="textAlign:left;lineHeight:40px">
-        <span class="title2">今日待办</span>
+          <div @click="goSkip('company-todayCheck')" class="tac">
+            <div class="iconBox" style="color:#333" v-text="todayWait.todayCheckNumber"></div>
+            <span class="text">每日巡检</span>
+          </div>
+          <div @click="goSkip('company-appointCheck')" class="tac">
+            <div class="iconBox" v-text="todayWait.assignCheckNumber"></div>
+            <span class="text">指派点检</span>
+          </div>
+          <div @click="goSkip('company-problemReport')" class="tac">
+            <div class="iconBox" v-text="todayWait.questionReportNumber"></div>
+            <span class="text">问题上报</span>
+          </div>
+          <div @click="goSkip('company-dispatch')" class="tac">
+            <div class="iconBox" v-text="todayWait.taskNumber"></div>
+            <span class="text">督办派单</span>
+          </div>
+          <div class="tac"></div>
+        </div>
+      </div>
+      <div class="box" style="paddingTop:0">
+        <van-cell is-link style="textAlign:left" to="/work/company/carIdentify" value="更多">
+          <template #title>
+            <span class="title2">车辆识别</span>
+          </template>
+        </van-cell>
         <van-divider></van-divider>
+        <div class="activeBtn">
+          <span :class="activeBtn === 3 ? 'active' : ''" @click="handelActive(3)">全部</span>
+          <span :class="activeBtn === 1 ? 'active' : ''" @click="handelActive(1)">已占用</span>
+          <span :class="activeBtn === 2 ? 'active' : ''" @click="handelActive(2)">未占用</span>
+        </div>
       </div>
-      <div class="allIconBox">
-        <div @click="goSkip('company-todayWarn', { active: 'dust' })" class="tac">
-          <div class="iconBox" style="color:#ee4634" v-text="dustWarnNum"></div>
-          <span class="text">扬尘告警</span>
-        </div>
-        <div @click="goSkip('company-todayWarn', { active: 'directories' })" class="tac">
-          <div class="iconBox" style="color:#ee4634" v-text="todayWait.carNumber"></div>
-          <span class="text">非名录车告警</span>
-        </div>
-        <div @click="goSkip('company-todayCheck')" class="tac">
-          <div class="iconBox" style="color:#333" v-text="todayWait.todayCheckNumber"></div>
-          <span class="text">每日巡检</span>
-        </div>
-        <div @click="goSkip('company-appointCheck')" class="tac">
-          <div class="iconBox" v-text="todayWait.assignCheckNumber"></div>
-          <span class="text">指派点检</span>
-        </div>
-        <div @click="goSkip('company-problemReport')" class="tac">
-          <div class="iconBox" v-text="todayWait.questionReportNumber"></div>
-          <span class="text">问题上报</span>
-        </div>
-        <div @click="goSkip('company-dispatch')" class="tac">
-          <div class="iconBox" v-text="todayWait.taskNumber"></div>
-          <span class="text">督办派单</span>
-        </div>
-        <div class="tac"></div>
+      <div class="box lincenseBox">
+        <van-list :finished="finished" @load="select" finished-text="没有更多了" v-model="loading">
+          <van-row :key="index" class="item" v-for="(item, index) in list">
+            <van-col span="6" style="height:85px;position:relative">
+              <div class="jin" v-if="item.direction == $dictionaries.direction.jin">进</div>
+              <div class="chu" v-if="item.direction == $dictionaries.direction.chu">出</div>
+              <MyImage :imgUrl="$dictionaries.imgBaseUrl2 + item.carPhoto" :isPreviewShow="true" height="100%" style="width:100%;height:100%" width="100%" />
+            </van-col>
+            <van-col span="1"></van-col>
+            <van-col span="17">
+              <div class="top">
+                <p>
+                  <span class="textFlow plateNumber" style="width:80px" v-text="item.license"></span>
+                  <span class="carTag0" v-if="item.carState">名录车</span>
+                  <span class="carTag1" v-if="!item.carState">非名录车</span>
+                </p>
+                <p class="carCreat">
+                  <span @click="handelCreate(item)" class="carCreat0" v-if="!item.occupancy && item.direction == $dictionaries.direction.chu && !isGarbage">
+                    <!--eslint-->
+                    新建
+                  </span>
+                  <span class="carCreat1" v-if="item.occupancy && item.direction == $dictionaries.direction.chu">已建</span>
+                </p>
+              </div>
+              <div class="bottom">
+                <p>运输企业:{{ item.transportCompanyName }}</p>
+                <p>排放企业:{{ item.projectCompanyName }}</p>
+                <p>创建时间:{{ item.createDate }}</p>
+              </div>
+            </van-col>
+          </van-row>
+        </van-list>
       </div>
-    </div>
-    <div class="box" style="paddingTop:0">
-      <van-cell is-link style="textAlign:left" to="/work/company/carIdentify" value="更多">
-        <template #title>
-          <span class="title2">车辆识别</span>
-        </template>
-      </van-cell>
-      <van-divider></van-divider>
-      <div class="activeBtn">
-        <span :class="activeBtn === 3 ? 'active' : ''" @click="handelActive(3)">全部</span>
-        <span :class="activeBtn === 1 ? 'active' : ''" @click="handelActive(1)">已占用</span>
-        <span :class="activeBtn === 2 ? 'active' : ''" @click="handelActive(2)">未占用</span>
-      </div>
-    </div>
-    <div class="box lincenseBox">
-      <van-list :finished="finished" @load="select" finished-text="没有更多了" v-model="loading">
-        <van-row :key="index" class="item" v-for="(item, index) in list">
-          <van-col span="6" style="height:85px;position:relative">
-            <div class="jin" v-if="item.direction == $dictionaries.direction.jin">进</div>
-            <div class="chu" v-if="item.direction == $dictionaries.direction.chu">出</div>
-            <MyImage :imgUrl="$dictionaries.imgBaseUrl2 + item.carPhoto" :isPreviewShow="true" height="100%" style="width:100%;height:100%" width="100%" />
-          </van-col>
-          <van-col span="1"></van-col>
-          <van-col span="17">
-            <div class="top">
-              <p>
-                <span class="textFlow plateNumber" style="width:80px" v-text="item.license"></span>
-                <span class="carTag0" v-if="item.carState">名录车</span>
-                <span class="carTag1" v-if="!item.carState">非名录车</span>
-              </p>
-              <p class="carCreat">
-                <span @click="handelCreate(item)" class="carCreat0" v-if="!item.occupancy && item.direction == $dictionaries.direction.chu && !isGarbage">
-                  <!--eslint-->
-                  新建
-                </span>
-                <span class="carCreat1" v-if="item.occupancy && item.direction == $dictionaries.direction.chu">已建</span>
-              </p>
-            </div>
-            <div class="bottom">
-              <p>运输企业:{{ item.transportCompanyName }}</p>
-              <p>排放企业:{{ item.projectCompanyName }}</p>
-              <p>创建时间:{{ item.createDate }}</p>
-            </div>
-          </van-col>
-        </van-row>
-      </van-list>
-    </div>
+    </van-pull-refresh>
   </div>
 </template>
 
@@ -140,6 +153,10 @@ import { Bus } from '@/bus'
 export default {
   data() {
     return {
+      refreshloading: false,
+      weather: {
+        wea_img: 'qing'
+      },
       exposureList: [], //曝光台列表
       exposureIndex: 0, //曝光台下标
       noticeText: '', //当前曝光台文字
@@ -183,31 +200,61 @@ export default {
     }
   },
   mounted() {
-    this.userMsg = this.$store.state.user.user
-    this.searchData.workplaceId = this.$store.state.user.project.id
-    if (this.userMsg.accountTypeDto.type == this.$dictionaries.userType.garbage) {
-      this.searchData.workplaceType = this.$dictionaries.machineType.garbage
-      this.isGarbage = true
-    } else {
-      this.isGarbage = false
-    }
-    this.getProject()
-    this.getExposure()
-    this.getTodayWait()
-    this.getDustNum()
-    Bus.$on('searchValue', value => {
-      this.searchData.license = value
-      this.list = []
-      this.searchData.page = 1
-      this.select()
-    })
+    this.appMain()
   },
   components: {
     HomeTitle,
     GoTop
   },
   methods: {
+    //程序入口
+    appMain() {
+      this.userMsg = this.$store.state.user.user
+      this.searchData.workplaceId = this.$store.state.user.project.id
+      if (this.userMsg.accountTypeDto.type == this.$dictionaries.userType.garbage) {
+        this.searchData.workplaceType = this.$dictionaries.machineType.garbage
+        this.isGarbage = true
+      } else {
+        this.isGarbage = false
+      }
+      this.getProject()
+      this.getExposure()
+      this.getTodayWait()
+      //this.getDustNum()//获取扬尘告警数量
+      this.getWeather()
+      this.refreshloading = false
+      Bus.$on('searchValue', value => {
+        this.searchData.license = value
+        this.list = []
+        this.searchData.page = 1
+        this.select()
+      })
+    },
+    //处理天气颜色
+    getWeatherColor(name) {
+      let color = '#17D687'
+      if (name == '优') {
+        color = '#17D687'
+      } else if (name == '良') {
+        color = '#FBCF1E'
+      } else if (name == '轻度污染') {
+        color = '#FBA01E'
+      } else if (name == '中度污染') {
+        color = '#FB1E1E'
+      } else if (name == '重度污染') {
+        color = '#AB0044'
+      } else if (name == '严重污染') {
+        color = '#AB0044'
+      }
+      return color
+    },
+    //得到天气
+    async getWeather() {
+      let resp = await this.$http.get('https://tianqiapi.com/api?version=v6&appid=66527314&appsecret=79zfaynW')
+      this.weather = resp
+    },
     async getPollute(longitude, latitude) {
+      return
       let resp = await this.$http.get(`/carp/device/a/q/dust/info/recent/monitor/data?longitude=${longitude}&latitude=${latitude}`)
       if (resp.code == 0) {
         if (resp.data) this.polluteData = resp.data
@@ -265,7 +312,7 @@ export default {
     },
     //得到曝光台信息
     async getExposure() {
-      let resp = await this.$http.get('/carp/business/a/q/exposure/table/page?Page=1&Limit=9999')
+      let resp = await this.$http.get('/carp/business/a/q/exposure/table/page?Page=1&Limit=9999&showType=1')
       if (resp.code == 0) {
         this.exposureList = resp.data.records
         for (let i = 0; i < this.exposureList.length; i++) {
@@ -294,13 +341,13 @@ export default {
     },
     //查询数据
     async select() {
-      if (this.searchData.page == 1) {
-        this.list = []
-      }
       let resp = await this.$http.get('/carp/business/a/q/license/record/current/page', {
         params: this.searchData
       })
       if (resp.code == 0) {
+        if (this.searchData.page == 1) {
+          this.list = []
+        }
         this.list = this.list.concat(resp.data.records)
         // 加载状态结束
         this.loading = false
@@ -376,7 +423,7 @@ export default {
     margin: 0;
   }
   .head {
-    height: 200px;
+    height: 210px;
     margin-bottom: 100px;
   }
   .van-notice-bar {
@@ -413,7 +460,7 @@ export default {
       width: 93%;
       margin: auto;
       left: 0;
-      bottom: -50px;
+      bottom: -60px;
       right: 0;
       box-shadow: 0 0 7px #e5e5e5;
       .msgItem {

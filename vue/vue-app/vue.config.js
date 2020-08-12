@@ -12,16 +12,8 @@ module.exports = {
             '^/carp': ''
           }
         },
-        '/device': {
-          target: 'http://192.168.31.119:9201',
-          ws: true,
-          changeOrigin: true,
-          pathRewrite: {
-            '^/carp': ''
-          }
-        },
         '/carp': {
-          target: 'http://192.168.31.118:80',
+          target: 'http://192.168.31.133:80',
           ws: true,
           changeOrigin: true,
           pathRewrite: {

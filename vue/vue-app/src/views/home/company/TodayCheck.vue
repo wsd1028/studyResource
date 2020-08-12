@@ -6,7 +6,6 @@
         <van-tab :key="index" :name="item.name" :title="item.title" v-for="(item, index) in tabList"></van-tab>
       </van-tabs>
     </div>
-
     <section class="mainBottom">
       <v-touch @swipeleft="onSwipe('left')" @swiperight="onSwipe('right')" class="v-touch">
         <van-pull-refresh @refresh="select(1)" v-model="refreshloading">
@@ -46,6 +45,8 @@
 </template>
 
 <script>
+import { getList } from '@/assets/js/commonAxios'
+
 export default {
   data() {
     return {
@@ -149,30 +150,41 @@ export default {
       if (page) {
         this.searchData.page = page
       }
-      let resp = await this.$http.get('/carp/business/a/q/todays/check/page', {
-        params: this.searchData
-      })
-      if (resp.code == 0) {
-        if (page) {
-          this.list = []
-        }
-        this.list = this.list.concat(resp.data.records)
-        // 加载状态结束
-        this.loading = false
-        this.refreshloading = false
-        this.searchData.page = this.searchData.page + 1
-        if (this.list.length == resp.data.total) {
-          // 数据全部加载完成
-          this.finished = true
-        } else {
-          this.finished = false
-        }
-      } else {
-        this.$dialog.alert({
-          message: '获取每日巡检失败:' + resp.message,
-          confirmButtonColor: 'red'
-        })
+      let url = '/carp/business/a/q/todays/check/page'
+      let data = {
+        list: this.list,
+        page: this.searchData.page
       }
+      let result = await getList(url, data, '每日巡检', this.searchData)
+      this.list = result.list
+      this.searchData.page = result.page
+      this.refreshloading = result.refreshloading
+      this.loading = result.loading
+      this.finished = result.finished
+      //let resp = await this.$http.get('/carp/business/a/q/todays/check/page', {
+      //  params: this.searchData
+      //})
+      //if (resp.code == 0) {
+      //  if (page) {
+      //    this.list = []
+      //  }
+      //  this.list = this.list.concat(resp.data.records)
+      //  // 加载状态结束
+      //  this.loading = false
+      //  this.refreshloading = false
+      //  this.searchData.page = this.searchData.page + 1
+      //  if (this.list.length == resp.data.total) {
+      //    // 数据全部加载完成
+      //    this.finished = true
+      //  } else {
+      //    this.finished = false
+      //  }
+      //} else {
+      //  this.$dialog.alert({
+      //    message: '获取每日巡检失败:' + resp.message,
+      //    confirmButtonColor: 'red'
+      //  })
+      //}
     }
   }
 }

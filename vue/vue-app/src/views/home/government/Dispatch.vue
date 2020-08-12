@@ -30,7 +30,7 @@
                           v-if="item.accountState == $dictionaries.dispatch.finish && item.state != $dictionaries.dispatch.finish"
                         >
                           <!--eslint-->
-                          已完成
+                          已处理
                         </span>
                       </p>
                     </div>
@@ -74,6 +74,8 @@
 </template>
 
 <script>
+import { getList } from '@/assets/js/commonAxios'
+
 export default {
   data() {
     return {
@@ -94,7 +96,7 @@ export default {
         },
         {
           name: this.$dictionaries.dispatch.finish,
-          title: '已完成'
+          title: '已处理'
         }
       ],
       loading: false,
@@ -154,31 +156,41 @@ export default {
       if (page) {
         this.searchData.page = 1
       }
-      let user = this.$store.state.user.user
-      let resp = await this.$http.get('/carp/business/a/q/task/accountId', {
-        params: this.searchData
-      })
-      if (resp.code == 0) {
-        if (page) {
-          this.list = []
-        }
-        this.list = this.list.concat(resp.data.records)
-        // 加载状态结束
-        this.loading = false
-        this.refreshloading = false
-        this.searchData.page = this.searchData.page + 1
-        if (this.list.length == resp.data.total) {
-          // 数据全部加载完成
-          this.finished = true
-        } else {
-          this.finished = false
-        }
-      } else {
-        this.$dialog.alert({
-          message: '获取督办派单失败:' + resp.message,
-          confirmButtonColor: 'red'
-        })
+      let url = '/carp/business/a/q/task/accountId'
+      let data = {
+        list: this.list,
+        page: this.searchData.page
       }
+      let result = await getList(url, data, '督办派单', this.searchData)
+      this.list = result.list
+      this.searchData.page = result.page
+      this.refreshloading = result.refreshloading
+      this.loading = result.loading
+      this.finished = result.finished
+      //let resp = await this.$http.get('/carp/business/a/q/task/accountId', {
+      //  params: this.searchData
+      //})
+      //if (resp.code == 0) {
+      //  if (page) {
+      //    this.list = []
+      //  }
+      //  this.list = this.list.concat(resp.data.records)
+      //  // 加载状态结束
+      //  this.loading = false
+      //  this.refreshloading = false
+      //  this.searchData.page = this.searchData.page + 1
+      //  if (this.list.length == resp.data.total) {
+      //    // 数据全部加载完成
+      //    this.finished = true
+      //  } else {
+      //    this.finished = false
+      //  }
+      //} else {
+      //  this.$dialog.alert({
+      //    message: '获取督办派单失败:' + resp.message,
+      //    confirmButtonColor: 'red'
+      //  })
+      //}
     }
   }
 }

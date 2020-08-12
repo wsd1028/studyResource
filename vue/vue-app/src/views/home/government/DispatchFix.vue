@@ -1,13 +1,7 @@
 <template>
   <div class="dispatchFix">
-    <header>
-      <van-nav-bar @click-left="goBack" class="nav" title="督办派单">
-        <template #left>
-          <van-icon class-prefix="iconfont" color="#333" name="fanhui" size="22" />
-        </template>
-      </van-nav-bar>
-    </header>
-    <div class="top">
+    <myTitle class="mainBox2" titleName="督办派单"></myTitle>
+    <div class="top mt50">
       <div class="project">
         <span class="projectName textFlow">督办案件:{{ paramsData.id }}</span>
         <p class="carCreat">
@@ -79,18 +73,16 @@ export default {
         this.updateDate.accountId = this.$store.state.user.user.id
         let resp = await this.$http.post('/carp/business/a/q/task/finishTask', this.updateDate)
         if (resp.code == 0) {
-          if (resp.code == 0) {
-            this.$dialog.alert({
-              message: '处理成功',
-              confirmButtonColor: 'green'
-            })
-            this.goBack()
-          } else {
-            this.$dialog.alert({
-              message: '处理失败:' + resp.message,
-              confirmButtonColor: 'red'
-            })
-          }
+          this.$dialog.alert({
+            message: '处理成功',
+            confirmButtonColor: 'green'
+          })
+          this.goBack()
+        } else {
+          this.$dialog.alert({
+            message: '处理失败:' + resp.message,
+            confirmButtonColor: 'red'
+          })
         }
       }
     }
@@ -110,20 +102,6 @@ export default {
     color: #9a9a9a;
     margin-left: 10px;
     vertical-align: top;
-  }
-  header {
-    background-color: #fff;
-    .nav {
-      text-align: left;
-      line-height: 42px;
-      i {
-        color: #666;
-      }
-      .van-nav-bar__title {
-        font-weight: 800;
-        font-size: 18px !important;
-      }
-    }
   }
   .top {
     background-color: #fff;

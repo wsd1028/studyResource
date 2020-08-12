@@ -9,15 +9,8 @@
         </div>
       </div>
     </van-dialog>
-
-    <header>
-      <van-nav-bar @click-left="$router.go(-1)" class="nav" title="关于我们">
-        <template #left>
-          <van-icon class-prefix="iconfont" color="#333" name="fanhui" size="22" />
-        </template>
-      </van-nav-bar>
-    </header>
-    <div class="top">
+    <myTitle class="mainBox2" titleName="关于我们"></myTitle>
+    <div class="top mt50">
       <div>
         <img alt src="../../assets/image/yibin_logo.png" style="width:100px;height:100px" />
         <p style="margin:10px 0;fontWeight:800;color:#343434">惠工云</p>
@@ -84,20 +77,6 @@ export default {
   text-align: left;
   background-color: #f9f9f9;
   min-height: 100%;
-  header {
-    background-color: #fff;
-    .nav {
-      text-align: left;
-      line-height: 42px;
-      i {
-        color: #666;
-      }
-      .van-nav-bar__title {
-        font-weight: 800;
-        font-size: 18px !important;
-      }
-    }
-  }
   .top {
     display: flex;
     justify-content: center;

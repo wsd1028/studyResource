@@ -1,13 +1,7 @@
 <template>
   <div class="workGov-CarIdentifyDetailList">
-    <header>
-      <van-nav-bar @click-left="$router.go(-1)" class="nav" title="车辆信息">
-        <template #left>
-          <van-icon class-prefix="iconfont" color="#333" name="fanhui" size="22" />
-        </template>
-      </van-nav-bar>
-    </header>
-    <van-row class="project">
+    <myTitle class="mainBox2" titleName="车辆信息"></myTitle>
+    <van-row class="project mt50">
       <van-col span="6" style="height:85px">
         <MyImage :imgUrl="$dictionaries.imgBaseUrl2 + paramsData.carImage" fit="cover" height="100%" style="width:100%;height:100%" width="100%" />
       </van-col>
@@ -200,12 +194,14 @@ export default {
     async getEleForm(page) {
       if (page) {
         this.searchData.page = 1
-        this.eleFormList = []
       }
       let resp = await this.$http.get('/carp/business/a/q/electronic/workflow/project', {
         params: this.searchData
       })
       if (resp.code == 0) {
+        if (this.searchData.page == 1) {
+          this.eleFormList = []
+        }
         this.eleFormList = this.eleFormList.concat(resp.data.records)
         // 加载状态结束
         this.loading = false
@@ -243,20 +239,6 @@ export default {
   text-align: left;
   background-color: #f9f9f9;
   padding-bottom: 30px;
-  header {
-    background-color: #fff;
-    .nav {
-      text-align: left;
-      line-height: 42px;
-      i {
-        color: #666;
-      }
-      .van-nav-bar__title {
-        font-weight: 800;
-        font-size: 18px !important;
-      }
-    }
-  }
   .project {
     background-color: #fff;
     margin-bottom: 10px;

@@ -21,7 +21,6 @@ import ElementUI from 'element-ui'
 import 'element-ui/lib/theme-chalk/index.css'
 import MyImage from '@/components/MyImage.vue'
 import MyTitle from '@/components/MyTitle.vue'
-
 import vueEsign from 'vue-esign'
 Vue.use(vueEsign)
 Vue.component('MyImage', MyImage)
@@ -44,6 +43,7 @@ Vue.prototype.$moment = moment
 Vue.prototype.$addJsonP = until.addJsonP
 Vue.prototype.$echarts = echarts
 Vue.prototype.$until = until
+
 Vue.prototype.$dictionaries = dictionaries
 Vue.prototype.$debounce = until.debounce
 Vue.prototype.$qs = qs
