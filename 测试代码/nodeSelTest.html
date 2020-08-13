@@ -9,6 +9,8 @@
   <link rel="stylesheet" href="./temp/main.css">
   <link rel="stylesheet" href="./css/iconfont/iconfont.css">
   <link rel="stylesheet" href="./css/home.min.css">
+  <link rel="stylesheet" href="./lib/myComponent.css">
+
   <title>节点-机房</title>
   <style>
     #demo {
@@ -20,6 +22,7 @@
 
 <body>
   <div id="app">
+    <com-A></com-A>
     <el-button type="primary" v-on:click="testData">主要按钮</el-button>
     <div>
       <!-- <node-selector test="test":include-child="true" :default-room="defaultRoom" :default-node="defaultNode" :include-room="true"  :include-child="true" :node-clearable="true"
@@ -37,6 +40,8 @@
   <script src="./js/echarts/dist/echarts.min.js"></script>
   <script src="./js/hunan.js"></script>
   <script src="./temp/NodeSelector.js"></script>
+  <script src="./lib/myComponent.umd.js"></script>
+
   <script>
     var V = new Vue({
       el: "#app",
