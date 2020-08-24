@@ -162,6 +162,12 @@ function getImg(name) {
   })
   return img
 }
+//判断是否全屏
+function checkFull() {
+  var isFull = document.fullscreenElement || document.mozFullScreenElement || document.webkitFullscreenElement || document.msFullscreenElement
+  if (isFull === undefined) isFull = false
+  return isFull
+}
 exports = {
   getPageData,
   getCookie,
@@ -169,5 +175,6 @@ exports = {
   singleArrObj,
   sortByKey,
   filterText,
-  getImg
+  getImg,
+  checkFull
 }
