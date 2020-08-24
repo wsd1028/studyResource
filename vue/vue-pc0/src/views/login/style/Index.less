@@ -1,0 +1,181 @@
+.container-main {
+  display: flex;
+  flex-flow: column;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+  width: 100%;
+  background: url("../../../assets/images/login/bg.jpg") no-repeat;
+  background-size: cover;
+
+  & > * {
+    max-width: 82%;
+  }
+
+  .logo {
+    padding-bottom: 0.48rem;
+    width: 6.4rem;
+    img {
+      display: block;
+      width: 100%;
+    }
+  }
+
+  .border-bg {
+    margin-bottom: 0.76rem;
+    padding: 0.32rem 0.7rem;
+    background: url("../../../assets/images/login/border.png") no-repeat center;
+    background-size: 100%;
+    .container-login {
+      overflow: hidden;
+      box-sizing: border-box;
+      padding: 0.22rem 0.6rem 0.32rem;
+      display: flex;
+      flex-flow: column nowrap;
+      align-items: stretch;
+      width: 5.62rem;
+      background-color: rgba(5, 10, 42, 0.5);
+      border: #4c74c4 0.02rem solid;
+      border-radius: 0.1rem;
+      box-shadow: inset 0rem 0rem 0.14rem 0.08rem rgba(66, 133, 244, 0.35);
+
+      .title {
+        text-align: center;
+        font-size: 0.24rem;
+        line-height: 0.24rem;
+        color: white;
+        margin: 0 0 0.22rem;
+      }
+
+      .wrap-username,
+      .wrap-password,
+      .login-bt,
+      .verify-bt {
+        position: relative;
+        overflow: hidden;
+        border-radius: 0.06rem;
+        margin-top: 0.22rem;
+        padding: 0.08rem 0.16rem;
+        background-color: #344e88;
+
+        input {
+          flex: auto;
+          background-color: #344e88;
+          border-width: 0;
+          outline-width: 0;
+          color: white;
+          line-height: 0.32rem;
+          font-size: 0.16rem;
+          box-shadow: 0 0 0px 1000px #344e88 inset;
+
+          &::placeholder {
+            color: #ffffffaa;
+          }
+
+          &:-internal-autofill-selected {
+            color: #ffffffaa !important;
+          }
+        }
+      }
+
+      .wrap-username,
+      .wrap-password {
+        box-sizing: border-box;
+        display: flex;
+        .icon {
+          display: block;
+          padding-right: 0.16rem;
+          font-size: 0.24rem;
+          line-height: 0.32rem;
+          color: #b2c3d2;
+        }
+        &::after {
+          display: none;
+          content: attr(err);
+          position: absolute;
+          top: 50%;
+          right: 0.2rem;
+          transform: translateY(-50%);
+          font-size: 0.14rem;
+          color: #F56C6C;
+        }
+      }
+
+      .wrap-username {
+        margin-top: 0;
+      }
+
+      // 验证按钮
+      .verify-bt {
+        background-color: rgba(255, 255, 255, 0.96);
+        color: #888;
+        cursor: pointer;
+
+        font-size: 0.16rem;
+
+        span {
+          &::after {
+            content: "点击按钮进行验证";
+          }
+        }
+
+        &.success {
+          border: 1px solid #52ccba;
+          background-color: #d2f4ef;
+          color: #52ccba;
+          cursor: default;
+          span {
+            &::after {
+              content: "验证成功";
+            }
+          }
+        }
+      }
+
+      // 验证码
+      .verify-wrap {
+        position: absolute;
+        padding: 0.1rem;
+        z-index: 1;
+        top: 50%;
+        left: 50%;
+        background-color: rgba(255, 255, 255, 0.96);
+        transform: translate(-50%, -50%);
+      }
+
+      .login-bt {
+        margin-top: 0.34rem 0 0.32rem;
+        display: flex;
+        box-sizing: border-box;
+        justify-content: center;
+        align-items: center;
+        border-width: 0;
+        background: linear-gradient(180deg, #4186f4 0%, #4283f2 100%);
+        box-shadow: #222222dd 0 0.02rem 0.02rem;
+        color: white;
+        line-height: 0.34rem;
+        font-size: 0.18rem;
+        cursor: pointer;
+        user-select: none;
+
+        &:active {
+          box-shadow: inset 0 0 0.02rem 0 #222222dd;
+        }
+      }
+    }
+  }
+
+  .copyright {
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    bottom: 0.36rem;
+    display: inline-flex;
+    justify-content: space-around;
+    width: 5.64rem;
+    span {
+      font-size: 0.16rem;
+      color: #fff;
+    }
+  }
+}

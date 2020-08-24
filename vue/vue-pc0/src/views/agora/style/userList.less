@@ -1,0 +1,83 @@
+@import '~@/assets/less/common';
+// 联络人
+.users-wrap {
+  @flex-column();
+  flex: 1.4;
+  width: 0;
+  background-color: #363e47;
+  // 联络人搜索和添加联络人操作区域
+  .search-wrap {
+    display: flex;
+    flex: none;
+    padding: 0.16rem;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: #303841 solid 1px;
+    font-size: 0.24rem;
+
+    // 搜索联络人
+    .search-input {
+      display: inline-flex;
+      overflow: hidden;
+      padding: 0.08rem 0.12rem;
+      background-color: #303841;
+      border-radius: 0.2rem;
+      color: #6b7781;
+      i {
+        flex: 2;
+      }
+      input {
+        margin: 0 0.08rem;
+        flex: 6;
+        outline: none;
+        border: none;
+        background-color: #303841 !important;
+        color: #fff;
+      }
+    }
+
+    // 添加联络人
+    .bt-add {
+      overflow: hidden;
+      border-radius: 50%;
+      padding: 0.08rem 0.1rem;
+      color: #303841;
+      background-color: #303841;
+    }
+  }
+
+  // 联络人列表
+  .users-list-wrap {
+    flex: auto;
+    height: 0;
+    .user-item {
+      display: flex;
+      cursor: pointer;
+      &:hover{
+        background-color: #404953;
+      }
+      .avatar {
+        flex: 1;
+        width: 0;
+        padding: 0.16rem;
+        @center-box()
+      }
+      .info {
+        padding: 0.16rem 0.16rem 0.16rem 0;
+        flex: 6;
+        width: 0;
+        .user-name{
+          font-size: 0.18rem;
+          color: #fff;
+        }
+        .last-message{
+          font-size: 0.16rem;
+          color: #626e79;
+          overflow: hidden;
+          text-overflow: ellipsis;
+          white-space: nowrap;
+        }
+      }
+    }
+  }
+}
