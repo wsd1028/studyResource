@@ -16,11 +16,14 @@
 
 <body>
     <div id="main">
-        <baidu-map class="map" :scroll-wheel-zoom="true" :center="{lng: 116.404, lat: 39.915}" :zoom="15">
-            <bm-marker :position="{lng: 116.404, lat: 39.9215}" :dragging="true" animation="BMAP_ANIMATION_BOUNCE"
-                :icon="{url: 'http://developer.baidu.com/map/jsdemo/img/fox.gif', size: {width: 300, height: 157}}">
+        <baidu-map class="map" @zoomend="handelZoom" :scroll-wheel-zoom="true" :center="{lng: 116.404, lat: 39.915}"
+            :zoom="zoom">
+            <bm-marker :position="{lng: 116.404, lat: 39.9215}" click="handelIcon"
+                :icon="{url: '../images/location.png', size: {width: 80, height:80}}">
+                <bm-label content="<p style='color:red'>464<p>" :labelStyle="{color: 'red', fontSize : '24px'}"
+                    :offset="{width: 115, height: 30}" />
             </bm-marker>
-            <bm-marker :position="{lng: 116.404, lat: 39.915}" :dragging="true" animation="BMAP_ANIMATION_BOUNCE"
+            <bm-marker :position="{lng: 116.404, lat: 39.915}" click="handelIcon"
                 :icon="{url: 'http://developer.baidu.com/map/jsdemo/img/fox.gif', size: {width: 300, height: 157}}">
             </bm-marker>
         </baidu-map>
@@ -37,9 +40,24 @@
         var app = new Vue({
             el: '#main',
             data: {
-
+                zoom: 15
             },
-            methods: {}
+            methods: {
+                handelIcon(type, target) {
+                    console.log(type)
+                    console.log(target)
+                },
+                handelZoom(e) {
+                    // const { lng, lat } = e.target.getCenter()
+                    // this.center.lng = lng
+                    // this.center.lat = lat
+                    let zoom = e.target.getZoom()
+                    if (zoom == 19) {
+                        console.log('zoo19')
+                        this.zoom = 5
+                    }
+                }
+            }
         })
     </script>
 </body>
