@@ -28,7 +28,7 @@ service.interceptors.response.use(
   response => {
     if (response.status == 200) {
       const data = response.data
-      if ([-1, -2, 1011].includes(data.code)) {
+      if ([-1, 1011].includes(data.code)) {
         store.commit('clearToken')
         store.commit('clearUserInfo')
         //跳转到login页面

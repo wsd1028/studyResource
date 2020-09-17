@@ -732,7 +732,7 @@ export default {
     // 获取用户类型字典表
     this.$http.get('/carp/business/a/q/dict/category/user_type').then(({ code, data }) => {
       if (code === 0) {
-        this.form.label.accountTypeDto_type.item = ([0].includes(this.$userType) ? data : data.slice(data.length - 4, data.length)).map(item => ({
+        this.form.label.accountTypeDto_type.item = ([0].includes(this.$userType) ? data : data.slice(5, data.length)).map(item => ({
           label: item.name,
           code: parseInt(item.code),
           roleId: item.remark

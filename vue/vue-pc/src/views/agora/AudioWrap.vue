@@ -143,6 +143,10 @@ export default {
       let remoteStream = evt.stream
       let id = remoteStream.getId()
       if (id !== this.rtcClient._uid) {
+        // 将该远端流id移出数组
+        if (this.remoteStreamId.indexOf(id) !== -1) {
+          this.remoteStreamId.splice(this.remoteStreamId.indexOf(id), 1)
+        }
         // 关闭该远端流的接收
         remoteStream.stop('remote_video')
       }
@@ -158,7 +162,9 @@ export default {
       // 检查是否是当前用户本身
       if (id !== this.rtcClient._uid) {
         // 将该远端流id移出数组
-        this.remoteStreamId.splice(this.remoteStreamId.indexOf(id), 1)
+        if (this.remoteStreamId.indexOf(id) !== -1) {
+          this.remoteStreamId.splice(this.remoteStreamId.indexOf(id), 1)
+        }
       }
     },
 

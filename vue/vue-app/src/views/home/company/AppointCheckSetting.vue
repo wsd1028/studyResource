@@ -6,6 +6,7 @@
         :defaultFileList="getDefaultFileList(mainData.list[chooseItemIndex].imageList)"
         :module="$dictionaries.imgType.appoint"
         :previewImage="false"
+        :limit="10"
         @uploadYes="uploadYes($event, chooseItemIndex)"
         class
       ></MyUpload>
@@ -116,17 +117,22 @@ export default {
     this.paramsData = this.$route.params
     await this.getMainData()
     this.$until.fixVideo()
-    let geolocation = new BMap.LocalCity()
-    geolocation.get(res => {
-      let { lng, lat } = res.center
-      this.mainData.longitude = lng
-      this.mainData.latitude = lat
-    })
+    window.setLocation = this.setLocation2
+    this.getLocation()
   },
   components: {
     MyUpload
   },
   methods: {
+    //得到安卓返回的经纬度
+    setLocation2(data) {
+      this.mainData.latitude = data.lat
+      this.mainData.longitude = data.lng
+    },
+    //调用安卓接口获取经纬度
+    getLocation() {
+      if (window.jsCall) window.jsCall.getLocation()
+    },
     //得到播放器配置
     getPlayerOptions(data) {
       let playerOptions = {
@@ -158,11 +164,19 @@ export default {
     getDefaultFileList(photo) {
       let arr = []
       for (let i = 0; i < photo.length; i++) {
-        arr.push({
-          url: this.$dictionaries.imgBaseUrl2 + photo[i],
-          imgUrl: photo[i],
-          isImage: this.$until.checkImage(photo[i])
-        })
+        if (this.$until.checkImage(photo[i])) {
+          arr.push({
+            url: this.$dictionaries.imgBaseUrl2 + photo[i],
+            imgUrl: photo[i],
+            isImage: true
+          })
+        } else {
+          arr.push({
+            url: photo[i],
+            imgUrl: photo[i],
+            isImage: false
+          })
+        }
       }
       return arr
     },
@@ -266,7 +280,6 @@ export default {
     },
     //确认上传
     async updateYes() {
-      this.btnLoading = true
       let bool = true
       for (let i = 0; i < this.mainData.list.length; i++) {
         this.mainData.list[i].commandCheckId = this.paramsData.id
@@ -282,7 +295,9 @@ export default {
       //必填项是否验证成功
       if (bool) {
         let url = '/carp/business/a/q/command/check/deal'
+        this.btnLoading = true
         let resp = await this.$http.post(url, updateData)
+        this.btnLoading = false
         if (resp.code == 0) {
           this.$dialog.alert({
             message: '处理成功',
@@ -301,7 +316,6 @@ export default {
           confirmButtonColor: 'red'
         })
       }
-      this.btnLoading = false
     }
   }
 }

@@ -23,14 +23,23 @@
       >
         <p>运营业户：{{ carDetail.ownerName }}</p>
         <p>联系方式：{{ carDetail.ownerPhone }}</p>
-        <p>车牌号：{{ carDetail.plateNumber }}</p>
+        <p>车牌号：{{ carDetail.licensePlate }}</p>
         <p>速度：{{ carDetail.speed }}km/h</p>
         <div style="padding-bottom:10px">
           是否关注：
           <el-switch :width="50" @change="changeCollect($event, carDetail)" v-model="carDetail.checked"></el-switch>
         </div>
       </bm-info-window>
-      <bm-info-window :closeOnClick="true" :position="garbageDetail.position" :show="garbageDetail.show" @close="infoWindowClose" @open="infoWindowOpen" title>
+
+      <bm-info-window
+        :closeOnClick="true"
+        :position="garbageDetail.position"
+        :show="garbageDetail.show"
+        @clickclose="carClickClose"
+        @close="infoWindowClose"
+        @open="infoWindowOpen"
+        title
+      >
         <p>消纳站名称：{{ garbageDetail.name }}</p>
         <p>消纳站地址：{{ garbageDetail.address }}</p>
       </bm-info-window>
@@ -94,24 +103,27 @@ export default {
   methods: {
     infoWindowClose() {
       this.garbageDetail.show = false
+      this.carDetail.phone = ''
     },
     infoWindowOpen() {
       this.garbageDetail.show = true
-      this.carDetail.phone = ''
     },
     carWindowClose() {
       this.carDetail.show = false
     },
     carClickClose() {
-      this.carDetail.phone = ''
+      this.carDetail = {}
+      this.garbageDetail = {}
     },
     carWindowOpen() {
       this.carDetail.show = true
+      this.garbageDetail = {}
       this.$forceUpdate()
     },
     //改变关注状态
     async changeCollect(val, item) {
       let resp = {}
+      console.log(item)
       if (val) {
         resp = await this.$http.post('/carp/business/a/q/car/user/insert', [
           {
@@ -240,7 +252,7 @@ export default {
               if (!e.target || e.target.phone == this.carDetail.phone) {
                 return
               }
-              this.carDetail.phone = e.target.phone
+              this.carDetail = e.target
               for (let i = 0; i < this.carPhoneList.length; i++) {
                 if (e.target.phone == this.carPhoneList[i].phone) {
                   try {
@@ -255,7 +267,7 @@ export default {
                   }
                   this.carDetail.show = true
                   this.carDetail.collectionId = this.carPhoneList[i].collectionId
-                  this.carDetail.plateNumber = this.carPhoneList[i].licensePlate
+                  this.carDetail.licensePlate = this.carPhoneList[i].licensePlate
                   this.carDetail.checked = this.carPhoneList[i].checked ? true : false
                   this.carDetail.speed = e.target.speed / 10
                   this.carDetail.phone = e.target.phone
@@ -263,6 +275,7 @@ export default {
                     lng: e.target.longitude,
                     lat: e.target.latitude
                   }
+                  console.log(this.carDetail)
                   this.$forceUpdate()
                 }
               }

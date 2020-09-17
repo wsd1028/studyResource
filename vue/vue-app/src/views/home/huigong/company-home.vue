@@ -25,7 +25,7 @@
                 <span class="text textFlow" v-text="project.address"></span>
               </p>
             </div>
-            <div @click="goSkip('company-dustNoise')" style="display:flex;width:100%;marginTop:20px;align-items:flex-end">
+            <div @click="goSkip('company-dustNoise')" style="display:flex;width:100%;marginTop:20px;align-items:flex-end" v-if="weather.wea_img">
               <van-image :src="require(`@/assets/image/${weather.wea_img}.png`)" height="40" width="40" />
               <p style="color:#4285F4;text-align:left;margin-left:5px">
                 <span v-text="weather.wea"></span>
@@ -38,6 +38,7 @@
               <span style="color:#666;margin-right:6px">风力{{ weather.win_speed }}</span>
               <span style="color:#666">湿度{{ weather.humidity }}</span>
             </div>
+            <div style="height:62px" v-else></div>
             <!--<div style="display:flex;width:100%;marginTop:30px">
               <div @click="goSkip('company-dustNoise')" class="chartItems" style="marginRight:10px">
                 <span style="color:#fc7403">pm25:{{ polluteData.pm25 }}</span>
@@ -71,11 +72,7 @@
         <div class="allIconBox">
           <div @click="goSkip('company-todayWarn', { active: 'dust' })" class="tac">
             <div class="iconBox" style="color:#ee4634" v-text="dustWarnNum"></div>
-            <span class="text">扬尘告警</span>
-          </div>
-          <div @click="goSkip('company-todayWarn', { active: 'directories' })" class="tac">
-            <div class="iconBox" style="color:#ee4634" v-text="todayWait.carNumber"></div>
-            <span class="text">非名录车告警</span>
+            <span class="text">告警记录</span>
           </div>
           <div @click="goSkip('company-todayCheck')" class="tac">
             <div class="iconBox" style="color:#333" v-text="todayWait.todayCheckNumber"></div>
@@ -92,6 +89,10 @@
           <div @click="goSkip('company-dispatch')" class="tac">
             <div class="iconBox" v-text="todayWait.taskNumber"></div>
             <span class="text">督办派单</span>
+          </div>
+          <div @click="handelVideo" class="tac" v-if="!isGarbage">
+            <div class="iconBox" v-text="todayWait.videoNum"></div>
+            <span class="text">音视频巡检</span>
           </div>
           <div class="tac"></div>
         </div>
@@ -154,9 +155,7 @@ export default {
   data() {
     return {
       refreshloading: false,
-      weather: {
-        wea_img: 'qing'
-      },
+      weather: {},
       exposureList: [], //曝光台列表
       exposureIndex: 0, //曝光台下标
       noticeText: '', //当前曝光台文字
@@ -177,7 +176,8 @@ export default {
         todayCheckNumber: 0,
         questionReportNumber: 0,
         assignCheckNumber: 0,
-        taskNumber: 0
+        taskNumber: 0,
+        videoNum: 0
       },
       activeBtn: 3, //车辆识别当前tab
       list: [], //车辆识别列表
@@ -207,6 +207,15 @@ export default {
     GoTop
   },
   methods: {
+    handelVideo() {
+      if (window.jsCall) {
+        window.jsCall.videoInspectionList()
+      } else {
+        this.$router.push({
+          name: 'work-videoCheck'
+        })
+      }
+    },
     //程序入口
     appMain() {
       this.userMsg = this.$store.state.user.user
@@ -288,12 +297,17 @@ export default {
     },
     //得到今日待办
     async getTodayWait() {
+      let departmentState = this.$dictionaries.machineType.company
+      if (this.$store.state.user.user.accountTypeDto.type == this.$dictionaries.userType.garbage) {
+        departmentState = this.$dictionaries.machineType.garbage
+      }
       let resp = await this.$http.get(`/carp/business/a/q/data/num/statistics`, {
         params: {
           projectId: this.searchData.workplaceId, //项目id
           receiverId: this.userMsg.id, //收单人id
           initiatorPeopleId: this.userMsg.id, //收单人id
           warningCode: this.$dictionaries.warnType.car,
+          departmentState,
           carState: this.$dictionaries.carWarn.waitCheck, //非名录车状态
           todayState: this.$dictionaries.todayCheck.update, //今日巡检状态
           questionState: this.$dictionaries.problem.report, //问题上报状态

@@ -42,6 +42,8 @@
         :key="item.prop"
         :label="item.colLabel || item.label"
         :min-width="item.width ? item.width : 120"
+        :sortable="item.target.sortable"
+        :sort-by="item.target.sortBy || []"
       >
         <template slot-scope="scope">
           <!-- 文本信息 -->

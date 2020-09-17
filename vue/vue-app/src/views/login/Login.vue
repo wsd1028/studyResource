@@ -71,7 +71,6 @@ export default {
   },
   async created() {
     this.$store.commit('clearSession')
-
     try {
       let href = unescape(window.location.href)
       let androidData = this.$until.getQueryVariable(href)

@@ -135,7 +135,9 @@ export default {
         // 结束时间
         endTime: {
           label: '结束时间',
-          type: 'date'
+          name: '-',
+          type: 'date',
+          value: this.$moment(Date.now()).format('YYYY-MM-DD HH:mm:ss')
         },
         // 巡检状态
         state: {
@@ -157,7 +159,14 @@ export default {
         },
         projectId: {
           show: false,
-          value: [30, 60].includes(this.$userType) ? user.accountTypeDto.ancillaryId : null
+          value: (() => {
+            // 查看路由是否传入项目id,如果有值则为该id,无值则根据用户类型判断
+            if (this.$route.query.uid) {
+              return this.$aesDecrypt(decodeURIComponent(this.$route.query.uid))
+            } else {
+              return [30, 60].includes(this.$userType) ? user.accountTypeDto.ancillaryId : null
+            }
+          })()
         }
       },
       // 视频巡检详情

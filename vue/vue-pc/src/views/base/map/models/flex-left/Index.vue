@@ -4,7 +4,7 @@
       <h3>今日待办</h3>
     </div>
     <div class="body">
-      <!-- <div v-for="(item, key) in navbars" :key="key" class="item" @click="$emit('clearProjectMarkers')"> -->
+      <!-- <div v-for="(item, key) in navbars" :key="key" class="item" @click="$emit('clear-project-markers')"> -->
       <div v-for="(item, key) in navbars" :key="key" class="item">
         <div class="label">
           <span v-text="item.label"></span>
@@ -56,6 +56,13 @@ export default {
           num: 0,
           total: 0,
           url: '/carp/business/a/q/big/screen/question/report'
+        },
+        // 应急预案
+        emergency: {
+          label: '应急预案',
+          num: 0,
+          total: 0,
+          url: '/carp/business/a/q/big/screen/emergency/plan'
         }
       }
     }

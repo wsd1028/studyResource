@@ -1,7 +1,7 @@
 <template>
   <div class="government-directoriesWarnDetail mainBox">
     <div class="mainTop">
-      <myTitle titleName="非名录车告警详情"></myTitle>
+      <myTitle titleName="非名录车告警"></myTitle>
       <div class="projectName">
         <span class="box"></span>
         <span class="name textFlow">项目名称:{{ paramsData.name }}</span>

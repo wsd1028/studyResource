@@ -190,6 +190,7 @@ export default {
     async getWaitData() {
       let resp = await this.$http.get(`/carp/business/a/q/data/num/statistics`, {
         params: {
+          departmentState: this.$dictionaries.machineType.government,
           areaCode: this.$store.state.user.user.accountTypeDto.code,
           receiverId: this.$store.state.user.user.id, //收单人id
           carState: 0, //非名录车状态
@@ -213,6 +214,7 @@ export default {
     async getMineData() {
       let resp = await this.$http.get(`/carp/business/a/q/data/num/statistics`, {
         params: {
+          departmentState: this.$dictionaries.machineType.government,
           areaCode: this.$store.state.user.user.accountTypeDto.code,
           receiverId: this.$store.state.user.user.id, //收单人id
           todayInitiatorPeopleId: this.$store.state.user.user.id, //用户id
@@ -238,6 +240,7 @@ export default {
     async getFinishData() {
       let resp = await this.$http.get(`/carp/business/a/q/data/num/statistics`, {
         params: {
+          departmentState: this.$dictionaries.machineType.government,
           areaCode: this.$store.state.user.user.accountTypeDto.code,
           receiverId: this.$store.state.user.user.id, //收单人id
           carState: 1, //非名录车状态

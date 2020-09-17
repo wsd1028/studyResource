@@ -115,8 +115,16 @@ export default {
     },
     //获取扬尘实时数据失败
     async getMainData() {
-      let resp = await this.$http.get('/carp/device/a/q/dust/avg/real/time/' + this.paramsData.sn)
+      let resp = await this.$http.get('/carp/device/a/q/dust/avg/minute/data?sn=' + this.paramsData.sn)
       if (resp.code == 0) {
+        if ((resp.data.windSpeed + '').includes('e')) {
+          resp.data.windSpeed = 0
+        }
+        resp.data.temperature = parseInt(resp.data.temperature)
+        resp.data.windDirection = parseInt(resp.data.windDirection)
+        resp.data.voice = parseInt(resp.data.voice)
+        resp.data.pm10 = parseInt(resp.data.pm10)
+        resp.data.pm25 = parseInt(resp.data.pm25)
         this.mainData = resp.data
       } else {
         this.$dialog.alert({
@@ -139,24 +147,27 @@ export default {
     },
     //绘制扬尘
     async drawDust() {
-      let resp = await this.$http.get('/carp/device/a/q/dust/avg/real/pm', {
+      let endTime = this.$moment().format('YYYY-MM-DD HH:mm:ss')
+      let startTime = this.$moment()
+        .subtract(12, 'hours')
+        .format('YYYY-MM-DD HH:mm:ss')
+      let resp = await this.$http.get('/carp/device/a/q/dust/avg/time', {
         params: {
           sn: this.paramsData.sn,
-          size: 20
+          startTime,
+          endTime
         }
       })
       let time = [],
         pm25 = [],
         pm10 = []
       if (resp.code == 0) {
-        for (let i = 0; i < resp.data.date.length; i++) {
-          if (this.dustTime == 12) {
-            resp.data.date[i] = this.$moment(resp.data.date[i]).format('HH:mm')
-          } else {
-            resp.data.date[i] = this.$moment(resp.data.date[i]).format('MM-DD')
-          }
+        for (let i = 0; i < resp.data.time.length; i++) {
+          resp.data.time[i] = this.$moment(resp.data.time[i]).format('HH:mm')
+          resp.data.pm25[i] = parseInt(resp.data.pm25[i])
+          resp.data.pm10[i] = parseInt(resp.data.pm10[i])
         }
-        time = resp.data.date
+        time = resp.data.time
         pm25 = resp.data.pm25
         pm10 = resp.data.pm10
       } else {
@@ -289,23 +300,24 @@ export default {
     },
     //绘制噪声
     async drawVoice() {
-      let resp = await this.$http.get('/carp/device/a/q/dust/avg/real/noise', {
+      let endTime = this.$moment().format('YYYY-MM-DD HH:mm:ss')
+      let startTime = this.$moment()
+        .subtract(12, 'hours')
+        .format('YYYY-MM-DD HH:mm:ss')
+      let resp = await this.$http.get('/carp/device/a/q/dust/avg/time', {
         params: {
           sn: this.paramsData.sn,
-          size: 20
+          startTime,
+          endTime
         }
       })
       let time = [],
         voice = []
       if (resp.code == 0) {
-        for (let i = 0; i < resp.data.date.length; i++) {
-          if (this.dustTime == 12) {
-            resp.data.date[i] = this.$moment(resp.data.date[i]).format('HH:mm')
-          } else {
-            resp.data.date[i] = this.$moment(resp.data.date[i]).format('MM-DD')
-          }
+        for (let i = 0; i < resp.data.time.length; i++) {
+          resp.data.time[i] = this.$moment(resp.data.time[i]).format('HH:mm')
         }
-        time = resp.data.date
+        time = resp.data.time
         voice = resp.data.voice
       } else {
         this.$dialog.alert({

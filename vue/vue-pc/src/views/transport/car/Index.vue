@@ -43,7 +43,7 @@
 </template>
 <script>
 import commonTableControl from '@/components/CommonTableControl'
-import importExcel from '@/components/ImportExcel'
+import importExcel from './ImportExcel'
 import companyBind from './CompanyBind'
 export default {
   data() {
@@ -387,7 +387,8 @@ export default {
           type: 'select',
           width: '184px',
           item: [],
-          value: null
+          value: null,
+          showSelectButton: true
         },
         // 如果登录账号为运输企业则通过企业id查询
         companyId: {

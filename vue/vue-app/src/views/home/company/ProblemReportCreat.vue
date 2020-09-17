@@ -54,6 +54,7 @@ export default {
       mapDia: false,
       updateData: {
         areaCode: 0,
+        phone: '',
         peopleId: '', //上报人ID1
         reportTitle: '', //项目名称
         reportType: this.$dictionaries.problem.type.pollution, //上报类型(政府有企业没有)
@@ -94,6 +95,8 @@ export default {
       this.updateData.adminCodeId = this.$store.state.user.project.adminAreaId || this.$store.state.user.project.areaId
       this.updateData.createDate = this.$moment().format('YYYY-MM-DD hh:mm:ss')
       this.updateData.photo = this.hasUploadImg
+      this.updateData.phone = this.$store.state.user.user.accountBaseDto.phone
+      this.updateData.name = this.$store.state.user.user.accountBaseDto.name
       this.updateData.reportTitle = this.$store.state.user.project.name
       if (this.userMsg.accountTypeDto.type == this.$dictionaries.userType.project || this.userMsg.accountTypeDto.type == this.$dictionaries.userType.garbage) {
         //企业
@@ -104,12 +107,7 @@ export default {
       }
       let bool = true
       //验证必填项
-      for (let key in this.updateData) {
-        if (!this.updateData[key] && key != 'adminCodeId') {
-          bool = false
-        }
-      }
-      if (this.updateData.photo.length === 0) bool = false
+      bool = this.$until.checkUpdateData(this.updateData, ['adminCodeId', 'phone'])
       //必填项是否验证成功
       if (bool) {
         let url = '/carp/business/a/q/question/report/insert'

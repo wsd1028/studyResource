@@ -17,6 +17,7 @@ import BaiduMap from 'vue-baidu-map'
 import './assets/iconfont/iconfont.css'
 import VideoPlayer from 'vue-video-player'
 import 'video.js/dist/video-js.css'
+import 'vue-video-player/src/custom-theme.css'
 import ElementUI from 'element-ui'
 import 'element-ui/lib/theme-chalk/index.css'
 import MyImage from '@/components/MyImage.vue'
@@ -31,7 +32,6 @@ Vue.use(BaiduMap, {
 })
 Vue.use(Vant)
 Vue.use(ElementUI)
-
 Vue.use(VueTouch, { name: 'v-touch' })
 
 Dialog.setDefaultOptions({
@@ -97,16 +97,26 @@ router.beforeEach(async (to, from, next) => {
     store.commit('getToken')
     token = store.state.user.token
   }
+  //  惠工云-工作台
   if (to.query.channel == 1 && to.name != 'loginModel') {
     //  惠工云进入
     await modelLogin()
     store.commit('setAppType', '1')
+    if (to.query.workId) {
+      //项目/政府进入流媒体视频(惠工云首页)
+      store.commit('setWorkId', to.query.workId)
+    }
     next(to.path)
   } else if (to.query.channel == 2) {
     //  惠工云-消纳站进入
     store.commit('setAppType', '2')
     next()
+  } else if (to.name == 'error' || to.name == 'WechatLogin' || to.name == 'WechatProblemReportCreat') {
+    store.commit('setAppType', '3')
+    //微信公众号进入
+    next()
   } else {
+    //正常扬尘界面进入
     //  过滤登录页，防止死循环
     if (to.name == 'loginModel') {
       store.commit('setAppType', '1')

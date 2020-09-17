@@ -5,6 +5,12 @@ Vue.use(VueRouter)
 
 const routes = [
   {
+    //错误页面
+    path: '/error',
+    name: 'error',
+    component: () => import('@/views/wechat/error.vue')
+  },
+  {
     //测试页
     path: '/demo',
     name: 'demo',
@@ -28,7 +34,19 @@ const routes = [
     component: () => import('@/views/login/Login.vue')
   },
   {
-    //登录页（中转登录页面）
+    //登录页(微信公众号)
+    path: '/wechatLogin',
+    name: 'WechatLogin',
+    component: () => import('@/views/wechat/Login.vue')
+  },
+  {
+    //问题上报(微信公众号)
+    path: '/wechat/problemReportCreat',
+    name: 'WechatProblemReportCreat',
+    component: () => import('@/views/wechat/ProblemReportCreat.vue')
+  },
+  {
+    //登录页（惠工云中转登录页面）
     path: '/loginModel',
     name: 'loginModel',
     component: () => import('@/views/login/LoginModel.vue')
@@ -129,6 +147,12 @@ const routes = [
     name: 'workGov-carIdentifyDetail',
     component: () => import('@/views/work/government/CarIdentifyDetail.vue')
   },
+  //工作台车辆识别-车辆轨迹 政府
+  {
+    path: '/work/government/carTrajectory',
+    name: 'workGov-carTrajectory',
+    component: () => import('@/views/work/government/CarTrajectory.vue')
+  },
   //工作台排放监管项目 政府
   {
     path: '/work/government/dischargeSupervise',
@@ -207,6 +231,48 @@ const routes = [
     name: 'work-duration',
     component: () => import('@/views/work/company/Duration.vue')
   },
+  //工作台视频巡检 企业(微信公众号)
+  {
+    path: '/work/company/videoCheck',
+    name: 'work-videoCheck',
+    component: () => import('@/views/work/company/VideoCheck.vue')
+  },
+  //工作台视频巡检 政府(微信公众号)
+  {
+    path: '/work/government/videoCheck',
+    name: 'government-videoCheck',
+    component: () => import('@/views/work/government/VideoCheck.vue')
+  },
+  //工作台视频巡检详情 企业(微信公众号)
+  {
+    path: '/work/company/videoCheckDetail',
+    name: 'work-videoCheckDetail',
+    component: () => import('@/views/work/company/VideoCheckDetail.vue')
+  },
+  //工作台视频巡检审核 政府(微信公众号)
+  {
+    path: '/work/government/videoChecking',
+    name: 'government-videoChecking',
+    component: () => import('@/views/work/government/VideoChecking.vue')
+  },
+  //工作台流媒体视频 企业
+  {
+    path: '/work/company/streamingMedia',
+    name: 'company-streamingMedia',
+    component: () => import('@/views/work/company/StreamingMedia.vue')
+  },
+  //工作台流媒体视频 政府
+  {
+    path: '/work/government/streamingMedia',
+    name: 'government-streamingMedia',
+    component: () => import('@/views/work/government/StreamingMedia.vue')
+  },
+  //工作台流媒体视频播放 政府
+  {
+    path: '/work/government/streamingMediaShow',
+    name: 'government-streamingMediaShow',
+    component: () => import('@/views/work/government/StreamingMediaShow.vue')
+  },
   //项目详情
   {
     path: '/home/company/projectDetail',
@@ -261,13 +327,13 @@ const routes = [
     name: 'company-dustNowData',
     component: () => import('@/views/home/company/DustNowData.vue')
   },
-  //扬尘告警  政府
+  //扬尘噪声  政府
   {
-    path: '/home/government/dustWarn',
-    name: 'government-dustWarn',
-    component: () => import('@/views/home/government/DustWarn.vue')
+    path: '/home/government/dustNoise',
+    name: 'government-dustNoise',
+    component: () => import('@/views/home/government/DustNoise.vue')
   },
-  //扬尘告警设备  政府
+  //扬尘噪声设备  政府
   {
     path: '/home/government/dustDevice',
     name: 'government-dustDevice',

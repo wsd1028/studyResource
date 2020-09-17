@@ -235,6 +235,9 @@ export default {
       }
       this.$emit('chooseAddress', this.mapConfig.chooseAddress, type, this.addressData)
     }
+  },
+  beforeDestroy() {
+    window.setLocation = null
   }
 }
 </script>

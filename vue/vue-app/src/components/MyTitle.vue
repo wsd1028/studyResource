@@ -1,9 +1,9 @@
 <template>
   <div class="myTitle">
     <header>
-      <van-nav-bar :title="titleName" @click-left="goBack" class="nav">
+      <van-nav-bar :title="titleName" @click-left="goBack" :class="['nav', isBack ? '' : 'noBack']">
         <template #left>
-          <van-icon class-prefix="iconfont" color="#333" name="fanhui" size="22" />
+          <van-icon v-if="isBack" class-prefix="iconfont" color="#333" name="fanhui" size="22" />
         </template>
       </van-nav-bar>
     </header>
@@ -19,6 +19,10 @@ export default {
     titleName: {
       type: String,
       default: ''
+    },
+    isBack: {
+      type: Boolean,
+      default: true
     }
   },
   methods: {
@@ -30,8 +34,13 @@ export default {
 }
 </script>
 
-<style lang="less" scoped>
+<style lang="less">
 .myTitle {
+  .noBack {
+    .van-nav-bar__title {
+      min-width: 90%;
+    }
+  }
   header {
     background-color: #fff;
     .nav {
@@ -41,7 +50,7 @@ export default {
         color: #666;
       }
       .van-nav-bar__title {
-        font-weight: 800;
+        font-weight: 600;
         font-size: 18px !important;
       }
     }

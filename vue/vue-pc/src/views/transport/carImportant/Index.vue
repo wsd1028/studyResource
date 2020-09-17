@@ -1,90 +1,104 @@
 <template>
-  <div class="carImportant">
-    <el-dialog :visible.sync="gpsCar.dialog" title="添加关注车辆" width="1200px">
-      <div class="myDia">
-        <div class="top item">
-          <el-button @click="handelAddAll" class="item" style="margin-right:20px;width:100px" type="primary">全部关注</el-button>
-          <el-input
-            @keyup.enter.native="getGpsCar(1)"
-            class="input-with-select"
-            placeholder="请输入车牌号"
-            style="width:300px"
-            v-model="getGpsCar.licensePlate"
-          >
-            <el-button @click="getGpsCar(1)" icon="el-icon-search" slot="append"></el-button>
-          </el-input>
+  <div class="wrap">
+    <div class="carImportant">
+      <el-dialog :visible.sync="gpsCar.dialog" title="添加关注车辆" width="1200px">
+        <div class="myDia">
+          <div class="top item">
+            <el-button
+              :disabled="allChoose.length == 0"
+              @click="handelAddAll"
+              class="item"
+              size="small"
+              style="margin-right:20px;width:100px;padding-left: 15px"
+              type="primary"
+            >
+              <!--eslint-->
+              全部关注
+            </el-button>
+            <el-input
+              @keyup.enter.native="getGpsCar(1)"
+              class="input-with-select"
+              placeholder="请输入车牌号"
+              size="small"
+              style="width:300px"
+              v-model="gpsCar.licensePlate"
+            >
+              <el-button @click="getGpsCar(1)" icon="el-icon-search" slot="append"></el-button>
+            </el-input>
+          </div>
+          <div class="myTable">
+            <el-table
+              :data="gpsCar.list"
+              :header-cell-style="{ backgroundColor: '#f9f9f9' }"
+              @selection-change="handleSelectionChange"
+              border
+              element-loading-spinner="el-icon-loading"
+              element-loading-text="加载中"
+              height="100%"
+              ref="gpsTable"
+              row-key="id"
+              size="mini"
+              style="width: 100%"
+            >
+              <el-table-column :reserve-selection="true" :selectable="checkboxSelect" align="center" size="mini" type="selection" width="55"></el-table-column>
+              <el-table-column align="center" label="车牌号" prop="licensePlate"></el-table-column>
+              <el-table-column align="center" label="运输公司" prop="companyName"></el-table-column>
+              <el-table-column align="center" label="有效期" prop="effectiveDate"></el-table-column>
+              <el-table-column align="center" label="车辆型号" prop="vehicleModel"></el-table-column>
+              <el-table-column align="center" label="方量" prop="quantity"></el-table-column>
+              <el-table-column align="center" label="车主" prop="ownerName"></el-table-column>
+              <el-table-column align="center" label="车主电话" prop="ownerPhone"></el-table-column>
+              <el-table-column align="center" label="车辆类型" prop="vehicleType"></el-table-column>
+              <el-table-column align="center" label="收藏">
+                <template slot-scope="scope">
+                  <el-switch :width="50" @change="changeCollect($event, scope.row)" v-model="scope.row.checked"></el-switch>
+                </template>
+              </el-table-column>
+            </el-table>
+          </div>
+          <el-pagination
+            :current-page="gpsCar.page"
+            :page-size="gpsCar.limit"
+            :page-sizes="[10, 20, 30, 40]"
+            :total="gpsCar.total"
+            @current-change="getGpsCar"
+            @size-change="changeGpsSize"
+            class="item"
+            layout="total, sizes, prev, pager, next, jumper"
+            style="text-align:center;padding:10px 0"
+          ></el-pagination>
         </div>
-        <div class="myTable">
-          <el-table
-            :data="gpsCar.list"
-            @selection-change="handleSelectionChange"
-            border
-            ref="gpsTable"
-            element-loading-spinner="el-icon-loading"
-            element-loading-text="加载中"
-            height="100%"
-            row-key="id"
-            style="width: 100%"
-          >
-            <el-table-column :reserve-selection="true" :selectable="checkboxSelect" type="selection" width="55"></el-table-column>
-            <el-table-column label="车牌号" prop="licensePlate"></el-table-column>
-            <el-table-column label="运输公司" prop="companyName"></el-table-column>
-            <el-table-column label="有效期" prop="effectiveDate"></el-table-column>
-            <el-table-column label="车辆型号" prop="vehicleModel"></el-table-column>
-            <el-table-column label="方量" prop="quantity"></el-table-column>
-            <el-table-column label="车主" prop="ownerName"></el-table-column>
-            <el-table-column label="车主电话" prop="ownerPhone"></el-table-column>
-            <el-table-column label="车辆类型" prop="vehicleType"></el-table-column>
-            <el-table-column label="收藏">
-              <template slot-scope="scope">
-                <el-switch :width="50" @change="changeCollect($event, scope.row)" v-model="scope.row.checked"></el-switch>
-              </template>
-            </el-table-column>
-          </el-table>
-        </div>
-        <el-pagination
-          :current-page="gpsCar.page"
-          :page-size="gpsCar.limit"
-          :page-sizes="[10, 20, 30, 40]"
-          :total="gpsCar.total"
-          @current-change="getGpsCar"
-          @size-change="changeGpsSize"
-          class="item"
-          layout="total, sizes, prev, pager, next, jumper"
-          style="text-align:center;padding:10px 0"
-        ></el-pagination>
+      </el-dialog>
+      <el-button @click="handelAddDia" class="item" size="small" style="margin:0 20px 20px;width:100px;" type="primary">添加关注</el-button>
+      <div class="myTable">
+        <el-table :data="collectData" :header-cell-style="{ backgroundColor: '#f9f9f9' }" border height="100%" size="mini" style="width: 100%;">
+          <el-table-column align="center" label="车牌号" prop="plateLicense" style="color: #409EFF"></el-table-column>
+          <el-table-column align="center" label="运输公司" prop="companyName"></el-table-column>
+          <el-table-column align="center" label="有效期" prop="effectiveDate"></el-table-column>
+          <el-table-column align="center" label="车辆型号" prop="vehicleModel"></el-table-column>
+          <el-table-column align="center" label="方量" prop="quantity"></el-table-column>
+          <el-table-column align="center" label="车主" prop="ownerName"></el-table-column>
+          <el-table-column align="center" label="车主电话" prop="ownerPhone"></el-table-column>
+          <el-table-column align="center" label="车辆类型" prop="vehicleType"></el-table-column>
+          <el-table-column align="center" label="收藏">
+            <template size="mini" slot-scope="scope">
+              <el-button @click="deleteCollect(scope.row)" size="mini" type="danger">删除</el-button>
+            </template>
+          </el-table-column>
+        </el-table>
       </div>
-    </el-dialog>
-
-    <el-button @click="handelAddDia" class="item" style="margin-right:20px;width:100px;marginBottom:20px" type="primary">添加关注</el-button>
-    <div class="myTable">
-      <el-table :data="collectData" border height="100%" style="width: 100%">
-        <el-table-column label="车牌号" prop="plateLicense"></el-table-column>
-        <el-table-column label="运输公司" prop="companyName"></el-table-column>
-        <el-table-column label="有效期" prop="effectiveDate"></el-table-column>
-        <el-table-column label="车辆型号" prop="vehicleModel"></el-table-column>
-        <el-table-column label="方量" prop="quantity"></el-table-column>
-        <el-table-column label="车主" prop="ownerName"></el-table-column>
-        <el-table-column label="车主电话" prop="ownerPhone"></el-table-column>
-        <el-table-column label="车辆类型" prop="vehicleType"></el-table-column>
-        <el-table-column label="收藏">
-          <template slot-scope="scope">
-            <el-button @click="deleteCollect(scope.row)" type="danger">删除</el-button>
-          </template>
-        </el-table-column>
-      </el-table>
+      <el-pagination
+        :current-page="searcCollect.page"
+        :page-size="searcCollect.limit"
+        :page-sizes="[10, 20, 30, 40]"
+        :total="collectTotal"
+        @current-change="getCollect"
+        @size-change="changeCollectSize"
+        class="item"
+        layout="total, sizes, prev, pager, next, jumper"
+        style="text-align:center;padding:10px 0"
+      ></el-pagination>
     </div>
-    <el-pagination
-      :current-page="searcCollect.page"
-      :page-size="searcCollect.limit"
-      :page-sizes="[10, 20, 30, 40]"
-      :total="collectTotal"
-      @current-change="getCollect"
-      @size-change="changeCollectSize"
-      class="item"
-      layout="total, sizes, prev, pager, next, jumper"
-      style="text-align:center;padding:10px 0"
-    ></el-pagination>
   </div>
 </template>
 
@@ -247,15 +261,28 @@ export default {
 </script>
 
 <style lang="less">
+.wrap {
+  padding: 10px;
+}
+
 .carImportant {
   box-sizing: border-box;
-  padding: 10px;
+  padding: 15px 0;
   display: flex;
   flex-direction: column;
   width: 100%;
   height: 100%;
+  border: 1px solid #ebeef5;
+  border-radius: 5px;
+  background-color: #fff;
+  .el-dialog__body {
+    padding: 20px;
+  }
   .el-table th.gutter {
     display: table-cell !important;
+  }
+  .el-dialog__title {
+    font-weight: bold;
   }
   .el-table--scrollable-y {
     .el-table__body-wrapper::-webkit-scrollbar {

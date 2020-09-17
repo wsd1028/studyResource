@@ -75,6 +75,9 @@ export default {
             icon.onload = () => {
               resolve()
             }
+            icon.onerror = () => {
+              resolve()
+            }
           })
         })
       )
@@ -86,6 +89,8 @@ export default {
             if (this.markerPoints[key].check) {
               // 填充数据
               this.markerPoints[key].data.forEach(marker => {
+                // 添加覆盖物类型
+                marker.renderType = this.markerPoints[key].renderType
                 // 图标数据填充
                 iconData.push({
                   // 项目图标
@@ -122,13 +127,13 @@ export default {
             // 点击事件
             methods: {
               click: e => {
-                if (!e) this.$emit('handleGetMarker', null)
+                if (!e) this.$emit('handle-get-marker', null)
                 else {
                   // 获取项目对象
                   this.project = e && e.target
                   // 上报点击事件到父组件
                   if (e && e.target) {
-                    this.$emit('handleGetMarker', e.target)
+                    this.$emit('handle-get-marker', e.target)
                   }
                 }
               }
@@ -137,7 +142,7 @@ export default {
                 this.project = e && e.target
                 // 上报点击事件到父组件
                 if (e && e.target) {
-                  this.$emit('handleGetMarker', e.target)
+                  this.$emit('handle-get-marker', e.target)
                 }
               } */
             },

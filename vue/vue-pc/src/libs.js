@@ -1,6 +1,7 @@
 /* *
  * Vue原型链上添加js自定义方法
  * */
+import CryptoJS from 'crypto-js'
 
 export default Vue => {
   const methods = getMethods()
@@ -77,13 +78,15 @@ function getMethods() {
       Vue.prototype.$debounceBefore = window.debounceBefore = (callback, wait) => {
         let timer = null
         return function(...params) {
+          let result = null
           if (!timer) {
-            callback(...params)
+            result = callback(...params)
           }
           clearTimeout(timer)
           timer = setTimeout(() => {
             timer = null
           }, wait)
+          return result
         }
       }
 
@@ -93,7 +96,7 @@ function getMethods() {
         return function(...params) {
           if (timeout !== null) clearTimeout(timeout)
           timeout = setTimeout(() => {
-            callback(...params)
+            return callback(...params)
           }, wait)
         }
       }
@@ -130,6 +133,23 @@ function getMethods() {
         let imgEl = document.createElement('img')
         imgEl.src = canvasEl.toDataURL('image/png')
         return imgEl
+      }
+    },
+
+    /* *
+     * 加密解密方法
+     * 绑定方法 $aesEncrypt:加密 $aesDecrypt:解密
+     * * */
+    CryptoJSEnc(Vue) {
+      const key = CryptoJS.enc.Utf8.parse('DF2284943CC77E7E1A5FA6A0DA8CA265')
+      Vue.prototype.$aesEncrypt = word => {
+        let srcs = CryptoJS.enc.Utf8.parse(word)
+        let encrypted = CryptoJS.AES.encrypt(srcs, key, { mode: CryptoJS.mode.ECB, padding: CryptoJS.pad.Pkcs7 })
+        return encrypted.toString()
+      }
+      Vue.prototype.$aesDecrypt = word => {
+        let decrypt = CryptoJS.AES.decrypt(word, key, { mode: CryptoJS.mode.ECB, padding: CryptoJS.pad.Pkcs7 })
+        return CryptoJS.enc.Utf8.stringify(decrypt).toString()
       }
     }
   }

@@ -51,7 +51,7 @@
       <van-pull-refresh @refresh="select(1)" v-model="refreshloading">
         <van-list :finished="finished" @load="select" finished-text="没有更多了" v-model="loading">
           <van-swipe-cell :key="index" v-for="(item, index) in list">
-            <div @click="handelItem(item)" class="item">
+            <div @click="handelItem(item)" class="item" style="padding:0 10px">
               <p class="titleTwo" v-text="item.projectName"></p>
               <p class="titleThree">
                 项目地址:
@@ -100,11 +100,26 @@ export default {
     handelItem(params) {
       this.$router.push({
         name: 'workGov-carIdentifyDetail',
-        params: { ...this.paramsData, projectCarId: params.id, projectId: params.projectId }
+        params: {
+          ...this.paramsData,
+          projectCarId: params.id,
+          projectId: params.projectId || this.paramsData.workplaceId
+        }
       })
     },
     //获取信息
     async select(page) {
+      if (this.paramsData.tabActive == 1) {
+        this.list = [
+          {
+            projectName: this.paramsData.workplaceName
+          }
+        ]
+        this.refreshloading = false
+        this.loading = false
+        this.finished = true
+        return
+      }
       if (page) {
         this.searchData.page = 1
       }
@@ -119,28 +134,6 @@ export default {
       this.refreshloading = result.refreshloading
       this.loading = result.loading
       this.finished = result.finished
-      //let resp = await this.$http.get('/carp/business/a/q/project/car/plateNum', {
-      //  params: this.searchData
-      //})
-      //if (resp.code == 0) {
-      //  if (page) {
-      //    this.list = []
-      //  }
-      //  this.list = this.list.concat(resp.data.records)
-      //  // 加载状态结束
-      //  this.loading = false
-      //  this.refreshloading = false
-      //  this.searchData.page = this.searchData.page + 1
-      //  if (this.list.length == resp.data.total) {
-      //    // 数据全部加载完成
-      //    this.finished = true
-      //  }
-      //} else {
-      //  this.$dialog.alert({
-      //    message: '获取项目失败:' + resp.message,
-      //    confirmButtonColor: 'red'
-      //  })
-      //}
     }
   }
 }
@@ -150,6 +143,7 @@ export default {
 .workGov-CarIdentifyDetail {
   text-align: left;
   background-color: #f9f9f9;
+  height: 100%;
   .project {
     background-color: #fff;
     margin-bottom: 10px;

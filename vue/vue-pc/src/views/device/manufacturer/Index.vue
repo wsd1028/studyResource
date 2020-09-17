@@ -1,6 +1,7 @@
 <template>
   <div class="container">
     <common-table-control
+      ref="tableControl"
       :formConfig="form"
       :addUrl="addUrl"
       :delUrl="delUrl"
@@ -12,11 +13,25 @@
       :show-control="false"
       :filters="filters"
     ></common-table-control>
+    <el-dialog v-if="manufacturerValidateShow" title="信息核验" :visible="true" width="960px" @close="manufacturerValidateShow = false">
+      <manufacturer-validate
+        :company="company"
+        :close="
+          () => {
+            manufacturerValidateShow = false
+            form.data.validate = true
+          }
+        "
+        @validate-complete="isValidate = true"
+      ></manufacturer-validate>
+    </el-dialog>
   </div>
 </template>
 <script>
 import commonTableControl from '@/components/CommonTableControl'
+import manufacturerValidate from './ManufacturerValidate'
 export default {
+  name: 'manufacturer',
   data() {
     // 表操作权限
     const uri = this.$store.state.tab.currentMenu ? this.$store.state.tab.currentMenu.uri : ''
@@ -31,28 +46,57 @@ export default {
         tablePermission[key] = data
       })
     })
+
+    const user = this.$store.state.user.userInfo
     return {
+      user,
+
+      // 厂商信息验证弹窗
+      company: {},
+      manufacturerValidateShow: false,
+      isValidate: false,
+
       // 表操作权限
       tablePermission,
+
       // 表单配置
       form: {
-        // 显示
-        show: false,
-        // 操作格式
-        type: 'add',
-        // 表单数据
-        data: {},
+        formWidth: '600px',
+        formHeight: 'auto',
+        onBeforeAddShow: () => {
+          if (this.form.data) {
+            this.isValidate = false
+            this.$refs.tableControl.formInit()
+          }
+        },
         // 表格标题
         label: {
           // 厂商名称
           name: {
             label: '厂商名称',
-            colType: 'edit',
+            type: 'company',
             width: 200,
             span: 24,
             rule: {
               regExp: /^./g,
               message: '厂商名称不能为空'
+            },
+            required: true,
+            button: false,
+            change: (id, company) => {
+              console.log(this.form.data.validate)
+              if (!this.$refs.tableControl.formShow || this.isValidate) {
+                return
+              }
+              this.company = company
+              this.manufacturerValidateShow = true
+            },
+            onSuccess() {},
+            onError(err) {
+              if (!this.$refs.tableControl.formShow || this.isValidate) {
+                return
+              }
+              this.$message.error(err)
             }
           },
           keyId: {
@@ -81,7 +125,7 @@ export default {
           enable: {
             label: '当前状态',
             type: 'radio',
-            colType: 'switch',
+            colType: [0, 50].includes(this.$userType) ? 'switch' : 'tag',
             url: '/carp/device/a/q/manufacturer',
             show: false,
             span: 24,
@@ -95,35 +139,45 @@ export default {
           }
         }
       },
+
       addUrl: '/carp/device/a/q/manufacturer',
       delUrl: '/carp/device/a/q/manufacturer',
       editUrl: '/carp/device/a/q/manufacturer',
       searchUrl: '/carp/device/a/q/manufacturer',
+
       // 筛选器
       filters: {
         // 厂商名称
         name: {
           label: '厂商名称搜索',
           type: 'search',
-          value: '',
+          value: null,
+          show: [0, 50].includes(this.$userType),
           showBt: false
         },
         keyId: {
           label: 'keyId搜索',
           type: 'search',
-          value: '',
+          value: null,
+          show: [0, 50].includes(this.$userType),
           showBt: false
         },
         keySecret: {
           label: 'keySecret搜索',
           type: 'search',
-          value: ''
+          show: [0, 50].includes(this.$userType),
+          value: null
+        },
+        manufacturerId: {
+          show: false,
+          value: [0, 50].includes(this.$userType) ? null : user.accountTypeDto.ancillaryId
         }
       }
     }
   },
   components: {
-    commonTableControl
+    commonTableControl,
+    manufacturerValidate
   }
 }
 </script>

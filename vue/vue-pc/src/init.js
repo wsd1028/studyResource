@@ -29,6 +29,17 @@ function getMethods() {
     getAreaTree(Vue, options) {
       request.get('/carp/business/a/q/area/leading/tree').then(({ code, data }) => {
         if (code === 0) {
+          let remove = arr => {
+            if (!arr) return
+            arr.forEach(item => {
+              if (!(item.nodes && item.nodes.length)) {
+                item.nodes = null
+              } else {
+                remove(item.nodes)
+              }
+            })
+          }
+          remove(data)
           Vue.prototype.$customAreaTree = data
         } else {
           Vue.prototype.$customAreaTree = []
@@ -207,6 +218,56 @@ function getMethods() {
      * * */
     webSocket(Vue) {
       Vue.prototype.$ws = WS
+    },
+
+    /* *
+     * 天气查询方法
+     * 绑定方法:$getWeather
+     * * */
+    getWeather(Vue) {
+      Vue.prototype.$getWeather = () => {
+        return new Promise((resolve, reject) => {
+          request
+            .get('https://tianqiapi.com/api', {
+              params: {
+                version: 'v6',
+                appid: '51151161',
+                appsecret: 'EBcc2etl',
+                vue: '1'
+              }
+            })
+            .then(res => {
+              if (res.cityid) {
+                request
+                  .get('/carp/business/a/q/road/intersection/getWeather', {
+                    params: {
+                      city: 'CN' + res.cityid,
+                      appkey: 'b0cfca67d80c394b99d8e2125f4084e2'
+                    }
+                  })
+                  .then(({ code, data }) => {
+                    if (code == 0 && data && data.code == 10000) {
+                      resolve(data.result.HeWeather5[0])
+                    } else {
+                      resolve({})
+                    }
+                  })
+                  .catch(err => {
+                    if (err) {
+                      reject(err)
+                    }
+                  })
+              } else {
+                this.$message.error('未获取到天气信息')
+              }
+            })
+            .catch(err => {
+              if (err) {
+                reject(err)
+              }
+            })
+        })
+      }
     }
   }
 }

@@ -150,30 +150,6 @@ export default {
       this.loading = result.loading
       this.finished = result.finished
       this.total = result.total
-
-      //let resp = await this.$http.get('/carp/business/a/q/garbage/station/page', {
-      //  params: this.searchData
-      //})
-      //if (resp.code == 0) {
-      //  if (page) {
-      //    this.list = []
-      //  }
-      //  this.total = resp.data.total
-      //  this.list = this.list.concat(resp.data.records)
-      //  // 加载状态结束
-      //  this.loading = false
-      //  this.refreshloading = false
-      //  this.searchData.page = this.searchData.page + 1
-      //  if (this.list.length == resp.data.total) {
-      //    // 数据全部加载完成
-      //    this.finished = true
-      //  }
-      //} else {
-      //  this.$dialog.alert({
-      //    message: '获取信息失败:' + resp.message,
-      //    confirmButtonColor: 'red'
-      //  })
-      //}
     }
   }
 }

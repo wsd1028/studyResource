@@ -40,6 +40,8 @@
                       <span class="carTag0" v-if="item.carState">名录车</span>
                       <span class="carTag1" v-if="!item.carState">非名录车</span>
                     </p>
+                    <van-tag type="primary" v-if="item.state < $dictionaries.electronic.yunshu">运输中</van-tag>
+                    <van-tag type="warning" v-else>已消纳</van-tag>
                   </div>
                   <div class="bottom">
                     <p>项目名称:{{ item.projectName }}</p>
@@ -176,28 +178,6 @@ export default {
       this.refreshloading = result.refreshloading
       this.loading = result.loading
       this.finished = result.finished
-      //let resp = await this.$http.get(url, {
-      //  params: this.searchData
-      //})
-      //if (resp.code == 0) {
-      //  if (this.searchData.page == 1) {
-      //    this.list = []
-      //  }
-      //  this.list = this.list.concat(resp.data.records)
-      //  // 加载状态结束
-      //  this.loading = false
-      //  this.refreshloading = false
-      //  this.searchData.page = this.searchData.page + 1
-      //  if (this.list.length == resp.data.total) {
-      //    // 数据全部加载完成
-      //    this.finished = true
-      //  }
-      //} else {
-      //  this.$dialog.alert({
-      //    message: '获取失败:' + resp.message,
-      //    confirmButtonColor: 'red'
-      //  })
-      //}
     }
   }
 }

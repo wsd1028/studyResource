@@ -4,6 +4,8 @@
       <el-col :lg="14" :xl="16" class="el-col">
         <!-- 项目基本信息 -->
         <project-details :projectId="projectId"></project-details>
+        <!-- 待办入口 -->
+        <permissions-entry :projectId="projectId"></permissions-entry>
         <!-- 数据统计 -->
         <statistics-details :projectId="projectId"></statistics-details>
         <!-- 扬尘噪声统计 -->
@@ -23,6 +25,7 @@
 
 <script>
 import projectDetails from './projectDetails'
+import permissionsEntry from './permissionsEntry'
 import statisticsDetails from './statistics'
 import dustNoise from './dustNoise'
 import airQuality from './airQuality'
@@ -40,6 +43,7 @@ export default {
   },
   components: {
     projectDetails,
+    permissionsEntry,
     statisticsDetails,
     dustNoise,
     airQuality,
@@ -67,13 +71,10 @@ export default {
 .container {
   background-color: #eff2f9;
   height: auto !important;
+  overflow-y: auto;
   .el-row,
   .el-col {
     padding: 0 8px 8px 8px;
-    height: 100%;
-  }
-  .el-col {
-    @flex-column();
   }
   .el-col > * {
     margin: 16px 0 0 0;

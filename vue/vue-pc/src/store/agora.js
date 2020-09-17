@@ -11,6 +11,8 @@ export default {
     rtmClient: null,
     // rtc客户端
     rtcClient: null,
+    // 音视频通话弹窗显示控制器
+    visible: false,
     // 历史记录
     histories: []
   },
@@ -123,6 +125,9 @@ export default {
      * * */
     makeCall(state, receiveId) {
       let user = this.state.user.userInfo
+      // 显示弹窗
+      this.commit('changeAudioViewVisible', true)
+      // 发起呼叫
       state.rtmClient.localInvitation(receiveId, JSON.stringify(user))
       // 监听对方已接受呼叫邀请
       let flag = true
@@ -176,6 +181,11 @@ export default {
           console.log('加入频道成功')
           state.rtcClient.publish()
         })
+    },
+
+    // 显示/隐藏音视频通话弹窗
+    changeAudioViewVisible(state, value) {
+      state.visible = value
     },
 
     /* *

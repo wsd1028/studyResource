@@ -8,7 +8,7 @@
       :allow-delete="false"
       :allow-edit="false"
       :search-url="searchUrl"
-      :bind-buttons="[{ label: '绑定项目', key: 'bindProject' }]"
+      :bind-buttons="[{ label: '绑定固定源', key: 'bindProject' }]"
       @bindButtonClick="showBindClick"
     ></table-control>
     <el-dialog title="绑定项目" v-if="bindProjectShow" :visible="true" width="500px" @close="bindProjectShow = false">
@@ -54,14 +54,34 @@ export default {
           sn: {
             label: '设备序列号'
           },
-          projectName: {
+          fixedSourceName: {
             label: '项目名称',
-            colLabel: '实际绑定工程'
+            colLabel: '实际安装固定源'
           },
-          predictProjectName: {
-            label: '预订绑定工程',
+          predictFixedSourceName: {
+            label: '预订安装固定源',
             show: false,
             real: false
+          },
+          fixedSourceType: {
+            label: '固定源类型',
+            show: false,
+            type: 'select',
+            props: {
+              label: 'name',
+              code: 'id'
+            },
+            item: (() => {
+              this.$http.get('/carp/business/a/q/dict/category/fixed_source_type').then(({ code, data, message }) => {
+                if (code === 0) {
+                  this.form.label.fixedSourceType.item = data
+                } else {
+                  this.$message.error('未获取到固定源类型: ' + message)
+                }
+              })
+              return []
+            })(),
+            data: (data, row) => data || row.predictFixedSourceName
           },
           linkman: {
             label: '联系人',
@@ -74,6 +94,7 @@ export default {
           status: {
             label: '是否启用',
             colType: 'switch',
+            url: '/carp/device/a/q/dust/info',
             item: [
               { label: '启用', code: 1 },
               { label: '禁用', code: 0 }

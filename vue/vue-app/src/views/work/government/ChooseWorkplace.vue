@@ -93,7 +93,7 @@
 </template>
 
 <script>
-import { getArea } from '@/assets/js/commonAxios'
+import { getArea, getList } from '@/assets/js/commonAxios'
 export default {
   data() {
     return {
@@ -175,37 +175,22 @@ export default {
       if (page) {
         this.searchData.page = page
       }
-      let resp = {}
+      let url = ''
       if (this.chooseType == this.$dictionaries.machineType.company) {
-        resp = await this.$http.get(
-          `/carp/business/a/q/project/area/name?areaCode=${this.searchData.searchCode}&name=${this.searchData.searchValue}&limit=${this.searchData.limit}&page=${this.searchData.page}`
-        )
+        url = `/carp/business/a/q/project/area/name?areaCode=${this.searchData.searchCode}&name=${this.searchData.searchValue}&limit=${this.searchData.limit}&page=${this.searchData.page}`
       } else {
-        resp = await this.$http.get(
-          `/carp/business/a/q/garbage/station/page?limit=${this.searchData.limit}&page=${this.searchData.page}&areaCode=${this.searchData.searchCode}&name=${this.searchData.searchValue}`
-        )
+        url = `/carp/business/a/q/garbage/station/page?limit=${this.searchData.limit}&page=${this.searchData.page}&areaCode=${this.searchData.searchCode}&name=${this.searchData.searchValue}`
       }
-      if (resp.code == 0) {
-        if (this.searchData.page == 1) {
-          this.list = []
-        }
-        this.list = this.list.concat(resp.data.records)
-        // 加载状态结束
-        this.loading = false
-        this.refreshloading = false
-        this.searchData.page = this.searchData.page + 1
-        if (this.list.length == resp.data.total) {
-          // 数据全部加载完成
-          this.finished = true
-        } else {
-          this.finished = false
-        }
-      } else {
-        this.$dialog.alert({
-          message: '获取项目失败',
-          confirmButtonColor: 'red'
-        })
+      let data = {
+        list: this.list,
+        page: this.searchData.page
       }
+      let result = await getList(url, data, '信息')
+      this.list = result.list
+      this.searchData.page = result.page
+      this.refreshloading = result.refreshloading
+      this.loading = result.loading
+      this.finished = result.finished
     },
     onCancel() {
       this.searchDia = false

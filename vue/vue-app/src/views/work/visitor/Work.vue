@@ -13,14 +13,14 @@
           <span class="title2">智慧工地管理</span>
         </van-divider>
       </div>
-      <div class="allIconBox">
+      <!--<div class="allIconBox">
         <div class="tac">
           <div @click="goSkip('company-problemReport', {})" class="iconBox">
             <van-image :src="require('@/assets/image/work_icon4.png')" height="50" width="50" />
           </div>
           <span class="text">问题上报</span>
         </div>
-      </div>
+      </div>-->
     </div>
   </div>
 </template>

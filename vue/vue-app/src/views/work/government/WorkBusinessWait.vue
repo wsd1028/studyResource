@@ -132,9 +132,6 @@ export default {
         url = '/carp/business/a/q/task/accountId'
         this.searchData.state = this.$dictionaries.dispatch.wait
       }
-      let resp = await this.$http.get(url, {
-        params: this.searchData
-      })
       let data = {
         list: this.list,
         page: this.searchData.page
@@ -145,25 +142,6 @@ export default {
       this.refreshloading = result.refreshloading
       this.loading = result.loading
       this.finished = result.finished
-      //if (resp.code == 0) {
-      //  if (this.searchData.page == 1) {
-      //    this.list = []
-      //  }
-      //  this.list = this.list.concat(resp.data.records)
-      //  // 加载状态结束
-      //  this.loading = false
-      //  this.refreshloading = false
-      //  this.searchData.page = this.searchData.page + 1
-      //  if (this.list.length == resp.data.total) {
-      //    // 数据全部加载完成
-      //    this.finished = true
-      //  }
-      //} else {
-      //  this.$dialog.alert({
-      //    message: '获取信息失败:' + resp.message,
-      //    confirmButtonColor: 'red'
-      //  })
-      //}
     }
   }
 }

@@ -2,6 +2,7 @@
   <el-dialog :before-close="close" :title="title" :visible.sync="dialogVisible" center class="historyMap" width="50%">
     <div class="diaTop">
       <el-date-picker
+        :clearable="false"
         :picker-options="pickerOptions"
         @change="changTime"
         align="right"
@@ -55,7 +56,7 @@
           :zIndex="100"
         >
           <bm-info-window :closeOnClick="false" :offset="{ width: 0, height: -40 }" :show="true" title="当前位置">
-            <p class="mapText">时间:{{ nowCarData.timeText }}</p>
+            <p class="mapText">时间:{{ nowCarData.timestamp }}</p>
             <p class="mapText">速度:{{ nowCarData.speed }}km/h</p>
           </bm-info-window>
         </bm-marker>
@@ -99,7 +100,12 @@ export default {
           label: '32倍速'
         }
       ],
-      chooseTime: ['', ''], //选择到时间
+      chooseTime: [
+        this.$moment()
+          .subtract(24, 'hours')
+          .format('YYYY-MM-DD HH:mm:ss'),
+        this.$moment().format('YYYY-MM-DD HH:mm:ss')
+      ], //选择到时间
       pickerOptions: {
         disabledDate: time => {
           let nowData = new Date()
@@ -120,27 +126,12 @@ export default {
       },
       //当前地图对象
       map: null,
-      BMapConvertor: null,
       carImg: null,
       nowCarData: {}, //当前车辆位置信息
       startCarData: {}, //车辆开始位置信息
       endCarData: {}, //车辆结束位置信息
       //车辆数据
-      carList: [],
-      //车辆图标对象
-      carDateSet: null,
-      //车辆图标覆盖物
-      iconMapLayer: null,
-      //车辆轨迹数据
-      carLineObj: null,
-      //车辆轨迹对象
-      carLineDataSet: null,
-      //车辆轨迹覆盖物
-      lineMapLayer: null,
-      //起始车辆数据集
-      startEndDateSet: null,
-      //起始车辆覆盖物
-      startEndMapLayer: null
+      carList: []
     }
   },
 
@@ -154,129 +145,18 @@ export default {
       this.nowCarData = {}
       this.startCarData = {}
       this.endCarData = {}
-      //清空mapv绘制的车辆起始
-      if (this.startEndDateSet) this.startEndDateSet.set([])
       done()
     },
-    //绘制起始车辆
-    drawStartEndCar(startCar, endCar) {
-      let startImg = new Image()
-      startImg.src = require('@/assets/images/svg/start.svg')
-      startImg.onload = () => {
-        let endImg = new Image()
-        endImg.src = require('@/assets/images/svg/end.svg')
-        endImg.onload = () => {
-          let carData = [
-            {
-              geometry: {
-                type: 'Point',
-                coordinates: [startCar.longitudeBD09, startCar.latitudeBD09]
-              },
-              icon: startImg
-            },
-            {
-              geometry: {
-                type: 'Point',
-                coordinates: [endCar.longitudeBD09, endCar.latitudeBD09]
-              },
-              icon: endImg
-            }
-          ]
-          this.startEndDateSet = new this.DataSet(carData)
-          let carOptions = {
-            draw: 'icon',
-            width: 50
-          }
-          this.startEndMapLayer = new this.baiduMapLayer(this.map, this.startEndDateSet, carOptions)
-        }
-      }
-    },
-    //组装车辆数据
-    fixCarData(carList = []) {
-      let carData = []
-      for (let i = 0; i < carList.length; i++) {
-        carData.push({
-          geometry: {
-            type: 'Point',
-            coordinates: [carList[i].longitudeBD09, carList[i].latitudeBD09]
-          },
-          icon: this.carImg
-        })
-      }
-      return carData
-    },
-    //绘制车辆
-    drawCar(carList) {
-      this.carImg = new Image()
-      this.carImg.src = require('@/assets/images/svg/historyCar.svg')
-      this.carImg.onload = () => {
-        this.carDateSet = new this.DataSet(this.fixCarData(carList))
-        let carOptions = {
-          draw: 'icon',
-          width: 50
-        }
-        this.iconMapLayer = new this.baiduMapLayer(this.map, this.carDateSet, carOptions)
-      }
-    },
-    //组装车辆轨迹数据
-    fixLineData(lineObj) {
-      let lineData = []
-      let coordinates = []
-      for (let i = 0; i < lineObj.length; i++) {
-        coordinates.push([lineObj[i].longitudeBD09, lineObj[i].latitudeBD09])
-      }
-      lineData.push({
-        geometry: {
-          type: 'LineString',
-          coordinates: coordinates,
-          count: 30
-        }
-      })
-      return lineData
-    },
-    //绘制车辆轨迹
-    drawLine(lineObj) {
-      this.carLineDataSet = new this.DataSet(this.fixLineData(lineObj))
-      let lineOptions = {
-        strokeStyle: '#409EFF',
-        lineWidth: 4
-      }
-      this.lineMapLayer = new this.baiduMapLayer(this.map, this.carLineDataSet, lineOptions)
-    },
     // 百度地图初始化完成
-    ready(res) {
-      this.map = res.map
-      this.BMapConvertor = new res.BMap.Convertor()
-      // 引入mapv
-      const { DataSet, baiduMapLayer, utilCityCenter } = require('mapv')
-      this.DataSet = DataSet
-      this.baiduMapLayer = baiduMapLayer
-      this.utilCityCenter = utilCityCenter
-    },
-    async watchHistoy(carMessage) {
+    ready(res) {},
+    async watchHistoy(carMessage, date) {
+      //设置初始时间
+      if (date) {
+        this.chooseTime = date
+      }
       this.isPlay = false
       if (carMessage) {
         this.carMessage = carMessage
-      }
-      //清空绘制的轨迹
-      if (this.carLineDataSet) {
-        this.carLineDataSet.set([])
-      }
-      //清空绘制的车
-      if (this.carDateSet) {
-        this.carDateSet.set([])
-      }
-      //清空起始车辆
-      if (this.startEndDateSet) {
-        this.startEndDateSet.set([])
-      }
-      if (carMessage) {
-        this.chooseTime = [
-          this.$moment()
-            .subtract(24, 'hours')
-            .format('YYYY-MM-DD HH:mm:ss'),
-          this.$moment().format('YYYY-MM-DD HH:mm:ss')
-        ]
       }
       let t1 = this.$moment(this.chooseTime[0]).valueOf()
       let t2 = this.$moment(this.chooseTime[1]).valueOf()
@@ -284,12 +164,7 @@ export default {
       //只允许查24小时数据
       if (hours > 24) {
         this.$message.error('一次最多查看24小时的记录')
-        this.chooseTime = [
-          this.$moment()
-            .subtract(24, 'hours')
-            .format('YYYY-MM-DD HH:mm:ss'),
-          this.$moment().format('YYYY-MM-DD HH:mm:ss')
-        ]
+        return
       }
       this.dialogVisible = true
       this.title = this.carMessage.licensePlate
@@ -320,18 +195,15 @@ export default {
         this.carList = resp.data
         this.startCarData = resp.data[0] || {}
         this.endCarData = resp.data[resp.data.length - 1] || {}
-        //绘制车辆起始
-        if (resp.data.length > 0) {
-          //使用mapv绘制的起始
-          //this.drawStartEndCar(resp.data[0], resp.data[resp.data.length - 1])
-        }
       } else {
         this.$message.error('获取车辆轨迹失败' + resp.message)
       }
     },
+    //改变时间
     changTime() {
       this.watchHistoy()
     },
+    //播放车辆轨迹
     playCar() {
       this.isPlay = !this.isPlay
       if (this.isPlay && !this.myTime) {
@@ -356,14 +228,7 @@ export default {
     }
   },
 
-  mounted() {
-    this.chooseTime = [
-      this.$moment()
-        .subtract(24, 'hours')
-        .format('YYYY-MM-DD HH:mm:ss'),
-      this.$moment().format('YYYY-MM-DD HH:mm:ss')
-    ]
-  }
+  mounted() {}
 }
 </script>
 

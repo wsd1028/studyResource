@@ -337,6 +337,16 @@ export default {
         areaCode: {
           label: '地区',
           type: 'area',
+          props: {
+            code: 'code'
+          },
+          area: (() => {
+            let area = []
+            this.$getAreaTree(user.accountTypeDto.code, tree => {
+              area = [tree]
+            })
+            return area
+          })(),
           show: [0].includes(this.$userType),
           value: [50].includes(this.$userType) ? user.accountTypeDto.code : null
         },

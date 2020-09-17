@@ -82,11 +82,8 @@ export default {
       this.baiduMapLayer = baiduMapLayer
       this.utilCityCenter = utilCityCenter
       if (this.map) {
-        var myCity = new BMap.LocalCity()
-        myCity.get(async res => {
-          this.mapConfig.center = res.center
-          this.getCarData()
-        })
+        this.mapConfig.center = { lat: 28.77, lng: 104.62 }
+        this.getCarData()
       }
     },
     async getCarData() {

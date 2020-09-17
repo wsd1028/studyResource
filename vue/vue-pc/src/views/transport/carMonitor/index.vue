@@ -2,8 +2,8 @@
   <div class="carMonitor">
     <div :class="['leftbox', leftObj.active ? 'left-icon1' : 'left-icon0']">
       <div @click="handelIcon('left')" class="Icon icon-left-radius" style="right:-20px">
-        <i class="el-icon-d-arrow-left" style="color:#fff;font-size:22px" v-if="leftObj.active"></i>
-        <i class="el-icon-d-arrow-right" style="color:#fff;font-size:22px" v-else></i>
+        <i class="el-icon-arrow-left" style="color:#fff;font-size:22px;font-weight: bold;padding-top: 13px" v-if="leftObj.active"></i>
+        <i class="el-icon-arrow-right" style="color:#fff;font-size:22px;font-weight: bold;padding-top: 13px" v-else></i>
       </div>
       <div class="section">
         <div style="text-align:center">
@@ -18,9 +18,9 @@
           ></el-date-picker>
         </div>
         <div>
-          <p class="fc6" style="margin-top:10px">车辆汇总</p>
+          <p class="fc6" style="margin-top:20px;font-weight: bold">车辆汇总</p>
           <div style="text-align:center">
-            <span class="allCar">总车辆{{ carCount.total }}</span>
+            <span class="allCar">总车辆 {{ carCount.total }}</span>
           </div>
           <div style="display:flex;margin-top:10px">
             <div style="width:50%;text-align:center">
@@ -96,8 +96,8 @@
     </div>
     <div :class="['rightbox', rightObj.active ? 'right-icon1' : 'right-icon0']">
       <div @click="handelIcon('right')" class="Icon icon-right-radius" style="left:-20px">
-        <i class="el-icon-d-arrow-left" style="color:#fff;font-size:22px" v-if="!rightObj.active"></i>
-        <i class="el-icon-d-arrow-right" style="color:#fff;font-size:22px" v-else></i>
+        <i class="el-icon-arrow-left" style="color:#fff;font-size:22px;font-weight: bold;padding-top: 13px" v-if="!rightObj.active"></i>
+        <i class="el-icon-arrow-right" style="color:#fff;font-size:22px;font-weight: bold;padding-top: 13px" v-else></i>
       </div>
       <p class="carNumber">{{ license }}</p>
       <el-divider></el-divider>
@@ -217,11 +217,6 @@ export default {
         }
       } else {
         this.rightObj.active = !this.rightObj.active
-        if (this.rightObj.active) {
-          this.$refs.chartDiv.style.paddingRight = '350px'
-        } else {
-          this.$refs.chartDiv.style.paddingRight = '0'
-        }
       }
       this.toResize()
     },
@@ -447,10 +442,7 @@ export default {
       this.baiduMapLayer = baiduMapLayer
       this.utilCityCenter = utilCityCenter
       if (this.map) {
-        var myCity = new BMap.LocalCity()
-        myCity.get(async res => {
-          this.mapConfig.center = res.center
-        })
+        this.mapConfig.center = { lat: 28.77, lng: 104.62 }
         this.blueBayonetImg = await this.getImg('blueBayonet')
         this.redBayonetImg = await this.getImg('redBayonet')
         this.getBayonet()
@@ -562,7 +554,10 @@ export default {
   overflow: hidden;
   padding: 10px;
   font-size: 12px;
-  .BmOverlay {
+  *::-webkit-scrollbar {
+    width: 0;
+  }
+    .BmOverlay {
     width: 320px;
     padding: 10px;
     box-sizing: border-box;
@@ -637,13 +632,15 @@ export default {
     padding: 0.1rem;
     top: 50%;
     left: 0;
-    height: 90%;
+    height: 96%;
     background-color: #fff;
     width: 350px;
     z-index: 2;
     box-sizing: border-box;
     transform: translate(0, -50%);
     transition: all 0.5s;
+    -moz-box-shadow: 0px 0px 10px rgba(51,51,51,0.12); /* 老的 Firefox */
+    box-shadow: 0px 0px 10px rgba(51,51,51,0.12);
     .section {
       height: 100%;
       overflow: auto;
@@ -651,11 +648,12 @@ export default {
     .allCar {
       border: 1px solid #409eff;
       display: inline-block;
-      padding: 0 20px;
-      height: 40px;
-      line-height: 40px;
+      padding: 0 15px;
+      height: 30px;
+      line-height: 30px;
       border-radius: 20px;
       color: #409eff;
+      font-size: 14px;
     }
     .box {
       margin-top: 10px;
@@ -674,7 +672,7 @@ export default {
         line-height: 30px;
         padding: 0 10px;
         .label {
-          color: #67c23a;
+          color: #20c28e;
           cursor: pointer;
         }
         .value {
@@ -694,10 +692,11 @@ export default {
     }
     .chartDiv {
       width: 100%;
-      padding: 0 350px;
+      padding: 10px 20px 0 350px;
       flex-grow: 1;
       flex-basis: 0;
       box-sizing: border-box;
+      background-color: #fff;
     }
     .chart {
       width: 100%;
@@ -707,14 +706,17 @@ export default {
   .rightbox {
     position: absolute;
     padding: 0.1rem;
-    top: 50%;
+    top: 322px;
     right: 0;
     background-color: #fff;
     width: 350px;
     z-index: 2;
+    border-radius: 5px;
     box-sizing: border-box;
     transform: translate(0, -50%);
     transition: all 0.5s;
+    -moz-box-shadow: 0px 0px 10px rgba(51,51,51,0.12); /* 老的 Firefox */
+    box-shadow: 0px 0px 10px rgba(51,51,51,0.12);
     .carNumber {
       text-align: center;
       line-height: 60px;

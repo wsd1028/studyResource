@@ -93,7 +93,9 @@ export default {
         // 结束时间
         endTime: {
           label: '结束时间',
-          type: 'date'
+          name: '-',
+          type: 'date',
+          value: this.$moment(Date.now()).format('YYYY-MM-DD HH:mm:ss')
         },
         // 处理状态
         disposeState: {

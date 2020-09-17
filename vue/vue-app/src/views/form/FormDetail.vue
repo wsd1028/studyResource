@@ -392,7 +392,7 @@ export default {
           this.$router.go(-1)
         } else {
           this.$dialog.alert({
-            message: '创建失敗:' + resp.message,
+            message: '创建失败:' + resp.message,
             confirmButtonColor: 'red'
           })
         }

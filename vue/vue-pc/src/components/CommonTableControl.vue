@@ -68,7 +68,7 @@
                 v-model="item.value"
                 @change="
                   item.change ? item.change($event) : null
-                  getList(1)
+                  item.real !== false && getList(1) && getList(1)
                 "
                 :placeholder="item.placeholder || item.label"
                 size="mini"
@@ -92,7 +92,7 @@
                 :remote-method="query => $debounce(() => handleFormSearch(query, item), 500)()"
                 @change="
                   item.change ? item.change($event) : null
-                  getList(1)
+                  item.real !== false && getList(1)
                 "
               >
                 <el-option v-for="_item in item.item" :key="_item.code" :label="_item.label" :value="_item.code"></el-option>
@@ -106,17 +106,21 @@
                 size="mini"
                 format="yyyy年MM月dd日-HH时mm分ss秒"
                 value-format="yyyy-MM-dd HH:mm:ss"
+                :clearable="item.hasOwnProperty('clearable') ? item.clearable : true"
                 :placeholder="item.placeholder || item.label"
-                @change="getList(1)"
+                @change="
+                  item.change && item.change($event, getList)
+                  item.real !== false && !item.manualFlush && getList(1)
+                "
               ></el-date-picker>
               <!-- 日期end -->
               <!-- 地区筛选 -->
               <el-cascader
                 v-else-if="item.type == 'area'"
                 :options="item.area || area.tree"
-                :props="{ checkStrictly: true, emitPath: false, value: 'id', label: 'name', children: 'nodes' }"
+                :props="{ checkStrictly: true, emitPath: false, value: (item.props && item.props.code) || 'id', label: 'name', children: 'nodes' }"
                 v-model="item.value"
-                @change="getList(1)"
+                @change="item.real !== false && getList(1)"
                 :placeholder="item.placeholder || item.label"
                 size="mini"
               ></el-cascader>
@@ -127,6 +131,7 @@
                 v-model="item.value"
                 :placeholder="item.placeholder || item.label"
                 size="mini"
+                @input="item.input && item.input($event)"
                 @keyup.enter.native="getList(1)"
               ></el-input>
               <el-button
@@ -137,7 +142,7 @@
                 class="el-icon-search"
                 style="margin-left:4px"
               ></el-button>
-              <el-button v-if="item.showSelectButton" type="primary" @click="getList(1)" style="margin-left:4px">查询</el-button>
+              <el-button v-if="item.showSelectButton" size="mini" type="primary" @click="getList(1)" style="margin-left:4px">查询</el-button>
               <!-- 搜索框end -->
             </div>
           </div>
@@ -748,7 +753,9 @@ export default {
       }
       // 添加筛选器
       Object.keys(this.filters).forEach(key => {
-        params[key] = this.filters[key].value
+        if (this.filters[key].real !== false) {
+          params[key] = this.filters[key].value
+        }
       })
       // 请求展示内容
       this.$http
@@ -797,6 +804,7 @@ export default {
       !this.form.label && this.$set(this.form, 'label', {})
       // 查看表单操作对象中是否声明表格排序
       let sortKey = this.form.tableSort || Object.keys(this.form.label)
+      this.tableLabel = []
       sortKey.forEach(key => {
         let show = this.form.label[key].colShow === undefined ? true : this.form.label[key].colShow
         if (show) {
@@ -993,13 +1001,12 @@ export default {
 
     .filter-wrap {
       display: block;
-      margin-left: 4px;
 
       & > * {
         display: flex;
         float: left;
         align-items: center;
-        margin: 4px 0 4px 4px;
+        margin: 4px 4px 4px 0;
         .label {
           margin-right: 8px;
           font-size: 13px;

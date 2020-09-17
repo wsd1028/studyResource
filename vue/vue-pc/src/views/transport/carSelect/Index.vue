@@ -7,13 +7,13 @@
         @change="getCarData"
         end-placeholder="结束日期"
         start-placeholder="开始日期"
-        style="margin-right:20px;width:450px"
+        style="margin-right:20px;width:368px"
         type="datetimerange"
         v-model="chooseTime"
         value-format="yyyy-MM-dd HH:mm:ss"
       ></el-date-picker>
-      <span>选择范围:</span>
-      <el-select @change="getCarData" placeholder="请选择范围" style="width:150px" v-model="searchData.scope">
+      <span style="margin-right: 8px">选择范围:</span>
+      <el-select @change="getCarData" placeholder="请选择范围" style="width:120px" v-model="searchData.scope">
         <el-option :key="item.value" :label="item.label" :value="item.value" v-for="item in searchList"></el-option>
       </el-select>
     </header>
@@ -170,14 +170,11 @@ export default {
       this.baiduMapLayer = baiduMapLayer
       this.utilCityCenter = utilCityCenter
       if (this.map) {
-        var myCity = new BMap.LocalCity()
-        myCity.get(async res => {
-          this.mapConfig.position = res.center
-          this.mapConfig.center = res.center
-          this.searchData.lat = res.center.lat
-          this.searchData.lng = res.center.lng
-          this.getCarData()
-        })
+        this.mapConfig.position = { lat: 28.77, lng: 104.62 }
+        this.mapConfig.center = { lat: 28.77, lng: 104.62 }
+        this.searchData.lat = 28.77
+        this.searchData.lng = 104.62
+        this.getCarData()
       }
     },
     async getCarData() {
@@ -310,6 +307,19 @@ export default {
   }
   .anchorBL {
     display: none;
+  }
+  .el-date-editor .el-range__icon{
+    line-height: 30px;
+  }
+  .el-date-editor .el-range-separator{
+    line-height: 26px;
+  }
+  .el-input__icon{
+    line-height: 35px;
+  }
+  .el-input__inner{
+    height: 35px;
+    line-height: 35px;
   }
 }
 </style>

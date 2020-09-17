@@ -1,9 +1,7 @@
 ​
 <template>
-  <div id="goTop">
-    <div @click="goTop" class="goTop" v-show="goTopShow">
-      <i class="el-icon-caret-top goTopIcon"></i>
-    </div>
+  <div @click="goTop" class="goTop" v-show="goTopShow">
+    <i class="el-icon-caret-top goTopIcon"></i>
   </div>
 </template>
 <script>
@@ -67,6 +65,7 @@ export default {
   background: #fff;
   padding: 10px;
   cursor: pointer;
+  z-index: 2;
   box-shadow: 0 0 6px rgba(0, 0, 0, 0.12);
 }
 .goTop:hover .goTopIcon {

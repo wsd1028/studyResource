@@ -85,7 +85,6 @@ export default {
 <style lang="less" scoped>
 @import './less/Index';
 .el-card {
-  flex: 1;
   min-height: 144px;
 }
 .content {

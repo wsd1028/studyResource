@@ -19,10 +19,10 @@
         <div class="box fg2">
           <div class="mapTop">
             <p class="title">区县排名</p>
-            <el-select placeholder="请选择" size="mini" style="width: 120px" v-model="areaRankType">
-              <el-option label="pm10" :value="0"></el-option>
-              <el-option label="GPS在线率" :value="1"></el-option>
-              <el-option label="履职率" :value="2"></el-option>
+            <el-select @change="drawAreaRanking({ id: 'areaRankingChart' })" placeholder="请选择" size="mini" style="width: 120px" v-model="areaRankType">
+              <el-option :value="0" label="pm10"></el-option>
+              <el-option :value="1" label="GPS在线率"></el-option>
+              <el-option :value="2" label="履职率"></el-option>
             </el-select>
           </div>
           <div class="box-item" id="areaRankingChart"></div>
@@ -55,89 +55,70 @@
                 <el-checkbox v-model="functionBtn.outline"></el-checkbox>
               </div>
               <div style="width:100%;border: 0.5px solid #fff;margin-top:10px"></div>
-              <!--<div class="funcItem">
-                <span class="text">
-                  <i class="icon iconfont iconfont-cheliangziliao" style="color:#fff;font-size:10px"></i>
-                  运输车辆
-                </span>
-                <el-switch :width="30" active-color="#1C7AFE" inactive-color="#E4E4E4" v-model="functionBtn.car"></el-switch>
-              </div>-->
               <div class="funcItem">
                 <span class="text">
-                  <i class="icon iconfont iconfont-lajitong" style="color:#fff;font-size:20px"></i>
+                  <i class="icon el-icon-caret-top" style="color:#fff;font-size:20px"></i>
+                  公共区域
+                </span>
+                <el-switch
+                  :width="37"
+                  @change="changeMapvState('publicArea')"
+                  active-color="#1C7AFE"
+                  inactive-color="#E4E4E4"
+                  v-model="functionBtn.publicArea"
+                ></el-switch>
+              </div>
+              <div class="funcItem">
+                <span class="text">
+                  <i class="icon iconfont iconfont-yibinyangchenzhili-xiaonachangicon-10" style="color:#fff;font-size:16px"></i>
                   消纳场
                 </span>
-                <el-switch :width="30" active-color="#1C7AFE" inactive-color="#E4E4E4" v-model="functionBtn.garbage"></el-switch>
+                <el-switch :width="37" active-color="#1C7AFE" inactive-color="#E4E4E4" v-model="functionBtn.garbage"></el-switch>
               </div>
               <div class="funcItem">
                 <span class="text">
                   <i class="icon iconfont iconfont-dizhi" style="color:#fff;font-size:15px"></i>
-                  扬尘监测点
                   <!--AQI-->
+                  国控点
                 </span>
-                <el-switch :width="30" active-color="#1C7AFE" inactive-color="#E4E4E4" v-model="functionBtn.AQI"></el-switch>
+                <el-switch :width="37" active-color="#1C7AFE" inactive-color="#E4E4E4" v-model="functionBtn.AQI"></el-switch>
               </div>
               <div class="funcItem">
                 <span class="text">
                   <i class="icon iconfont iconfont-yuan" style="color:#fff;font-size:15px"></i>
                   固定源(设备)
                 </span>
-                <el-switch :width="30" @change="changeProjectState" active-color="#1C7AFE" inactive-color="#E4E4E4" v-model="functionBtn.project"></el-switch>
+                <el-switch
+                  :width="37"
+                  @change="changeMapvState('project')"
+                  active-color="#1C7AFE"
+                  inactive-color="#E4E4E4"
+                  v-model="functionBtn.project"
+                ></el-switch>
               </div>
-              <!--<div class="funcItem">
-                <span class="text">
-                  <i class="icon iconfont iconfont-ziyuan" style="color:#fff;font-size:9px"></i>
-                  固定源(无设备)
-                </span>
-                <el-switch :width="30" active-color="#1C7AFE" inactive-color="#E4E4E4" v-model="functionBtn.noDevice"></el-switch>
-              </div>-->
             </div>
             <baidu-map :center="mapConfig.center" :map-click="false" :scroll-wheel-zoom="true" :zoom="13" @ready="onBaiduMapReady" class="bm-view">
-              <div v-if="functionBtn.car">
-                <bm-marker
-                  :icon="{
-                    url: require('@/assets/images/svg/car.svg'),
-                    size: { width: 40, height: 40 }
-                  }"
-                  :key="index"
-                  :position="item.location"
-                  :zIndex="10"
-                  v-for="(item, index) in carList"
-                ></bm-marker>
-              </div>
               <div v-if="functionBtn.garbage">
                 <bm-marker
                   :icon="{
-                    url: require('@/assets/images/svg/garbage.svg'),
-                    size: { width: 40, height: 40 }
+                    url: require('@/assets/images/svg/garbage_min.svg'),
+                    size: { width: 50, height: 85 }
                   }"
                   :key="item.id"
                   :position="item.location"
                   :title="item.name"
                   :zIndex="10"
                   @click="garbageOpen($event, item)"
-                  v-for="(item, index) in garbageList"
+                  v-for="item in garbage.list"
                 ></bm-marker>
-                <bm-info-window :position="garbageDetail.location" :show="garbageDetail.show" @close="garbageClose" @open="garbageOpen" title>
+                <bm-info-window :position="garbage.detail.location" :show="garbage.show" @close="mapMarkClose('garbage')" @open="garbageOpen" title>
                   <!--消纳站详细信息窗体-->
-                  <p>消纳站名称：{{ garbageDetail.name }}</p>
-                  <p>消纳站地址：{{ garbageDetail.address }}</p>
+                  <p>消纳站名称：{{ garbage.detail.name }}</p>
+                  <p>消纳站地址：{{ garbage.detail.address }}</p>
                 </bm-info-window>
               </div>
-              <div v-if="functionBtn.noDevice">
-                <bm-marker
-                  :icon="{
-                    url: require('@/assets/images/svg/noDevice.svg'),
-                    size: { width: 40, height: 40 }
-                  }"
-                  :key="index"
-                  :position="item.location"
-                  :zIndex="10"
-                  v-for="(item, index) in noDeviceList"
-                ></bm-marker>
-              </div>
               <div v-if="functionBtn.AQI">
-                <!--扬尘监测点-->
+                <!--国控点-->
                 <bm-marker
                   :icon="{
                     url: require('@/assets/images/svg/AQI.svg'),
@@ -145,17 +126,20 @@
                   }"
                   :key="item.id"
                   :position="item.location"
+                  :title="item.station"
                   :zIndex="10"
-                  @click="AQIOpen($event, item)"
-                  v-for="(item, index) in AQIList"
+                  @click="clickAQI($event, item)"
+                  v-for="item in AQI.list"
                 ></bm-marker>
-                <bm-info-window :position="AQIDetail.location" :show="AQIDetail.show" @close="AQIClose" @open="AQIOpen" title>
-                  <!--监控点详细信息窗体-->
-                  <p>监控点名称：{{ AQIDetail.station }}</p>
+                <bm-info-window :position="AQI.detail.location" :show="AQI.show" @close="mapMarkClose('AQI')" @open="openAQI" title>
+                  <!--国控详细信息窗体-->
+                  <p>国控点名称:{{ AQI.detail.station }}</p>
+                  <p>时间:{{ AQI.detail.pubTime }}</p>
+                  <p>pm10:{{ AQI.detail.pm10 }}ug/m³</p>
+                  <p>pm25:{{ AQI.detail.pm25 }}ug/m³</p>
                 </bm-info-window>
               </div>
             </baidu-map>
-            <!-- <iframe allowfullscreen border="0" src="http://yb.hgyun.net/DustNoise/ybMapGis/" style="width:100%;height:100%;border:none"></iframe> -->
             <div class="exposure">
               <span class="exposureText">曝光台</span>
               <p class="exposureTitle" v-text="exposureList[exposureActive].title"></p>
@@ -166,41 +150,48 @@
         <div class="box fg3">
           <div class="mapTop">
             <p class="title">设备信息</p>
-            <el-select @change="changeDevice" placeholder="请选择设备" size="mini" style="width:200px" v-model="projectDevice">
-              <el-option :key="item.sn" :label="item.sn" :value="item.sn" v-for="item in deviceList"></el-option>
+            <el-select @change="changeDevice" placeholder="请选择设备" size="mini" style="width:200px" v-model="device.sn">
+              <el-option :key="item.sn" :label="item.sn" :value="item.sn" v-for="item in device.list"></el-option>
             </el-select>
           </div>
           <div class="box-item" style="padding:10px;flex-direction: column">
             <div class="projectDevice">
               <div class="deviceMsgItem">
-                <span class="label">项目名称:</span>
-                <span class="value">{{ projectDetail.name }}</span>
+                <span class="label">固定源名称:</span>
+                <span class="value">{{ fixedSource.detail.name }}</span>
               </div>
-              <div class="deviceMsgItem" v-if="projectDevice">
+              <div class="deviceMsgItem" v-if="device.sn">
                 <span class="label">设备厂商:</span>
-                <span class="value">{{ projectDetail.manufacturerName }}</span>
+                <span class="value">{{ device.detail.manufacturerName }}</span>
               </div>
-              <div class="deviceMsgItem" v-if="projectDevice">
-                <span class="label">项目地址:</span>
-                <span class="value">{{ projectDetail.address }}</span>
+              <div class="deviceMsgItem">
+                <span class="label">固定源地址:</span>
+                <span class="value">{{ fixedSource.detail.address }}</span>
               </div>
-              <div class="deviceMsgItem" v-if="projectDevice">
+              <div class="deviceMsgItem" v-if="device.sn">
                 <span class="label">设备IMEI:</span>
-                <span class="value">{{ deviceDetail.sn }}</span>
+                <span class="value">{{ device.sn }}</span>
               </div>
-              <div class="deviceMsgItem" v-if="projectDevice">
-                <span class="label">项目负责人:</span>
-                <span class="value">{{ projectDetail.manager }}</span>
+              <div class="deviceMsgItem">
+                <span class="label">固定源负责人:</span>
+                <span class="value">{{ fixedSource.detail.manager || fixedSource.detail.peopleName }}</span>
               </div>
-              <div class="deviceMsgItem" style="display:flex" v-if="projectDevice">
+              <div class="deviceMsgItem" style="display:flex" v-if="device.sn">
                 <p style="margin-right:30px">
                   <span class="label">PM25:</span>
-                  <span class="value" style="color:#00FF78">{{ parseInt(deviceDetail.pm25) }}ug/m³</span>
+                  <span class="value" style="color:#00FF78">{{ parseInt(device.detail.pm25) }}ug/m³</span>
                 </p>
                 <p>
                   <span class="label">PM10:</span>
-                  <span class="value" style="color:#00FF78">{{ parseInt(deviceDetail.pm10) }}ug/m³</span>
+                  <span class="value" style="color:#00FF78">{{ parseInt(device.detail.pm10) }}ug/m³</span>
                 </p>
+              </div>
+              <div style="width:100%" v-if="device.sn">
+                <el-tabs @tab-click="drawDust" size="mini" type="card" v-model="tabActive">
+                  <el-tab-pane label="近12小时" name="12"></el-tab-pane>
+                  <el-tab-pane label="近7天" name="7"></el-tab-pane>
+                  <el-tab-pane label="近30天" name="30"></el-tab-pane>
+                </el-tabs>
               </div>
             </div>
             <div id="dustChart" style="flex-grow:1"></div>
@@ -260,6 +251,16 @@ export default {
   name: 'dataView',
   data() {
     return {
+      //固定源对象
+      fixedSource: {
+        type: {
+          project: '347827211369086976',
+          garbage: '347827770775994368',
+          publicArea: '347828546676097024'
+        },
+        detail: {}
+      },
+      tabActive: '12', //0分钟平均1小时平均
       //天气信息
       weather: {},
       areaList: [],
@@ -280,44 +281,48 @@ export default {
       functionBtn: {
         online: true, //在线
         outline: true, //离线
-        car: false, //运输车辆
-        noDevice: false, //固定源(无设备)
+        publicArea: true, //公共区域
         garbage: true, //消纳场
         AQI: true,
         project: true //固定源(设备)
       },
-      //地图运输车辆信息列表
-      carList: [],
-      noDeviceList: [
-        {
-          location: {
-            lat: 28.74161,
-            lng: 104.648103
-          }
+      //地图公共区域对象
+      publicArea: {
+        list: [],
+        detail: {}, //选中的公共区域
+        mapv: {
+          dateSet: null,
+          mapLayer: null
         }
-      ],
-      //地图消纳场信息列表
-      garbageList: [],
-      //消纳站信息窗体
-      garbageDetail: {},
-      //地图AQI信息列表
-      AQIList: [],
-      //AQI详细信息
-      AQIDetail: {},
-      //地图设备信息列表
-      projectList: [],
-      //项目设备列表
-      deviceList: [],
-      //被选中的项目设备sn
-      projectDevice: '',
-      //设备详情
-      deviceDetail: {},
-      //选中的项目信息
-      projectDetail: {},
-      //车辆图标对象
-      projectDateSet: null,
-      //车辆图标覆盖物
-      deviceMapLayer: null,
+      },
+      //地图项目对象
+      project: {
+        list: [],
+        detail: {}, //选中的公共区域
+        mapv: {
+          dateSet: null,
+          mapLayer: null
+        }
+      },
+      //地图消纳场对象
+      garbage: {
+        list: [],
+        detail: {},
+        show: false
+      },
+      //地图AQI对象
+      AQI: {
+        list: [],
+        detail: {},
+        show: false,
+        location: {}
+      },
+      //设备对象
+      device: {
+        list: [],
+        sn: '',
+        detail: {}
+      },
       exposureTimer: null,
       exposureList: [
         {
@@ -328,7 +333,7 @@ export default {
       exposureActive: 0,
       colorList: ['#57fff9', '#c657ff', ' #f6f855', '#ff8d57'],
       hotspots: [], //热点追踪
-      areaRankType: 0,
+      areaRankType: 2, //区县排名下拉框
       areaRankingChart: null, //区县排名
       mobileSourceChart: null, //移动源
       bigDataChart: null, //大数据统计
@@ -343,8 +348,9 @@ export default {
     //全屏退出
     document.addEventListener('keyup', this.goBack)
     this.projectImg = await this.getImg('project2')
+    this.publicAreaImg = await this.getImg('publicArea')
     this.mapConfig.areaCode = this.$store.state.user.userInfo.accountTypeDto.code
-    this.getArea()
+    await this.getArea()
     this.getExposure()
     this.$moment.locale('zh-cn')
     this.time = this.$moment().format('YYYY 年 MM 月 DD  dddd  HH:mm:ss')
@@ -378,10 +384,8 @@ export default {
       this.drawMobileSource({ id: 'mobileSourceChart' })
       this.getHotspots() //热点追踪
       this.getBigData() //大数据统计
-      this.drawTargetTask({ id: 'targetTaskChart1', color: '#1EC641', title: '优良天数', value: 50 })
-      this.drawTargetTask({ id: 'targetTaskChart2', color: '#F6B041', title: 'PM2.5', value: 36 })
-      this.drawTargetTask({ id: 'targetTaskChart3', color: '#F47D2C', title: 'PM10', value: 48 })
       this.getAutomaticCheckData() //自动巡检
+      this.getTargetTask() //得到目标任务
       this.getMapData() //得到地图数据
     },
     //得到天气
@@ -389,41 +393,99 @@ export default {
       let resp = await this.$http.get('https://tianqiapi.com/api?version=v6&appid=66527314&appsecret=79zfaynW')
       this.weather = resp
     },
+    //获取公共区域
+    async getPublicArea() {
+      let resp = await this.$http.get(`/carp/business/a/q/public/area/page?areaCode=${this.mapConfig.areaCode}&limit=9999&page=1`)
+      if (resp.code == 0) {
+        this.publicArea.list = resp.data.records
+        if (this.publicArea.dateSet) {
+          this.publicArea.dateSet.set(this.fixMapvData(this.publicArea.list, 'publicAreaImg'))
+        } else {
+          this.drawPublicArea(this.publicArea.list)
+        }
+      } else {
+        this.$message.error('获取公共区域失败' + resp.message)
+      }
+    },
+    //组装mapv数据
+    fixMapvData(list, img) {
+      let data = []
+      for (let i = 0; i < list.length; i++) {
+        data.push({
+          geometry: {
+            type: 'Point',
+            coordinates: [list[i].longitude, list[i].latitude]
+          },
+          icon: this[img],
+          target: list[i]
+        })
+      }
+      return data
+    },
+    //绘制公共区域
+    async drawPublicArea(list) {
+      this.publicArea.dateSet = new this.DataSet(this.fixMapvData(list, 'publicAreaImg'))
+      let options = {
+        draw: 'icon',
+        methods: {
+          // 一些事件回调函数
+          click: async e => {
+            // 点击事件，返回对应点击元素的对象值
+            if (e && e.target) {
+              this.fixedSource.detail = e.target
+              this.getDeviceList(e.target.id, 'publicArea')
+            }
+          }
+        }
+      }
+      this.publicArea.mapLayer = new this.baiduMapLayer(this.map, this.publicArea.dateSet, options)
+    },
+    //获取国控点
     async getMonitorSite() {
       let resp = await this.$http.get(`/carp/device/a/q/monitorSite/areaCode?areaCode=${this.mapConfig.areaCode}&limit=1000&page=1`)
       if (resp.code == 0) {
         for (let i = 0; i < resp.data.length; i++) {
           resp.data[i].location = { lat: resp.data[i].latitude, lng: resp.data[i].longitude }
         }
-        this.AQIList = resp.data
+        this.AQI.list = resp.data
       } else {
-        this.$message.error('获取扬尘监测点失败' + resp.message)
+        this.$message.error('获取国控点失败' + resp.message)
       }
     },
-    AQIClose(e) {
-      this.AQIDetail.show = false
-    },
-    AQIOpen(e, data) {
-      if (data) {
-        this.AQIDetail = data
+    async clickAQI(e, data) {
+      this.AQI.detail = {}
+      this.AQI.show = false
+      let resp = await this.$http.get(`/carp/device/a/q/monitorSite/monitorSiteId?monitorSiteId=${data.id}`)
+      if (resp.code == 0) {
+        this.AQI.detail = resp.data
+        this.AQI.detail.location = data.location
+        this.AQI.detail.station = data.station
+        this.AQI.show = true
+      } else {
+        this.$message.error('获取国控数据失败' + resp.message)
       }
-      this.AQIDetail.show = true
+    },
+    openAQI() {
+      this.AQI.show = true
+      this.$forceUpdate()
     },
     //得到地图数据
     async getMapData() {
       this.getGarbage()
     },
-    //关闭消纳站
-    garbageClose() {
-      this.garbageDetail.show = false
+    //关闭地图mark
+    mapMarkClose(name) {
+      this[name].show = false
     },
     //打开消纳站
-    garbageOpen(e, data) {
+    async garbageOpen(e, data) {
       if (data) {
-        this.garbageDetail = data.detail || {}
-        this.garbageDetail.location = data.location
+        this.fixedSource.detail = data.detail || {}
+        this.garbage.detail = data.detail || {}
+        this.garbage.detail.location = data.location
+        await this.getDeviceList(this.garbage.detail.id, 'garbage')
       }
-      this.garbageDetail.show = true
+      this.garbage.show = true
     },
     //得到消纳站数据
     async getGarbage() {
@@ -441,7 +503,7 @@ export default {
             detail: resp.data.records[i]
           })
         }
-        this.garbageList = garbageList
+        this.garbage.list = garbageList
       } else {
         this.$message.error('获取消纳站失败' + resp.message)
       }
@@ -459,80 +521,72 @@ export default {
       })
       return img
     },
-    //点击是否显示固定源(设备)
-    changeProjectState() {
-      if (this.functionBtn.project) {
-        if (this.projectDateSet) {
-          this.projectDateSet.set(this.fixProjectData(this.projectList))
+    //点击地图功能栏
+    changeMapvState(type) {
+      if (this.functionBtn[type]) {
+        if (this[type].dateSet) {
+          this[type].dateSet.set(this.fixMapvData(this[type].list, type + 'Img'))
         } else {
-          this.drawProject(this.projectList)
+          if (type == 'project') {
+            this.drawProject(this[type].list)
+          }
+          if (type == 'project') {
+            this.drawPublicArea(this[type].list)
+          }
         }
       } else {
-        if (this.projectDateSet) this.projectDateSet.set([])
+        if (this[type].dateSet) this[type].dateSet.set([])
       }
     },
     //得到固定源(设备)数据
     async getProjectData() {
-      let resp = await this.$http.get(`/carp/device/a/q/deviceProject/hasDustProject?areaCode=${this.mapConfig.areaCode}`)
+      let resp = await this.$http.get(
+        `/carp/device/a/q/deviceProject/hasDustFixedSource?areaCode=${this.mapConfig.areaCode}&deviceType=202&fixedSourceType=${this.fixedSource.type.project}`
+      )
       if (resp.code == 0) {
-        this.projectList = resp.data
-        if (resp.data.length > 0) {
-          this.projectDetail = this.projectList[0]
-          this.getDeviceList(this.projectDetail.id)
-          if (this.projectDateSet) {
-            this.projectDateSet.set(this.fixProjectData(this.projectList))
+        this.project.list = resp.data
+        if (resp.data && resp.data.length > 0) {
+          this.fixedSource.detail = this.project.list[0]
+          this.getDeviceList(this.fixedSource.detail.id, 'project')
+          if (this.project.dateSet) {
+            this.project.dateSet.set(this.fixMapvData(this.project.list, 'projectImg'))
           } else {
-            this.drawProject(this.projectList)
+            this.drawProject(this.project.list)
           }
         }
       } else {
         this.$message.error('获取项目数据失败' + resp.message)
       }
     },
-    //组装项目数据
-    fixProjectData(projectList) {
-      let deviceData = []
-      for (let i = 0; i < projectList.length; i++) {
-        deviceData.push({
-          geometry: {
-            type: 'Point',
-            coordinates: [projectList[i].longitude, projectList[i].latitude]
-          },
-          icon: this.projectImg,
-          target: projectList[i]
-        })
-      }
-      return deviceData
-    },
     //绘制项目
-    async drawProject(projectList) {
-      this.projectDateSet = new this.DataSet(this.fixProjectData(projectList))
-      let deviceOptions = {
+    async drawProject(list) {
+      this.project.dateSet = new this.DataSet(this.fixMapvData(list, 'projectImg'))
+      let options = {
         draw: 'icon',
         methods: {
           // 一些事件回调函数
           click: async e => {
             // 点击事件，返回对应点击元素的对象值
-            if (e) {
-              this.projectDetail = e.target
-              this.getDeviceList(e.target.id)
+            if (e && e.target) {
+              this.fixedSource.detail = e.target
+              this.getDeviceList(e.target.id, 'project')
             }
           }
         }
       }
-      this.deviceMapLayer = new this.baiduMapLayer(this.map, this.projectDateSet, deviceOptions)
+      this.project.mapLayer = new this.baiduMapLayer(this.map, this.project.dateSet, options)
     },
     //得到设备列表
-    async getDeviceList(projectId) {
-      this.deviceList = []
-      this.projectDevice = ''
-      let resp = await this.$http('/carp/device/a/q/dust/info/devices/' + projectId)
+    async getDeviceList(id, type) {
+      this.device.list = []
+      this.device.sn = ''
+      let resp = await this.$http(`/carp/device/a/q/dust/info/byFixedSource?fixedSourceId=${id}&fixedSourceType=${this.fixedSource.type[type]}`)
       if (resp.code == 0) {
         if (resp.data.length == 0) {
           this.$message.error('该项目暂无设备')
         } else {
-          this.deviceList = resp.data
-          this.projectDevice = resp.data[0].sn
+          this.device.list = resp.data
+          this.device.sn = resp.data[0].sn
         }
       } else {
         this.$message.error('获取设备列表失败' + resp.message)
@@ -542,41 +596,58 @@ export default {
     //改变选中的设备
     async changeDevice() {
       this.drawDust()
-      let resp = await this.$http.get('/carp/device/a/q/dust/avg/real/time/' + this.projectDevice)
+      let resp = await this.$http.get('/carp/device/a/q/dust/avg/real/time/' + this.device.sn)
       if (resp.code == 0) {
-        this.deviceDetail = resp.data
+        this.device.detail = resp.data
       } else {
-        this.$dialog.alert({
-          message: '获取扬尘实时数据失败:' + resp.message,
-          confirmButtonColor: 'red'
-        })
+        this.$message.error('获取扬设备信息失败' + resp.message)
       }
     },
-    //绘制扬尘
+    //绘制扬尘设备信息
     async drawDust() {
-      let resp = await this.$http.get('/carp/device/a/q/dust/avg/real/pm', {
-        params: {
-          sn: this.projectDevice,
-          size: 20
-        }
-      })
-      let time = [],
-        pm25 = [],
-        pm10 = []
+      let pm10 = [],
+        time = [],
+        pm10Monitor = [],
+        dateStr = 'time',
+        resp = {}
+      if (this.tabActive == 12) {
+        resp = await this.$http.get('/carp/device/a/q/dust/avg/time', {
+          params: {
+            sn: this.device.sn,
+            startTime: this.$moment()
+              .subtract(12, 'hours')
+              .format('YYYY-MM-DD HH:mm:ss'),
+            endTime: this.$moment().format('YYYY-MM-DD HH:mm:ss')
+          }
+        })
+      } else {
+        dateStr = 'date'
+        resp = await this.$http.get('/carp/device/a/q/dust/data/avg/chart/day', {
+          params: {
+            sn: this.device.sn,
+            startDate: this.$moment()
+              .subtract(parseInt(this.tabActive), 'days')
+              .format('YYYY-MM-DD HH:mm:ss'),
+            endDate: this.$moment().format('YYYY-MM-DD HH:mm:ss')
+          }
+        })
+      }
       if (resp.code == 0) {
-        for (let i = 0; i < resp.data.date.length; i++) {
-          resp.data.date[i] = this.$moment(resp.data.date[i]).format('HH:mm')
+        for (let i = 0; i < resp.data[dateStr].length; i++) {
+          if (this.tabActive == 12) {
+            resp.data[dateStr][i] = this.$moment(resp.data[dateStr][i]).format('HH:mm')
+          } else {
+            resp.data[dateStr][i] = this.$moment(resp.data[dateStr][i]).format('MM-DD')
+          }
+          resp.data.pm10Monitor[i] = parseInt(resp.data.pm10Monitor[i])
           resp.data.pm25[i] = parseInt(resp.data.pm25[i])
           resp.data.pm10[i] = parseInt(resp.data.pm10[i])
         }
-        time = resp.data.date
-        pm25 = resp.data.pm25
+        time = resp.data[dateStr]
         pm10 = resp.data.pm10
+        pm10Monitor = resp.data.pm10Monitor
       } else {
-        this.$dialog.alert({
-          message: '获取扬尘信息失败:' + resp.message,
-          confirmButtonColor: 'red'
-        })
+        this.$message.error('获取设备数据失败' + resp.message)
       }
       this.dustChart = echarts.init(document.getElementById('dustChart'))
       let option = {
@@ -601,7 +672,7 @@ export default {
         legend: {
           bottom: 0,
           right: 20,
-          data: ['PM2.5', 'PM10'],
+          data: ['PM10国控', 'PM10'],
           itemWidth: 23,
           itemHeight: 13,
           itemGap: 10,
@@ -610,7 +681,7 @@ export default {
           }
         },
         grid: {
-          left: 10,
+          left: time.length > 0 ? 10 : 25,
           right: 20,
           bottom: 30,
           top: 40,
@@ -668,9 +739,9 @@ export default {
         ],
         series: [
           {
-            name: 'PM2.5',
+            name: 'PM10国控',
             type: 'line',
-            data: pm25,
+            data: pm10Monitor,
             lineStyle: {
               normal: {
                 color: '#FC863F',
@@ -772,6 +843,7 @@ export default {
         }
       }
       this.getProjectData()
+      this.getPublicArea()
       this.getMonitorSite()
     },
     //得到地区列表
@@ -809,7 +881,7 @@ export default {
       if (resp.code == 0) {
         if (resp.data.records.length == 0) return
         for (let i = 0; i < resp.data.records.length; i++) {
-          resp.data.records[i].createDate = this.$moment(resp.data.records[i].createDate).format('YYY-MM-DD')
+          resp.data.records[i].createDate = this.$moment(resp.data.records[i].createDate).format('YYYY-MM-DD')
         }
         this.exposureList = resp.data.records
         this.exposureTimer = setInterval(() => {
@@ -829,12 +901,10 @@ export default {
         this.DataSet = DataSet
         this.baiduMapLayer = baiduMapLayer
         this.getProjectData() //得到项目数据
+        this.getPublicArea() //得到公共区域数据
         e.map.setMapStyle({ styleJson: styleJson })
-        let geolocation = new this.BMap.LocalCity()
-        geolocation.get(res => {
-          this.mapConfig.center = res.center
-          this.mapConfig.position = res.center
-        })
+        this.mapConfig.center = { lat: 28.77, lng: 104.62 }
+        this.mapConfig.position = { lat: 28.77, lng: 104.62 }
       }
     },
     //得到热点追踪数据
@@ -848,12 +918,39 @@ export default {
           hotspots.push(resp.data[i])
         }
         this.hotspots = hotspots
+      } else {
+        this.$message.error('获取热点追踪失败' + resp.message)
       }
     },
     // 绘制区县排名
-    drawAreaRanking(data) {
-      let { id, xData } = data
-      xData = ['翠屏', '南溪', '叙州', '江安', '长宁', '高县', '珙县', '筠连', '兴文', '屏山']
+    async drawAreaRanking(data) {
+      let title = 'PM10',
+        color = '#F97D2C',
+        url = ''
+      if (this.areaRankType == 1) {
+        title = 'GPS在线率'
+        color = '#21DF44'
+      }
+      if (this.areaRankType == 2) {
+        title = '履职率'
+        color = '#28A2FE'
+        url = '/carp/business/a/q/big/screen/today/rate'
+      }
+      let { id } = data
+      let xData = [],
+        yData = [],
+        resp = {}
+
+      resp = await this.$http.get(url)
+      if (resp.code == 0) {
+        xData = resp.data.name
+        for (let i = 0; i < resp.data.percent.length; i++) {
+          resp.data.percent[i] = resp.data.percent[i] * 100
+        }
+        yData = resp.data.percent
+      } else {
+        this.$message.error('获取' + title + '失败' + resp.message)
+      }
       this[id] = echarts.init(document.getElementById(id))
       let option = {
         grid: {
@@ -864,38 +961,24 @@ export default {
           containLabel: true
         },
         tooltip: {
-          //提示框组件
           trigger: 'axis',
-          formatter: '{b}<br />{a0}: {c0}%<br />{a1}: {c1}%<br />{a2}: {c2}%',
           axisPointer: {
             type: 'shadow',
-            label: {
-              backgroundColor: '#6a7985'
+            textStyle: {
+              color: '#fff'
             }
-          },
-          textStyle: {
-            color: '#fff',
-            fontStyle: 'normal',
-            fontFamily: '微软雅黑',
-            fontSize: 12
           }
         },
         legend: {
           //图例组件，颜色和名字
-          right: '0',
+          left: 'center',
           top: '2%',
           itemGap: 16,
           itemWidth: 18,
           itemHeight: 6,
           data: [
             {
-              name: 'PM10'
-            },
-            {
-              name: 'GPS在线率'
-            },
-            {
-              name: '履职率'
+              name: title
             }
           ],
           textStyle: {
@@ -910,9 +993,7 @@ export default {
             type: 'category',
             data: xData,
             axisLabel: {
-              //坐标轴刻度标签的相关设置。
-              //		interval: 0,//设置为 1，表示『隔一个标签显示一个标签』
-              //	margin:15,
+              rotate: -70,
               textStyle: {
                 color: '#fff',
                 fontStyle: 'normal',
@@ -970,9 +1051,9 @@ export default {
         ],
         series: [
           {
-            name: 'PM10',
+            name: title,
             type: 'bar',
-            data: [70, 85, 60, 45, 75, 60, 82, 40, 60, 82],
+            data: yData,
             barWidth: 6,
             itemStyle: {
               normal: {
@@ -980,45 +1061,7 @@ export default {
                 color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [
                   {
                     offset: 0,
-                    color: '#F97D2C'
-                  }
-                ]),
-                barBorderRadius: 50,
-                borderWidth: 0
-              }
-            }
-          },
-          {
-            name: 'GPS在线率',
-            type: 'bar',
-            data: [28, 75, 45, 80, 65, 45, 72, 86, 95, 45],
-            barWidth: 6,
-            itemStyle: {
-              normal: {
-                show: true,
-                color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [
-                  {
-                    offset: 0,
-                    color: '#21DF44'
-                  }
-                ]),
-                barBorderRadius: 50,
-                borderWidth: 0
-              }
-            }
-          },
-          {
-            name: '履职率',
-            type: 'bar',
-            data: [60, 45, 39, 49, 73, 85, 62, 76, 85, 75],
-            barWidth: 6,
-            itemStyle: {
-              normal: {
-                show: true,
-                color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [
-                  {
-                    offset: 0,
-                    color: '#28A2FE'
+                    color: color
                   }
                 ]),
                 barBorderRadius: 50,
@@ -1319,11 +1362,21 @@ export default {
       }
       this[id].setOption(option, true)
     },
+    //得到目标任务
+    async getTargetTask() {
+      let resp = await this.$http.get(`/carp/device/a/q/air/quality/target/mission?year=${this.$moment().format('YYYY')}`)
+      if (resp.code == 0) {
+        this.drawTargetTask({ id: 'targetTaskChart1', max: resp.data.yearTarget, color: '#1EC641', title: '优良天数', value: resp.data.goodDayCount })
+        this.drawTargetTask({ id: 'targetTaskChart2', max: resp.data.pm25Target, color: '#F6B041', title: 'PM2.5', value: resp.data.pm25 })
+        this.drawTargetTask({ id: 'targetTaskChart3', max: resp.data.pm10Target, color: '#F47D2C', title: 'PM10', value: resp.data.pm10 })
+      } else {
+        this.$message.error('获取目标任务失败' + resp.message)
+      }
+    },
     //绘制目标任务
     drawTargetTask(data) {
-      let { id, color, title, value } = data
+      let { id, color, title, value, max } = data
       this[id] = echarts.init(document.getElementById(id))
-      let max = 100
       function _pie3() {
         let dataArr = []
         for (var i = 0; i < 6; i++) {
@@ -1354,22 +1407,15 @@ export default {
       }
       function pieData() {
         let dataArr = []
-        for (var i = 0; i < max + value; i++) {
-          if (i <= value) {
+        let rate = value / max
+        let length = (2 * value) / rate
+        for (var i = 0; i < length; i++) {
+          if (i <= 2 * value) {
             dataArr.push({
               value: 10,
               itemStyle: {
                 normal: {
-                  color: color,
-                  borderColor: 'rgba(0,0,0,0)'
-                }
-              }
-            })
-            dataArr.push({
-              value: 10,
-              itemStyle: {
-                normal: {
-                  color: 'rgba(0,0,0,0)',
+                  color: i % 2 === 0 ? 'rgba(0,0,0,0)' : color,
                   borderColor: 'rgba(0,0,0,0)'
                 }
               }
@@ -1663,6 +1709,15 @@ export default {
   * {
     box-sizing: border-box;
   }
+  .el-tabs__item {
+    padding: 0 10px;
+    height: 30px;
+    line-height: 30px;
+    color: #fff;
+  }
+  .el-tabs__item.is-active {
+    color: #409eff;
+  }
   box-sizing: border-box;
   height: 100%;
   display: flex;
@@ -1799,7 +1854,7 @@ export default {
         padding: 8px;
         padding-top: 0;
         padding-bottom: 20px;
-        width: 160px;
+        width: 170px;
         background: rgba(17, 21, 35, 1);
         z-index: 10;
         .funcItem {

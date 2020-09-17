@@ -1,7 +1,7 @@
 <template>
   <div class="company-workBusiness">
     <myTitle class="mainBox2" titleName="工作台"></myTitle>
-    <van-tabs class="mt50" @change="changeTab" color="#4683f1" swipeable v-model="active">
+    <van-tabs @change="changeTab" class="mt50" color="#4683f1" swipeable v-model="active">
       <van-tab name="wait" title="待办">
         <van-pull-refresh @refresh="changeTab" v-model="refreshloading">
           <div class="all">
@@ -141,6 +141,10 @@ export default {
     } else {
       this.active = this.$route.params.active
     }
+    this.departmentState = this.$dictionaries.machineType.company
+    if (this.$store.state.user.user.accountTypeDto.type == this.$dictionaries.userType.garbage) {
+      this.departmentState = this.$dictionaries.machineType.garbage
+    }
     this.changeTab()
   },
   components: {},
@@ -207,6 +211,7 @@ export default {
     async getWaitData() {
       let resp = await this.$http.get(`/carp/business/a/q/data/num/statistics`, {
         params: {
+          departmentState: this.departmentState,
           projectId: this.$store.state.user.user.accountTypeDto.ancillaryId, //项目id
           receiverId: this.$store.state.user.user.id, //收单人id
           initiatorPeopleId: this.$store.state.user.user.id, //收单人id
@@ -232,6 +237,7 @@ export default {
     async getMineData() {
       let resp = await this.$http.get(`/carp/business/a/q/data/num/statistics`, {
         params: {
+          departmentState: this.departmentState,
           projectId: this.$store.state.user.user.accountTypeDto.ancillaryId, //项目id
           todayInitiatorPeopleId: this.$store.state.user.user.id, //用户id
           receiverId: this.$store.state.user.user.id, //收单人id
@@ -257,6 +263,7 @@ export default {
     async getFinishData() {
       let resp = await this.$http.get(`/carp/business/a/q/data/num/statistics`, {
         params: {
+          departmentState: this.departmentState,
           projectId: this.$store.state.user.user.accountTypeDto.ancillaryId, //项目id
           receiverId: this.$store.state.user.user.id, //收单人id
           initiatorPeopleId: this.$store.state.user.user.id, //收单人id

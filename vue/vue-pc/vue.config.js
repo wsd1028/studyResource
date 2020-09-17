@@ -9,8 +9,16 @@ module.exports = {
     port: 99,
     open: true,
     proxy: {
-      '/business': {
-        target: 'http://192.168.31.118:9101',
+      '/carp/device': {
+        target: 'http://192.168.31.6:9201/',
+        ws: true,
+        changeOrigin: true,
+        pathRewrite: {
+          '^/carp': ''
+        }
+      },
+      '/carp/business': {
+        target: 'http://192.168.31.8:9101/',
         ws: true,
         changeOrigin: true,
         pathRewrite: {
@@ -32,5 +40,9 @@ module.exports = {
       preProcessor: 'less',
       patterns: []
     }
+  },
+
+  configureWebpack: config => {
+    config.entry.app = ['@babel/polyfill', './src/main.js']
   }
 }

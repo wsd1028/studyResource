@@ -137,33 +137,6 @@ export default {
       this.refreshloading = result.refreshloading
       this.loading = result.loading
       this.finished = result.finished
-      //let resp = await this.$http.get('/carp/business/a/q/question/report/page', {
-      //  params: this.searchData
-      //})
-      //if (resp.code == 0) {
-      //  if (this.searchData.page == 1) {
-      //    this.list = []
-      //  }
-      //  for (let i = 0; i < resp.data.records.length; i++) {
-      //    resp.data.records[i].createDate = this.$moment(resp.data.records[i].createDate).format('YYYY-MM-DD')
-      //  }
-      //  this.list = this.list.concat(resp.data.records)
-      //  // 加载状态结束
-      //  this.loading = false
-      //  this.refreshloading = false
-      //  this.searchData.page = this.searchData.page + 1
-      //  if (this.list.length == resp.data.total) {
-      //    // 数据全部加载完成
-      //    this.finished = true
-      //  } else {
-      //    this.finished = false
-      //  }
-      //} else {
-      //  this.$dialog.alert({
-      //    message: '获取问题上报失败:' + resp.message,
-      //    confirmButtonColor: 'red'
-      //  })
-      //}
     }
   }
 }

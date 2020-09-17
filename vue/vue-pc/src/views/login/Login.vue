@@ -58,12 +58,6 @@
   </div>
 </template>
 <script>
-const key = 'FB32D61111CBE2D846E7A12209322CF5FB32D671D6CB874012E7A12209322CF5'
-import AESEncryption from 'aes-crypto'
-const encode = new AESEncryption()
-window.loginHex = obj => {
-  return encode.encryption(JSON.stringify(obj), key)
-}
 export default {
   data() {
     return {
@@ -88,6 +82,18 @@ export default {
   },
   methods: {
     login() {
+      // 用户名是否填写验证
+      if (!this.form.username.length) {
+        this.errName = '请输入用户名或手机号'
+        return
+      }
+
+      // 密码是否填写验证
+      if (!this.form.password.length) {
+        this.errPw = '请输入密码'
+        return
+      }
+
       // 验证码
       if (!this.validate && !this.cdls) {
         this.$message.error('请填写验证码')
@@ -95,14 +101,14 @@ export default {
       }
 
       // 用户名验证
-      if (!/^\w{2,11}$/.test(this.form.username) && !this.cdls) {
+      /* if (!/^\w{2,11}$/.test(this.form.username) && !this.cdls) {
         this.errName = '用户名填写不正确'
         return
       }
       if (!/^[\w\-.*]{6,16}$/.test(this.form.password) && !this.cdls) {
         this.errPw = '密码填写不正确'
         return
-      }
+      } */
 
       this.loading = true
 
@@ -148,25 +154,25 @@ export default {
      **/
     nameVerify() {
       this.form.username = this.form.username.replace(/[^\w]/gi, '')
-      if (!/^\w{2,11}$/.test(this.form.username)) {
+      /* if (!/^\w{2,11}$/.test(this.form.username)) {
         this.errName = '用户名只能是3-11位的英文或数字'
       } else {
         this.errName = ''
-      }
+      } */
     },
     pwVerify() {
       this.form.password = this.form.password.replace(/[^\w\-.*]/gi, '')
-      if (!/^[\w\-.*]{6,16}$/.test(this.form.password)) {
+      /* if (!/^[\w\-.*]{6,16}$/.test(this.form.password)) {
         this.errPw = '密码必须是6-16位的英文数字或-.*符号'
       } else {
         this.errPw = ''
-      }
+      } */
     }
   },
   created() {
     // 携带登录信息则直接执行登录操作
     if (this.cdls) {
-      let user = JSON.parse(encode.decryption(this.cdls, key))
+      let user = JSON.parse(this.$aesDecrypt(this.cdls))
       this.form.username = user.a
       this.form.password = user.b
       this.login()

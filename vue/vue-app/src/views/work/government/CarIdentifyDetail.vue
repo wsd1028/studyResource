@@ -14,7 +14,7 @@
             <span class="carTag0" v-else>名录车</span>
           </p>
         </div>
-        <div class="bottom">
+        <div class="bottom" v-if="paramsData.tabActive == 0">
           <p>
             车主姓名:
             <span v-text="paramsData.ownerName"></span>
@@ -24,12 +24,22 @@
             <span v-text="paramsData.ownerPhone"></span>
           </p>
         </div>
+        <div class="bottom" v-else>
+          <p>项目名称:{{ paramsData.workplaceName }}</p>
+          <p>
+            告警时间:
+            <span v-text="paramsData.violationDate"></span>
+          </p>
+        </div>
       </van-col>
     </van-row>
-    <div class="box">
-      <div class="top">
-        <div class="blueBox"></div>
-        <p class="titleOne">车辆信息</p>
+    <div class="box" v-if="paramsData.tabActive == 0">
+      <div class="dfsb p10">
+        <div class="top" style="padding:0">
+          <div class="blueBox"></div>
+          <p class="titleOne">车辆信息</p>
+        </div>
+        <span @click="goSkip" style="color:#5083ff">车辆轨迹</span>
       </div>
       <div class="p10">
         <table border="1">
@@ -74,7 +84,9 @@
           </tr>
           <tr>
             <td class="label2">项目名称</td>
-            <td class="value" colspan="3" v-text="item.projectName"></td>
+            <td class="value" colspan="3">
+              {{ item.projectName }}
+            </td>
           </tr>
           <tr>
             <td class="label2">消纳站名称</td>
@@ -89,9 +101,9 @@
           <div class="blueBox"></div>
           <p class="titleOne">电子联单</p>
         </div>
-        <!-- <span style="color:#5083ff">更多</span> -->
+        <span @click="goSkip" style="color:#5083ff" v-if="paramsData.tabActive == 1">车辆轨迹</span>
       </div>
-      <div style="display:flex">
+      <div style="display:flex" v-if="paramsData.tabActive == 0">
         <div style="width:33%;text-align:center">
           <p class="titleThree">总联单</p>
           <p class="titleOne" v-text="mainData.totalNo"></p>
@@ -167,9 +179,29 @@ export default {
       eleFormList: []
     }
   },
+  mounted() {
+    if (JSON.stringify(this.$route.params) == '{}') {
+      this.paramsData = this.$store.state.user.paramsData
+    } else {
+      this.paramsData = this.$route.params
+      this.$store.commit('setParamsData', this.paramsData)
+    }
+    this.searchData.plateNo = this.paramsData.plateNumber
+    this.searchData.projectId = this.paramsData.projectId
+    if (this.paramsData.tabActive == 0) {
+      this.getMainData()
+    }
+  },
   methods: {
     fixData(date) {
       return this.$moment(date).format('YYYY-MM-DD')
+    },
+    //跳转车辆轨迹界面
+    goSkip() {
+      this.$router.push({
+        name: 'workGov-carTrajectory',
+        params: this.paramsData
+      })
     },
     //点击查看详情
     handelItem(params) {
@@ -218,18 +250,6 @@ export default {
         })
       }
     }
-  },
-  filters: {},
-  mounted() {
-    if (JSON.stringify(this.$route.params) == '{}') {
-      this.paramsData = this.$store.state.user.paramsData
-    } else {
-      this.paramsData = this.$route.params
-      this.$store.commit('setParamsData', this.paramsData)
-    }
-    this.searchData.plateNo = this.paramsData.plateNumber
-    this.searchData.projectId = this.paramsData.projectId
-    this.getMainData()
   }
 }
 </script>

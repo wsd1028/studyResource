@@ -2,10 +2,6 @@
   <div class="Work">
     <header>
       <p class="title">工作台</p>
-      <span>
-        <!-- <van-icon class-prefix="iconfont" name="ccgl-yundanpicisaomiao-5" size="20px" style="position:relative;marginRight:20px" /> -->
-        <!-- <van-icon class-prefix="iconfont" info="99+" name="note" size="20px" style="position:relative" /> -->
-      </span>
     </header>
     <div class="box">
       <div style="padding:0 50px">
@@ -84,10 +80,16 @@
           <span class="text">电子联单</span>
         </div>
         <div class="tac">
-          <div @click="handelVideo" class="iconBox">
+          <div class="iconBox" @click="handelVideo">
             <van-image :src="require('@/assets/image/work_government_icon8.png')" height="50" width="50" />
           </div>
           <span class="text">音视频巡检</span>
+        </div>
+        <div class="tac">
+          <div class="iconBox" @click="goSkip('government-streamingMedia')">
+            <van-image :src="require('@/assets/image/流媒体视频.png')" height="50" width="50" />
+          </div>
+          <span class="text">流媒体视频</span>
         </div>
       </div>
     </div>
@@ -103,20 +105,13 @@ export default {
   components: {},
   methods: {
     handelVideo() {
-      let userMsg = this.$store.state.user.user
-      let data = {
-        type: userMsg.accountTypeDto.type,
-        token: this.$store.state.user.token,
-        projectId: '',
-        projectName: '',
-        projectStartDate: '',
-        projectEndDate: '',
-        username: userMsg.username,
-        mobile: userMsg.accountBaseDto.phone,
-        areaCode: userMsg.accountTypeDto.code,
-        name: userMsg.accountBaseDto.name
+      if (window.jsCall) {
+        window.jsCall.videoInspectionList()
+      } else {
+        this.$router.push({
+          name: 'government-videoCheck'
+        })
       }
-      if (window.jsCall) window.jsCall.videoInspectionList(JSON.stringify(data))
     },
     //跳转页面
     goSkip(name, parmas) {

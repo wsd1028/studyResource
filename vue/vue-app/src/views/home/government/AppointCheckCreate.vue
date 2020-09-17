@@ -193,6 +193,7 @@ export default {
         } else {
           areaId = areaIdList[0].areaId
         }
+        if (!areaId) return
         let resp = await this.$http.get('/carp/business/a/q/garbage/station/page?limit=9999&page=1&areaId=' + areaId)
         if (resp.code == 0) {
           this.garbageList = resp.data.records

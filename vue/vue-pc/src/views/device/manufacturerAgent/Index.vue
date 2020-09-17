@@ -12,13 +12,39 @@
       :show-control-del="false"
       :show-control-edit="false"
       :filters="filters"
-      :bind-buttons="[{ label: '售后服务点' }]"
+      :bind-buttons="[
+        { label: '售后服务点', key: 'saleService' },
+        { label: '设备商授权', key: 'device' }
+      ]"
+      @bindButtonClick="handleClick"
     ></common-table-control>
-    <el-dialog v-if="saleServiceShow" :visible="true" @close="saleServiceShow = false"> </el-dialog>
+    <el-dialog v-if="saleServiceShow" top="4vh" :visible="true" @close="saleServiceShow = false">
+      <template slot="title">
+        <span>售后服务点</span>
+        <el-tag size="mini" type="success" v-text="manufacturer.name"></el-tag>
+      </template>
+      <sale-service :manufacturer="manufacturer"></sale-service>
+    </el-dialog>
+    <el-dialog v-if="deviceShow" :visible="true" @close="deviceShow = false">
+      <template slot="title">
+        <span>设备商授权</span>
+        <el-tag size="mini" type="success" v-text="manufacturer.name"></el-tag>
+      </template>
+      <device-bind
+        :manufacturer="manufacturer"
+        :close="
+          () => {
+            deviceShow = false
+          }
+        "
+      ></device-bind>
+    </el-dialog>
   </div>
 </template>
 <script>
 import commonTableControl from '@/components/CommonTableControl'
+import saleService from './SaleService'
+import deviceBind from './Device'
 export default {
   data() {
     // 表操作权限
@@ -41,9 +67,16 @@ export default {
       // 售后服务点弹窗显示控制器
       saleServiceShow: false,
 
+      // 设备商授权弹窗显示控制器
+      deviceShow: false,
+
+      // 点击售后服务点后获取到的接入厂商详情
+      manufacturer: {},
+
       // 表单配置
       form: {
         formWidth: '500px',
+        tableControlWidth: '130px',
         // 表格标题
         label: {
           // 厂商名称
@@ -76,12 +109,11 @@ export default {
             show: false,
             span: 24,
             width: 120,
-            default: false,
+            default: true,
             item: [
               { label: '启用', code: true, type: 'success' },
               { label: '禁用', code: false, type: 'danger' }
-            ],
-            real: false
+            ]
           }
         }
       },
@@ -100,8 +132,23 @@ export default {
       }
     }
   },
+  methods: {
+    handleClick({ row, key }) {
+      this.manufacturer = row
+      switch (key) {
+        case 'saleService':
+          this.saleServiceShow = true
+          break
+        case 'device':
+          this.deviceShow = true
+          break
+      }
+    }
+  },
   components: {
-    commonTableControl
+    commonTableControl,
+    saleService,
+    deviceBind
   }
 }
 </script>

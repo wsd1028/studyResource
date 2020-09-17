@@ -301,7 +301,9 @@ export default {
         // 结束时间
         endTime: {
           label: '结束时间',
-          type: 'date'
+          name: '-',
+          type: 'date',
+          value: this.$moment(Date.now()).format('YYYY-MM-DD HH:mm:ss')
         },
         // 巡检状态
         state: {
@@ -329,7 +331,14 @@ export default {
         workStationId: {
           label: '搜索项目',
           show: false,
-          value: [0, 50].includes(this.$userType) ? null : user.accountTypeDto.ancillaryId
+          value: (() => {
+            // 查看路由是否传入项目id,如果有值则为该id,无值则根据用户类型判断
+            if (this.$route.query.uid) {
+              return this.$aesDecrypt(decodeURIComponent(this.$route.query.uid))
+            } else {
+              return [0, 50].includes(this.$userType) ? null : user.accountTypeDto.ancillaryId
+            }
+          })()
         },
         // 用户地区码
         areaCode: {

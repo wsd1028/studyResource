@@ -1,13 +1,14 @@
 <template>
   <div class="manage">
     <!-- 导航栏 -->
-    <nav>
+    <!-- <nav>
       <div v-for="item in headerInfo" :key="item.key" class="nav-item">
         <span class="number" v-text="item.value"></span>
         <span v-text="item.label"></span>
       </div>
-    </nav>
+    </nav> -->
     <table-control
+      ref="tableControl"
       :form-config="formConfig"
       :allow-add="false"
       :allow-delete="false"
@@ -15,8 +16,10 @@
       search-url="/carp/business/a/q/review/message/showPage"
       :bind-buttons="[
         { label: '查看', key: 'details' },
-        { label: '审核', key: 'review', rule: { regExp: /^null/, key: 'headId' }, type: 'warning' }
+        { label: '轨迹', key: 'orbit', type: 'info' },
+        { label: '审核', key: 'review', rule: { regExp: /^20$/, key: 'state' }, type: 'warning' }
       ]"
+      :filters="filters"
       @bindButtonClick="handle"
     ></table-control>
     <!-- 审核操作弹出框 -->
@@ -356,15 +359,20 @@
       </el-row>
     </el-dialog>
     <!-- 电子联单详情弹出框end -->
+
+    <!-- 车辆轨迹弹出框 -->
+    <history-map ref="historyMap"></history-map>
   </div>
 </template>
 
 <script>
 import tableControl from '@/components/CommonTableControl'
+import historyMap from '../mapCarGPS/models/map/HistoryMap'
 export default {
   data() {
     const user = this.$store.state.user.userInfo
     return {
+      user,
       // 头信息
       headerInfo: [],
       // 审核分页数据
@@ -401,10 +409,10 @@ export default {
         show: false,
         data: {}
       },
-      user,
 
       // 表操作器对象
       formConfig: {
+        tableControlWidth: '134px',
         label: {
           // 图像
           carPhoto: {
@@ -412,9 +420,25 @@ export default {
             colType: 'img',
             HBase: true
           },
+          // 车牌号
+          licenseNumber: {
+            label: '车牌号'
+          },
           // 项目
           projectName: {
             label: '项目'
+          },
+          areaName: {
+            label: '地区'
+          },
+          state: {
+            label: '联单状态',
+            colType: 'tag',
+            item: [
+              { label: '运输中', type: 'primary', code: 10 },
+              { label: '待审核', type: 'warning', code: 20 },
+              { label: '已审核', type: 'success', code: 25 }
+            ]
           },
           clean: {
             label: '车身洁净',
@@ -432,18 +456,44 @@ export default {
               { label: '否', type: 'danger', code: false }
             ]
           },
-          checkReviewed: {
-            label: '是否已点检',
-            colType: 'tag',
-            item: [
-              { label: '是', type: 'success', code: true },
-              { label: '否', type: 'danger', code: false }
-            ]
-          },
           createDate: {
             label: '创建时间',
             show: false
           }
+        }
+      },
+      // 筛选器
+      filters: {
+        areaCode: {
+          name: '区域',
+          type: 'area',
+          props: {
+            code: 'code'
+          },
+          area: (() => {
+            let area = []
+            this.$getAreaTree(user.accountTypeDto.code, tree => {
+              area = [tree]
+            })
+            return area
+          })(),
+          value: user.accountTypeDto.code
+        },
+        state: {
+          name: '联单状态',
+          type: 'select',
+          item: [
+            { label: '全部', type: 'primary', code: null },
+            { label: '运输中', type: 'primary', code: 10 },
+            { label: '待审核', type: 'warning', code: 20 },
+            { label: '已审核', type: 'success', code: 25 }
+          ],
+          value: null
+        },
+        projectName: {
+          label: '搜索项目名称',
+          type: 'search',
+          value: ''
         }
       }
     }
@@ -460,6 +510,7 @@ export default {
     flush() {
       // 点击生成审核统计信息（头部）
       this.getHeaderInfo()
+      this.$refs.tableControl && this.$refs.tableControl.getList()
     },
     /* *
      * 获取审核统计头信息
@@ -509,7 +560,7 @@ export default {
      * * */
     handleReview(item) {
       // 如果当前联单已审核则不再往下执行
-      if (item.headId) return
+      // if (item.headId) return
       // 填充表单
       this.form.originParams = item
       this.form.params.clean = item.clean
@@ -521,6 +572,10 @@ export default {
     // 发送审查结果
     review() {
       let params = JSON.parse(JSON.stringify(this.form.originParams))
+      params.id = params.reviewedId
+      ;['areaName', 'carPhoto', 'carState', 'garbageId', 'licenseNumber', 'state', 'reviewedId'].forEach(feild => {
+        delete params[feild]
+      })
       params.headId = this.user.id
       this.$http.put('/carp/business/a/q/review/message/update', Object.assign(params, this.form.params)).then(({ code, message }) => {
         if (code === 0) {
@@ -535,15 +590,24 @@ export default {
 
     // 按钮点击
     handle({ row, key }) {
-      if (key == 'review') {
-        this.handleReview(row)
-      } else {
-        this.handleDetails(row)
+      switch (key) {
+        case 'review':
+          this.handleReview(row)
+          break
+
+        case 'details':
+          this.handleDetails(row)
+          break
+
+        case 'orbit':
+          this.$refs.historyMap && this.$refs.historyMap.watchHistoy({ licensePlate: row.licenseNumber })
+          break
       }
     }
   },
   components: {
-    tableControl
+    tableControl,
+    historyMap
   }
 }
 </script>

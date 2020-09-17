@@ -42,7 +42,10 @@ export default {
         tablePermission[key] = data
       })
     })
+    const user = this.$store.state.user.userInfo
     return {
+      // 当前登录账号
+      user,
       // 表操作权限
       tablePermission,
       // 表单配置
@@ -162,8 +165,15 @@ export default {
       filters: {
         // 地区id
         areaId: {
-          label: '根据地区筛选',
+          label: '选择地区',
           type: 'area',
+          area: (() => {
+            let areaTree = []
+            this.$getAreaTree(user.accountTypeDto.code, tree => {
+              areaTree = [tree]
+            })
+            return areaTree
+          })(),
           value: ''
         }
       }

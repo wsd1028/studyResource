@@ -44,7 +44,7 @@
         </template>
       </van-cell>
       <van-divider />
-      <van-cell @click="aboutUs" class="item" is-link>
+      <van-cell @click="aboutUs" class="item" is-link v-if="$store.state.user.appType != '3'">
         <template #title>
           <div>
             <van-icon class-prefix="iconfont" class="green myIcon" name="wode-guanyuwomen" />
@@ -62,7 +62,7 @@
       </van-cell>
       <van-divider />
     </div>
-    <div class="bottom">
+    <div class="bottom" v-if="$store.state.user.appType != '3'">
       <van-cell @click="loginOut" class="item" is-link>
         <template #title>
           <div>

@@ -50,8 +50,8 @@
             :disabled="item.disabled"
             :placeholder="item.placeholder"
           >
-            <template v-if="item.beforeUnit" slot="prepend">{{ item.beforeUnit }}</template>
-            <template v-if="item.unit" slot="append">{{ item.unit }}</template>
+            <div v-if="item.beforeUnit" slot="prepend" :style="{ width: item.prependWidth || 'auto' }">{{ item.beforeUnit }}</div>
+            <div v-if="item.unit" slot="append" :style="{ width: item.unitWidth || 'auto' }">{{ item.unit }}</div>
           </el-input>
           <!-- 多选框/复选框 -->
           <div v-else-if="item.type === 'checked'">
@@ -166,12 +166,34 @@
             <el-button
               slot="append"
               :icon="getCompanyInfoIcon"
+              v-if="item.button === undefined ? true : item.button"
               @click="getCompanyInfo(form.data[key], key)"
               @dblclick.native="getCompanyInfo(form.data[key], key, 1)"
             >
               {{ '获取详情' }}
             </el-button>
           </el-input>
+          <!-- 公共区域选择器 -->
+          <choose-public-area
+            :ref="key"
+            v-else-if="item.type == 'publicArea'"
+            :props="item.props ? item.props : {}"
+            v-model="form.data[key]"
+            :area="item.area"
+            :disabled="item.disabled"
+            :clear-validate="
+              () => {
+                $refs[`form-item-${key}`] && $refs[`form-item-${key}`][0].clearValidate()
+              }
+            "
+            @change="
+              data => {
+                item.target ? (form.data[item.target] = data.id) : null
+                item.change ? item.change.call(form, data) : null
+                enableEdit(key)
+              }
+            "
+          />
           <!-- 项目选择器 -->
           <choose-project
             :ref="key"
@@ -511,9 +533,9 @@
             @blur="item.blur && item.blur(form.data[key], $event)"
             @keyup.enter.native="item.keyup && item.keyup(form.data[key], $event)"
           >
-            <template v-if="item.beforeUnit" slot="prepend">
+            <div v-if="item.beforeUnit" slot="prepend" :style="{ width: item.prependWidth || 'auto' }">
               {{ item.beforeUnit }}
-            </template>
+            </div>
             <el-button
               v-if="item.beforeUnitButton"
               :type="item.theme ? item.theme : 'info'"
@@ -524,9 +546,9 @@
             >
               {{ item.beforeUnit }}
             </el-button>
-            <template v-if="item.unit" slot="append">
+            <div v-if="item.unit" slot="append" :style="{ width: item.unitWidth || 'auto' }">
               {{ item.unit }}
-            </template>
+            </div>
             <el-button
               v-if="item.unitButton"
               :type="item.theme ? item.theme : 'info'"
@@ -549,6 +571,7 @@ import ChooseGarbageStation from './ChooseGarbageStation'
 import ChooseProject from './ChooseProject'
 import ChooseManufacturer from './ChooseManufacturer'
 import ChooseAgent from './ChooseAgent'
+import ChoosePublicArea from './ChoosePublicArea'
 import FormMapLocation from './FormMapLocation'
 export default {
   data() {
@@ -613,17 +636,28 @@ export default {
           .then(({ code, data, message }) => {
             if (code === 0) {
               this.form.label[field].change && this.form.label[field].change.call(this, data.id, data)
-              this.$message({
-                offset: 280,
-                type: 'success',
-                message: '企业信息查询成功'
-              })
+
+              // 判断是否有自定义成功事件函数
+              if (this.form.label[field].onSuccess) {
+                this.form.label[field].onSuccess.call(this, data.id, data)
+              } else {
+                this.$message({
+                  offset: 280,
+                  type: 'success',
+                  message: '企业信息查询成功'
+                })
+              }
+
               this.form.label[field].getCompanyInfo && this.form.label[field].getCompanyInfo.call(this.form, data)
               this.form.label[field].target && (this.form.data[this.form.label[field].target] = data.id)
               this.form.data[field] = data.name
               this.$set(this.form.label[field], 'error', '')
             } else {
-              this.$set(this.form.label[field], 'error', message)
+              if (this.form.label[field].onError) {
+                this.form.label[field].onError.call(this, message)
+              } else {
+                this.$set(this.form.label[field], 'error', message)
+              }
             }
             this.getCompanyInfoIcon = 'el-icon-search'
           })
@@ -986,7 +1020,8 @@ export default {
     ChooseProject,
     ChooseManufacturer,
     ChooseAgent,
-    FormMapLocation
+    FormMapLocation,
+    ChoosePublicArea
   }
 }
 </script>

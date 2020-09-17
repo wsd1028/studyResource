@@ -53,8 +53,8 @@
                     <span v-text="item.ownerName"></span>
                   </p>
                   <p>
-                    车主电话:
-                    <span v-text="item.ownerPhone"></span>
+                    时间:
+                    <span v-text="item.createDate"></span>
                   </p>
                 </div>
                 <div class="bottom" v-else>
@@ -99,8 +99,8 @@ export default {
         //车辆识别查询条件
         plateNumber: '',
         limit: 10,
-        page: 1,
         code: 60,
+        page: 1,
         areaCode: ''
       },
       myTimeout: null
@@ -150,6 +150,7 @@ export default {
     async select(page) {
       if (page) {
         this.searchData.page = 1
+        this.list = []
       }
       let url = ''
       if (this.tabActive == 0) {
@@ -169,28 +170,6 @@ export default {
       this.refreshloading = result.refreshloading
       this.loading = result.loading
       this.finished = result.finished
-      //let resp = await this.$http.get(url, {
-      //  params: this.searchData
-      //})
-      //if (resp.code == 0) {
-      //  if (this.searchData.page == 1) {
-      //    this.list = []
-      //  }
-      //  this.list = this.list.concat(resp.data.records)
-      //  // 加载状态结束
-      //  this.loading = false
-      //  this.refreshloading = false
-      //  this.searchData.page = this.searchData.page + 1
-      //  if (this.list.length == resp.data.total) {
-      //    // 数据全部加载完成
-      //    this.finished = true
-      //  }
-      //} else {
-      //  this.$dialog.alert({
-      //    message: '获取车辆识别失败:' + resp.message,
-      //    confirmButtonColor: 'red'
-      //  })
-      //}
     }
   }
 }

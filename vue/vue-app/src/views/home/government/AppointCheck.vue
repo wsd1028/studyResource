@@ -155,28 +155,6 @@ export default {
       this.refreshloading = result.refreshloading
       this.loading = result.loading
       this.finished = result.finished
-      //let resp = await this.$http.get(`/carp/business/a/q/command/check/list`, {
-      //  params: this.searchData
-      //})
-      //if (resp.code == 0) {
-      //  if (page) {
-      //    this.list = []
-      //  }
-      //  this.list = this.list.concat(resp.data.records)
-      //  this.loading = false
-      //  this.refreshloading = false
-      //  this.searchData.page = this.searchData.page + 1
-      //  if (this.list.length == resp.data.total) {
-      //    this.finished = true
-      //  } else {
-      //    this.finished = false
-      //  }
-      //} else {
-      //  this.$dialog.alert({
-      //    message: '获取指派点检失败:' + resp.message,
-      //    confirmButtonColor: 'red'
-      //  })
-      //}
     }
   }
 }

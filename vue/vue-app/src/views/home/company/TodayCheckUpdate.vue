@@ -69,6 +69,8 @@ export default {
         checkPeopleName: '', //巡检人名字1
         createDate: '', //创建巡检时间1
         id: null, //不传
+        latitude: null,
+        longitude: null,
         departmentState: this.$dictionaries.machineType.government, //部门状态1
         workStationId: null, //项目/消纳站ID1
         checkType: 1,
@@ -134,18 +136,28 @@ export default {
   mounted() {
     this.paramsData = this.$route.params
     this.getMainData()
+    window.setLocation = this.setLocation2
+    this.getLocation()
   },
   components: {
     MyUpload
   },
   methods: {
+    //得到安卓返回的经纬度
+    setLocation2(data) {
+      this.updateData.latitude = data.lat
+      this.updateData.longitude = data.lng
+    },
+    //调用安卓接口获取经纬度
+    getLocation() {
+      if (window.jsCall) window.jsCall.getLocation()
+    },
     //上传文件
     uploadYes(fileList, index) {
       this.updateData2.todaysCheckContentDtoList[index].todaysImgEntityList = fileList
     },
     //巡检完成
     async updateYes() {
-      this.btnLoading = true
       let bool = true
       this.updateData.state = this.$dictionaries.todayCheck.waitCheck
       for (let i = 0; i < this.updateData.todaysCheckContentDtoList.length; i++) {
@@ -170,7 +182,9 @@ export default {
         }
       }
       if (bool) {
+        this.btnLoading = true
         let resp = await this.$http.put('/carp/business/a/q/todays/check', this.updateData)
+        this.btnLoading = false
         if (resp.code == 0) {
           this.$dialog.alert({
             message: '提交审核成功',
@@ -189,7 +203,6 @@ export default {
           confirmButtonColor: 'red'
         })
       }
-      this.btnLoading = false
     },
     //获取信息
     async getMainData() {

@@ -7,7 +7,7 @@
         class="check-item"
         @click="
           points.projectState.check = !points.projectState.check
-          $emit('renderMarkers')
+          $emit('render-markers')
         "
       >
         <el-badge :value="points.projectState.data.length" :class="{ check: points.projectState.check, blue: true }">
@@ -30,7 +30,7 @@
                 points.projectState.check = true
                 points.projectState.label = item.label
                 points.projectState.data = data
-                $emit('renderMarkers')
+                $emit('render-markers')
               } else {
                 $message.error('请求失败')
               }
@@ -56,7 +56,7 @@
       class="check-item"
       @click="
         item.check = !item.check
-        $emit('renderMarkers')
+        $emit('render-markers')
       "
     >
       <el-badge :value="item.data.length" :class="`${item.theme} ${item.check ? ' check' : ''}`">
@@ -100,7 +100,8 @@ export default {
           data: [],
           state: projectStateDict,
           theme: 'blue',
-          url: '/carp/business/a/q/big/screen/project/state?state=742'
+          url: '/carp/business/a/q/big/screen/project/state?state=742',
+          renderType: 'project'
         },
 
         // 有联单
@@ -110,7 +111,8 @@ export default {
           check: true,
           data: [],
           theme: 'green',
-          url: '/carp/business/a/q/big/screen/electronic/project'
+          url: '/carp/business/a/q/big/screen/electronic/project',
+          renderType: 'project'
         },
 
         // 有车辆进入
@@ -120,7 +122,8 @@ export default {
           check: true,
           data: [],
           theme: 'green',
-          url: '/carp/business/a/q/big/screen/recognition/project'
+          url: '/carp/business/a/q/big/screen/recognition/project',
+          renderType: 'project'
         },
 
         // 未点检
@@ -130,7 +133,8 @@ export default {
           check: true,
           data: [],
           theme: 'red',
-          url: '/carp/business/a/q/big/screen/electronic/state?checkReviewed=0'
+          url: '/carp/business/a/q/big/screen/electronic/state?checkReviewed=0',
+          renderType: 'project'
         },
 
         // 已点检
@@ -140,7 +144,8 @@ export default {
           check: true,
           data: [],
           theme: 'blue',
-          url: '/carp/business/a/q/big/screen/electronic/state?checkReviewed=1'
+          url: '/carp/business/a/q/big/screen/electronic/state?checkReviewed=1',
+          renderType: 'project'
         },
 
         // 有方案
@@ -150,7 +155,8 @@ export default {
           check: true,
           data: [],
           theme: 'blue',
-          url: '/carp/business/a/q/big/screen/dust/programme'
+          url: '/carp/business/a/q/big/screen/dust/programme',
+          renderType: 'project'
         },
 
         // 扬尘项目
@@ -160,7 +166,8 @@ export default {
           check: true,
           data: [],
           theme: 'blue',
-          url: '/carp/business/a/q/big/screen/dust/administer'
+          url: '/carp/business/a/q/big/screen/dust/administer',
+          renderType: 'project'
         },
 
         // 消纳场
@@ -170,7 +177,8 @@ export default {
           check: true,
           data: [],
           theme: 'blue',
-          url: '/carp/business/a/q/garbage/station/gps/all'
+          url: '/carp/business/a/q/garbage/station/gps/all',
+          renderType: 'garbageStation'
         },
 
         // 公共区域
@@ -180,7 +188,30 @@ export default {
           check: true,
           data: [],
           theme: 'green',
-          url: '/carp/business/a/q/public/area/page'
+          url: '/carp/business/a/q/public/area/page',
+          renderType: 'publicArea'
+        },
+
+        // 已处理应急预案
+        handleEmergency: {
+          label: '已处理应急预案',
+          icon: 'iconfont iconfont-yibinyangchenzhili-gongzuotaiicon-08',
+          check: true,
+          data: [],
+          theme: 'green',
+          url: '/carp/business/a/q/big/screen/emergency?state=1',
+          renderType: 'project'
+        },
+
+        // 未处理应急预案
+        notHandleEmerency: {
+          label: '未处理应急预案',
+          icon: 'iconfont iconfont-yibinyangchenzhili-gongzuotaiicon-07',
+          check: true,
+          data: [],
+          theme: 'red',
+          url: '/carp/business/a/q/big/screen/emergency?state=2',
+          renderType: 'project'
         }
       }
     }
@@ -192,22 +223,28 @@ export default {
       this.$emit('loading', true)
       Promise.all(
         Object.keys(this.points).map(key => {
-          return this.$http
-            .get(this.points[key].url, {
-              params: {
-                areaCode: this.user.accountTypeDto.code
-              }
-            })
-            .then(({ code, data }) => {
-              if (code === 0) {
-                this.points[key].data = data.records || data
-              }
-            })
+          return new Promise(resolve => {
+            this.$http
+              .get(this.points[key].url, {
+                params: {
+                  areaCode: this.user.accountTypeDto.code
+                }
+              })
+              .then(({ code, data }) => {
+                resolve()
+                if (code === 0) {
+                  this.points[key].data = data.records || data
+                }
+              })
+              .catch(err => {
+                if (err) resolve()
+              })
+          })
         })
       )
         .then(() => {
           this.$emit('loading', false)
-          this.$emit('renderMarkers')
+          this.$emit('render-markers')
         })
         .catch(() => {
           this.$emit('loading', false)
@@ -227,7 +264,7 @@ export default {
     this.getData()
 
     // 上报覆盖物数据
-    this.$emit('markerPoints', this.points)
+    this.$emit('marker-points', this.points)
   }
 }
 </script>
@@ -244,7 +281,7 @@ export default {
   align-items: center;
   transform: translate(-50%, 0);
   height: auto;
-  width: 8rem;
+  width: 13rem;
   background-color: @white;
   box-shadow: @black-opcity 0 0.04rem 0.08rem;
   border-radius: 0 0 @radius-size @radius-size;

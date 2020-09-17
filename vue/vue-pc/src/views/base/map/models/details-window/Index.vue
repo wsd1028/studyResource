@@ -48,14 +48,22 @@
         ></el-image>
       </div>
 
-      <!-- 查看详情按钮 -->
-      <el-button v-if="info.hasOwnProperty('architecturalNature')" type="primary" size="mini" @click="dialogShow = true" style="margin-top:8px;width:100%"
-        >查看更多</el-button
-      >
+      <!-- 按钮组 -->
+      <div class="button-wrap" style="margin-top:8px;width:100%">
+        <!-- 查看详情按钮 -->
+        <el-button v-if="['project'].includes(info.renderType)" type="primary" size="mini" @click="dialogShow = true">查看更多</el-button>
+        <el-button
+          v-if="['project', 'garbageStation'].includes(info.renderType)"
+          type="success"
+          size="mini"
+          class="el-icon-user"
+          @click="$emit('user-list-show', info)"
+        ></el-button>
+      </div>
     </div>
 
     <!-- 详细信息弹窗 -->
-    <el-dialog v-if="dialogShow" width="90%" :visible="true" @close="dialogShow = false">
+    <el-dialog v-if="dialogShow" :fullscreen="true" :visible="true" @close="dialogShow = false" style="padding:26px">
       <project-details :project-id="info.id"></project-details>
     </el-dialog>
   </div>
@@ -87,19 +95,23 @@ export default {
         // 清除参建单位
         this.companys = []
         // 获取弹窗内容信息
-        this.info = info || {}
+        this.$set(this, 'info', info || {})
         // 判断弹窗信息是否获取成功,不成功则不再继续执行当前方法并关闭拦截器
         if (!this.info.id) {
           this.requestTackled = false
           return
         }
         // 关闭今日宜宾窗口
-        this.$emit('colseStatisticsWindow')
+        this.$emit('colse-statistics-window')
         // 开启加载动画
         this.loading = true
         // 判断当前信息是项目还是消纳站,并给予不同的详情请求链接
-        let isProject = this.info.hasOwnProperty('architecturalNature')
-        let url = isProject ? '/carp/business/a/q/project' : '/carp/business/a/q/garbage/station'
+        let isProject = ['project'].includes(this.info.renderType)
+        let url = {
+          project: '/carp/business/a/q/project',
+          garbageStation: '/carp/business/a/q/garbage/station',
+          publicArea: '/carp/business/a/q/public/area'
+        }[this.info.renderType]
         // 任务列表
         let missions = [
           // 请求项目/消纳站详情
@@ -108,7 +120,7 @@ export default {
               .get(`${url}/${info.id}`)
               .then(({ code, data }) => {
                 if (code === 0) {
-                  this.info = data
+                  Object.assign(this.info, data)
                   resolve(data)
                 } else {
                   resolve(false)
@@ -122,29 +134,31 @@ export default {
           })
         ]
         // 如果为项目类型则再额外请求参建单位
-        missions.push(
-          new Promise(resolve => {
-            this.$http
-              .get('/carp/business/a/q/project/corp/project', {
-                params: {
-                  projectId: this.info.id,
-                  page: 1,
-                  limit: 20
-                }
-              })
-              .then(({ code, data }) => {
-                if (code === 0) {
-                  this.companys = data.records
-                  resolve()
-                } else {
-                  resolve(false)
-                }
-              })
-              .catch(err => {
-                if (err) resolve(false)
-              })
-          })
-        )
+        if (isProject) {
+          missions.push(
+            new Promise(resolve => {
+              this.$http
+                .get('/carp/business/a/q/project/corp/project', {
+                  params: {
+                    projectId: this.info.id,
+                    page: 1,
+                    limit: 20
+                  }
+                })
+                .then(({ code, data }) => {
+                  if (code === 0) {
+                    this.companys = data.records
+                    resolve()
+                  } else {
+                    resolve(false)
+                  }
+                })
+                .catch(err => {
+                  if (err) resolve(false)
+                })
+            })
+          )
+        }
         Promise.all(missions).then(() => {
           // 关闭加载动画
           this.loading = false
@@ -185,6 +199,10 @@ export default {
       color: #707070;
       background-color: #f8f8f8;
     }
+  }
+
+  .button-wrap {
+    text-align: center;
   }
 
   .offset {

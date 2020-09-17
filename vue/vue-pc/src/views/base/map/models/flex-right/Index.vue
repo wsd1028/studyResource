@@ -1,171 +1,183 @@
 <template>
   <div class="flex-right-container" :class="{ hide }">
-    <h3 class="title">
-      <span v-text="title"></span>
-    </h3>
+    <div class="flex-right-content">
+      <h3 class="title">
+        <span v-text="title"></span>
+      </h3>
 
-    <!-- AQI PM10统计 -->
-    <div class="aqi-pm10-wrap">
-      <div class="aqi-wrap">
-        <div class="icon">
-          <svg class="icon" width="70" height="70" style="stroke-dasharray:201">
-            <circle cx="35" cy="35" r="26" fill="#fbd029" />
-            <circle cx="35" cy="35" r="32" stroke="#eee" stroke-width="3" fill="none" />
-            <circle
-              cx="35"
-              cy="35"
-              r="32"
-              stroke="#fbd029"
-              stroke-width="3"
-              fill="none"
-              :style="{ strokeDashoffset: ((150 - aqi.data) / 150) * 201, transitionDuration: '2000ms' }"
-            />
-            <circle cx="35" cy="35" r="32" stroke="#fff" stroke-width="4" fill="none" style="stroke-dasharray:3,6" />
-          </svg>
-          <div class="text"><span v-text="aqi.data"></span></div>
+      <!-- AQI PM10统计 -->
+      <div class="aqi-pm10-wrap">
+        <div class="aqi-wrap">
+          <div class="icon">
+            <svg class="icon" width="70" height="70" style="stroke-dasharray:201">
+              <circle cx="35" cy="35" r="26" fill="#fbd029" />
+              <circle cx="35" cy="35" r="32" stroke="#eee" stroke-width="3" fill="none" />
+              <circle
+                cx="35"
+                cy="35"
+                r="32"
+                stroke="#fbd029"
+                stroke-width="3"
+                fill="none"
+                :style="{ strokeDashoffset: ((150 - aqi.data) / 150) * 201, transitionDuration: '2000ms' }"
+              />
+              <circle cx="35" cy="35" r="32" stroke="#fff" stroke-width="4" fill="none" style="stroke-dasharray:3,6" />
+            </svg>
+            <div class="text"><span v-text="aqi.data"></span></div>
+          </div>
+          <div class="label">
+            <span>AQI</span>
+          </div>
         </div>
-        <div class="label">
-          <span>AQI</span>
-        </div>
-      </div>
-      <div class="pm10-wrap">
-        <div class="icon">
-          <svg class="icon" width="70" height="70" style="stroke-dasharray:201">
-            <circle cx="35" cy="35" r="26" fill="#1a91fa" />
-            <circle cx="35" cy="35" r="32" stroke="#d4d4d4" stroke-width="3" fill="none" />
-            <circle
-              cx="35"
-              cy="35"
-              r="32"
-              stroke="#1a91fa"
-              stroke-width="3"
-              fill="none"
-              :style="{ strokeDashoffset: ((100 - pm10.data) / 100) * 201, transitionDuration: '2000ms' }"
-            />
-            <circle cx="35" cy="35" r="32" stroke="#fff" stroke-width="4" fill="none" style="stroke-dasharray:3,6" />
-          </svg>
-          <div class="text"><span v-text="pm10.data"></span></div>
-        </div>
-        <div class="label">
-          <span>PM10</span>
-        </div>
-      </div>
-    </div>
-
-    <!-- 固定源/履职率 -->
-    <div class="model-item percentage">
-      <!-- 头部 -->
-      <div class="header">
-        <div class="title">
-          <span class="label">固定源</span><span class="num">/{{ projects }}</span>
+        <div class="pm10-wrap">
+          <div class="icon">
+            <svg class="icon" width="70" height="70" style="stroke-dasharray:201">
+              <circle cx="35" cy="35" r="26" fill="#1a91fa" />
+              <circle cx="35" cy="35" r="32" stroke="#d4d4d4" stroke-width="3" fill="none" />
+              <circle
+                cx="35"
+                cy="35"
+                r="32"
+                stroke="#1a91fa"
+                stroke-width="3"
+                fill="none"
+                :style="{ strokeDashoffset: ((100 - pm10.data) / 100) * 201, transitionDuration: '2000ms' }"
+              />
+              <circle cx="35" cy="35" r="32" stroke="#fff" stroke-width="4" fill="none" style="stroke-dasharray:3,6" />
+            </svg>
+            <div class="text"><span v-text="pm10.data"></span></div>
+          </div>
+          <div class="label">
+            <span>PM10</span>
+          </div>
         </div>
         <div class="more">
-          <el-link
-            @click="
-              $router.push({ name: 'project' })
-              $store.commit('selectMenu', 'project')
-            "
-            style="text-decoration:none"
-            >查看全部</el-link
-          >
+          <el-tooltip class="item" effect="dark" content="更多数据" placement="top">
+            <span class="more-bt el-icon-cloudy-and-sunny" @click="$emit('open-weather-box')"></span>
+          </el-tooltip>
         </div>
       </div>
 
-      <!-- 今日履职率 -->
-      <div class="body">
-        <div v-for="(item, key) in percentage" :key="key" class="item">
+      <!-- 固定源/履职率 -->
+      <div class="model-item percentage">
+        <!-- 头部 -->
+        <div class="header">
+          <div class="title">
+            <span class="label">固定源</span><span class="num">/{{ projects }}</span>
+          </div>
+          <div class="more">
+            <el-link
+              @click="
+                $router.push({ name: 'project' })
+                $store.commit('selectMenu', 'project')
+              "
+              style="text-decoration:none"
+              >查看全部</el-link
+            >
+          </div>
+        </div>
+
+        <!-- 今日履职率 -->
+        <div class="body">
+          <div v-for="(item, key) in percentage" :key="key" class="item">
+            <div class="label">
+              <span v-text="item.label"></span>
+              <span class="num" v-text="item.num"></span>
+            </div>
+            <div class="progress">
+              <div class="progress-bar" :style="{ width: item.num }"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 移动源 -->
+      <div class="model-item dynamic">
+        <!-- 头部 -->
+        <div class="header">
+          <div class="title">
+            <span class="label">移动源</span>
+          </div>
+        </div>
+
+        <!-- 今日履职率 -->
+        <div class="body">
+          <div class="item gps">
+            <div class="title"><span>GPS</span></div>
+            <div class="value-wrap online">
+              <div class="value">
+                <div class="code green"><span v-text="gpsPercentage.onlinePercentage"></span></div>
+                <div class="label"><span>在线率</span></div>
+              </div>
+            </div>
+            <div class="value-wrap">
+              <div class="value local" :style="{ flex: gpsPercentage.localCarNum }">
+                <div class="code blue"><span v-text="gpsPercentage.localCarNum"></span></div>
+                <div class="label"><span>本地车</span></div>
+              </div>
+              <div class="value remote" :style="{ flex: gpsPercentage.foreignCarNum }">
+                <div class="code warning"><span v-text="gpsPercentage.foreignCarNum"></span></div>
+                <div class="label"><span>外地车</span></div>
+              </div>
+            </div>
+          </div>
+          <div class="item road">
+            <div class="title"><span>卡口</span></div>
+            <div class="value-wrap">
+              <div class="value local" :style="{ flex: road.localCarNum }">
+                <div class="code blue"><span v-text="road.localCarNum"></span></div>
+                <div class="label"><span>本地车</span></div>
+              </div>
+              <div class="value remote" :style="{ flex: road.foreignCarNum }">
+                <div class="code warning"><span v-text="road.foreignCarNum"></span></div>
+                <div class="label"><span>外地车</span></div>
+              </div>
+              <div class="value local" :style="{ flex: road.unknownCarNum }">
+                <div class="code blue-light"><span v-text="road.unknownCarNum"></span></div>
+                <div class="label"><span>非名录</span></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 综合处置 -->
+      <div class="model-item unified">
+        <!-- 头部 -->
+        <div class="header">
+          <div class="title">
+            <span class="label">综合处置</span>
+          </div>
+        </div>
+
+        <!-- 电子联单/运输方量 -->
+        <div class="body">
+          <div v-for="(item, key) in unified" :key="key" class="item">
+            <div :style="{ backgroundColor: item.backgroundColor }">
+              <div class="label">
+                <span v-cloak>-{{ item.label }}-</span>
+              </div>
+              <div class="num" :style="{ color: item.color }" v-cloak>{{ item.num + item.unit }}</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 其余数据统计 -->
+      <div class="model-item other">
+        <div v-for="(item, key) in other" :key="key" class="item" @click="item.click && item.click()">
+          <div class="num">
+            <span v-text="item.num"></span>
+          </div>
           <div class="label">
             <span v-text="item.label"></span>
-            <span class="num" v-text="item.num"></span>
-          </div>
-          <div class="progress">
-            <div class="progress-bar" :style="{ width: item.num }"></div>
           </div>
         </div>
       </div>
-    </div>
 
-    <!-- 移动源 -->
-    <div class="model-item dynamic">
-      <!-- 头部 -->
-      <div class="header">
-        <div class="title">
-          <span class="label">移动源</span>
-        </div>
-      </div>
-
-      <!-- 今日履职率 -->
-      <div class="body">
-        <div class="item gps">
-          <div class="title"><span>GPS</span></div>
-          <div class="value-wrap online">
-            <div class="value">
-              <div class="code green"><span v-text="gpsPercentage.onlinePercentage"></span></div>
-              <div class="label"><span>在线率</span></div>
-            </div>
-          </div>
-          <div class="value-wrap">
-            <div class="value local" :style="{ flex: gpsPercentage.localCarNum }">
-              <div class="code blue"><span v-text="gpsPercentage.localCarNum"></span></div>
-              <div class="label"><span>本地车</span></div>
-            </div>
-            <div class="value remote" :style="{ flex: gpsPercentage.foreignCarNum }">
-              <div class="code warning"><span v-text="gpsPercentage.foreignCarNum"></span></div>
-              <div class="label"><span>外地车</span></div>
-            </div>
-          </div>
-        </div>
-        <div class="item road">
-          <div class="title"><span>卡口</span></div>
-          <div class="value-wrap">
-            <div class="value local" :style="{ flex: road.localCarNum }">
-              <div class="code blue"><span v-text="road.localCarNum"></span></div>
-              <div class="label"><span>本地车</span></div>
-            </div>
-            <div class="value remote" :style="{ flex: road.foreignCarNum }">
-              <div class="code warning"><span v-text="road.foreignCarNum"></span></div>
-              <div class="label"><span>外地车</span></div>
-            </div>
-            <div class="value local" :style="{ flex: road.unknownCarNum }">
-              <div class="code blue-light"><span v-text="road.unknownCarNum"></span></div>
-              <div class="label"><span>非名录</span></div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- 综合处置 -->
-    <div class="model-item unified">
-      <!-- 头部 -->
-      <div class="header">
-        <div class="title">
-          <span class="label">综合处置</span>
-        </div>
-      </div>
-
-      <!-- 电子联单/运输方量 -->
-      <div class="body">
-        <div v-for="(item, key) in unified" :key="key" class="item">
-          <div :style="{ backgroundColor: item.backgroundColor }">
-            <div class="label">
-              <span v-cloak>-{{ item.label }}-</span>
-            </div>
-            <div class="num" :style="{ color: item.color }" v-cloak>{{ item.num + item.unit }}</div>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- 其余数据统计 -->
-    <div class="model-item other">
-      <div v-for="(item, key) in other" :key="key" class="item">
-        <div class="num">
-          <span v-text="item.num"></span>
-        </div>
-        <div class="label">
-          <span v-text="item.label"></span>
-        </div>
+      <!-- 隐藏按钮 -->
+      <div class="bt-hide" @click="hide = true">
+        <i class="el-icon-minus"></i>
       </div>
     </div>
 
@@ -173,16 +185,12 @@
     <div
       class="bt-show"
       @click="
-        $emit('closeDetailsWindow')
+        $emit('close-details-window')
         hide = false
       "
     >
       <span v-text="title"></span>
       <i class="el-icon-arrow-left"></i>
-    </div>
-    <!-- 隐藏按钮 -->
-    <div class="bt-hide" @click="hide = true">
-      <i class="el-icon-minus"></i>
     </div>
   </div>
 </template>
@@ -214,17 +222,9 @@ export default {
         data: 0 /* parseInt(Math.random() * 5 + 50) */,
         // 获取空气质量数据
         getAirData: (() => {
-          this.$jsonp('https://www.tianqiapi.com/api/', {
-            params: {
-              version: 'v10',
-              appid: '23035354',
-              appsecret: '8YvlPNrz'
-            }
-          }).then(res => {
-            if (res.air) {
-              this.aqi.data = res.air
-              this.pm10.data = res.pm10
-            }
+          this.$getWeather().then(({ aqi }) => {
+            this.aqi.data = aqi.city.aqi
+            this.pm10.data = aqi.city.pm10
           })
         })()
       },
@@ -298,17 +298,28 @@ export default {
       other: {
         AllAccountNum: {
           label: '人员',
-          num: 0
+          num: 0,
+          click: () => {
+            this.$emit('user-list-show')
+          }
         },
         garbage: {
           label: '消纳',
           num: 0,
-          url: '/carp/business/a/q/big/screen/today/garbage'
+          url: '/carp/business/a/q/big/screen/today/garbage',
+          click: () => {
+            this.$router.push({ name: 'savespace' })
+            this.$store.commit('selectMenu', 'savespace')
+          }
         },
         project: {
           label: '项目',
           num: 0,
-          url: '/carp/business/a/q/big/screen/today/project'
+          url: '/carp/business/a/q/big/screen/today/project',
+          click: () => {
+            this.$router.push({ name: 'project' })
+            this.$store.commit('selectMenu', 'project')
+          }
         },
         dustManu: {
           label: '扬尘监测',
@@ -475,12 +486,18 @@ export default {
   padding: 0.14rem 0;
   top: 50%;
   right: 0.46rem;
-  height: auto;
+  height: 766px;
+  max-height: 100%;
   width: 2.8rem;
   background-color: @white;
   box-shadow: @black-opcity 0 0 0.04rem;
   border-radius: @radius-size;
   transform: translate(0, -50%);
+
+  .flex-right-content {
+    height: 100%;
+    overflow: hidden auto;
+  }
 
   h3.title {
     font-size: 0.16rem;
@@ -530,9 +547,10 @@ export default {
   padding-bottom: 0.1rem;
   border-bottom: @gray-light 1px solid;
   display: flex;
+  flex-flow: row wrap;
   & > div {
     flex: auto;
-    width: 0;
+    width: 50%;
     text-align: center;
     .icon {
       position: relative;
@@ -550,6 +568,19 @@ export default {
     .label {
       font-size: 0.14rem;
       color: @black;
+    }
+  }
+  .more {
+    margin-top: -0.3rem;
+    width: 100%;
+    font-size: 0.24rem;
+    color: @gray;
+    .more-bt {
+      display: inline-block;
+      &:hover {
+        color: @primary;
+        cursor: pointer;
+      }
     }
   }
 }
@@ -750,6 +781,14 @@ export default {
     .num {
       font-size: 0.16rem;
       font-weight: 600;
+    }
+
+    &:hover {
+      cursor: pointer;
+      &,
+      & .label {
+        color: @primary;
+      }
     }
   }
 }

@@ -130,7 +130,7 @@ export default {
     getDetails(id) {
       if (!id || this.name.length) return
       this.clearValidate()
-      this.$http.get(`/carp/device/a/q/manufacturer/${id}`).then(({ code, data, message }) => {
+      this.$http.get(`/carp/device/a/q/device/agent/${id}`).then(({ code, data, message }) => {
         if (code === 0) {
           this.name = data.name
           this.$emit('change', {

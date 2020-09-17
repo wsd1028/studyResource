@@ -3,14 +3,18 @@ export default {
   state: {
     token: '',
     homeUrl: '',
-    appType: '', //0独立app,1集成汇工云,2惠工云-消纳站2
+    appType: '', //0独立app,1集成汇工云,2惠工云-消纳站，3微信公众号
     user: {},
     type: '', //0:系统管理员 10:公司内部 20:安装运维 30:项目人员(排放员) 40:银行 50:安监站(政府) 60:消纳站(消纳员) 70:运输公司
     project: {},
     activeTab: 0,
-    paramsData: {}
+    paramsData: {},
+    workId: '' //项目/消纳站id
   },
   mutations: {
+    setWorkId(state, val) {
+      state.workId = val
+    },
     setAppType(state, val) {
       state.appType = val
       Cookie.set('appType', val)

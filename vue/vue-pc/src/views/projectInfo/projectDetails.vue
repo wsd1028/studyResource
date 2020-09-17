@@ -25,6 +25,14 @@
           <span class="label">竣工时间</span>
           <span class="value" v-text="project.completeDate"></span>
         </div>
+        <div class="item">
+          <span class="label">项目经理</span>
+          <span class="value" v-text="project.manager"></span>
+        </div>
+        <div class="item">
+          <span class="label">手机号</span>
+          <span class="value" v-text="project.managerPhone"></span>
+        </div>
       </div>
       <div class="item-wrap">
         <div v-for="item in companys" :key="item.id" class="item">
@@ -97,7 +105,6 @@ export default {
 <style lang="less" scoped>
 @import './less/Index';
 .el-card {
-  flex: 1.6;
   min-height: 234px;
 }
 .content {

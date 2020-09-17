@@ -56,6 +56,10 @@ export default {
     module: {
       type: String,
       default: 'base_image'
+    },
+    useType: {
+      type: String,
+      default: 'app'
     }
   },
   watch: {
@@ -91,6 +95,9 @@ export default {
         this.module == this.$dictionaries.imgType.appoint
       ) {
         url = '/carp/file/a/q/hbase/file/upload/files/'
+      }
+      if (this.useType == 'wechat') {
+        url = '/carp/file/k/q/open/files/'
       }
       let resp = await this.$http.post(url + this.module, formData)
       if (!resp) resp = { code: 500 }

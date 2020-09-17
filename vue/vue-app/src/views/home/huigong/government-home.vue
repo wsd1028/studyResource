@@ -22,7 +22,7 @@
               <van-icon class="myIcon" color="#6c6c6c" name="location" size="18" />
               <span class="text" v-text="user.areaName"></span>
             </div>
-            <div @click="goSkip('government-dustWarn')" style="display:flex;width:100%;marginTop:20px;align-items:flex-end">
+            <div @click="goSkip('government-dustNoise')" style="display:flex;width:100%;marginTop:20px;align-items:flex-end" v-if="weather.wea_img">
               <van-image :src="require(`@/assets/image/${weather.wea_img}.png`)" height="40" width="40" />
               <p style="color:#4285F4;text-align:left;margin-left:5px">
                 <span v-text="weather.wea"></span>
@@ -36,6 +36,7 @@
               <span style="color:#666;margin-right:6px">风力{{ weather.win_speed }}</span>
               <span style="color:#666">湿度{{ weather.humidity }}</span>
             </div>
+            <div style="height:62px" v-else></div>
           </div>
         </div>
         <div style="height:70px"></div>
@@ -59,7 +60,7 @@
           <van-divider></van-divider>
         </div>
         <div class="allIconBox">
-          <div @click="goSkip('government-dustWarn')" class="tac">
+          <div @click="goSkip('government-dustNoise')" class="tac">
             <div class="iconBox" style="color:#ee4634" v-text="dustWarnNum"></div>
             <span class="text">扬尘告警</span>
           </div>
@@ -78,6 +79,10 @@
           <div @click="goSkip('government-problemReport')" class="tac">
             <div class="iconBox" v-text="todayWait.questionReportNumber"></div>
             <span class="text">问题上报</span>
+          </div>
+          <div @click="handelVideo" class="tac">
+            <div class="iconBox" v-text="todayWait.videoNum"></div>
+            <span class="text">音视频巡检</span>
           </div>
           <div class="tac"></div>
         </div>
@@ -180,14 +185,13 @@ export default {
         carNumber: 0,
         questionReportNumber: 0,
         taskNumber: 0,
-        todayCheckNumber: 0
+        todayCheckNumber: 0,
+        videoNum: 0
       },
       list: [], //督办派单列表
       loading: false, //加载
       finished: false, //完成
-      weather: {
-        wea_img: 'qing'
-      },
+      weather: {},
       searchData: {
         limit: 10,
         page: 1,
@@ -204,6 +208,15 @@ export default {
     GoTop
   },
   methods: {
+    handelVideo() {
+      if (window.jsCall) {
+        window.jsCall.videoInspectionList()
+      } else {
+        this.$router.push({
+          name: 'government-videoCheck'
+        })
+      }
+    },
     //程序入口
     appMain() {
       this.user.name = this.$store.state.user.user.accountBaseDto.name
@@ -272,6 +285,7 @@ export default {
           areaCode: this.$store.state.user.user.accountTypeDto.code,
           receiverId: this.$store.state.user.user.id, //收单人id
           carState: '', //非名录车状态
+          departmentState: this.$dictionaries.machineType.government,
           warningCode: this.$dictionaries.warnType.car,
           todayState: this.$dictionaries.todayCheck.waitCheck, //今日巡检状态
           questionState: this.$dictionaries.problem.report, //问题上报状态

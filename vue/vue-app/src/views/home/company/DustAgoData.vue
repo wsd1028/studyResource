@@ -76,25 +76,39 @@ export default {
     },
     //绘制扬尘
     async drawDust() {
-      let resp = await this.$http.get('/carp/device/a/q/dust/avg/real/pm', {
-        params: {
-          sn: this.paramsData.sn,
-          size: '',
-          ...this.dustDate
-        }
-      })
       let time = [],
         pm25 = [],
-        pm10 = []
-      if (resp.code == 0) {
-        for (let i = 0; i < resp.data.date.length; i++) {
-          if (this.dustTime == 12) {
-            resp.data.date[i] = this.$moment(resp.data.date[i]).format('HH:mm')
-          } else {
-            resp.data.date[i] = this.$moment(resp.data.date[i]).format('MM-DD')
+        dateStr = 'time',
+        pm10 = [],
+        resp = {}
+      if (this.dustTime == 12) {
+        resp = await this.$http.get('/carp/device/a/q/dust/avg/time', {
+          params: {
+            sn: this.paramsData.sn,
+            startTime: this.dustDate.startDate,
+            endTime: this.dustDate.endDate
           }
+        })
+      } else {
+        dateStr = 'date'
+        resp = await this.$http.get('/carp/device/a/q/dust/data/avg/chart/day', {
+          params: {
+            sn: this.paramsData.sn,
+            ...this.dustDate
+          }
+        })
+      }
+      if (resp.code == 0) {
+        for (let i = 0; i < resp.data[dateStr].length; i++) {
+          if (this.dustTime == 12) {
+            resp.data[dateStr][i] = this.$moment(resp.data[dateStr][i]).format('HH:mm')
+          } else {
+            resp.data[dateStr][i] = this.$moment(resp.data[dateStr][i]).format('MM-DD')
+          }
+          resp.data.pm25[i] = parseInt(resp.data.pm25[i])
+          resp.data.pm10[i] = parseInt(resp.data.pm10[i])
         }
-        time = resp.data.date
+        time = resp.data[dateStr]
         pm25 = resp.data.pm25
         pm10 = resp.data.pm10
       } else {
@@ -247,24 +261,37 @@ export default {
     },
     //绘制噪声
     async drawVoice() {
-      let resp = await this.$http.get('/carp/device/a/q/dust/avg/real/noise', {
-        params: {
-          sn: this.paramsData.sn,
-          size: '',
-          ...this.voiceDate
-        }
-      })
       let time = [],
+        dateStr = 'time',
         voice = []
+      let resp = {}
+      if (this.voiceTime == 12) {
+        resp = await this.$http.get('/carp/device/a/q/dust/avg/time', {
+          params: {
+            sn: this.paramsData.sn,
+            startTime: this.voiceDate.startDate,
+            endTime: this.voiceDate.endDate
+          }
+        })
+      } else {
+        dateStr = 'date'
+        resp = await this.$http.get('/carp/device/a/q/dust/data/avg/chart/day', {
+          params: {
+            sn: this.paramsData.sn,
+            ...this.voiceDate
+          }
+        })
+      }
+
       if (resp.code == 0) {
-        for (let i = 0; i < resp.data.date.length; i++) {
-          if (this.dustTime == 12) {
-            resp.data.date[i] = this.$moment(resp.data.date[i]).format('HH:mm')
+        for (let i = 0; i < resp.data[dateStr].length; i++) {
+          if (this.voiceTime == 12) {
+            resp.data[dateStr][i] = this.$moment(resp.data[dateStr][i]).format('HH:mm')
           } else {
-            resp.data.date[i] = this.$moment(resp.data.date[i]).format('MM-DD')
+            resp.data[dateStr][i] = this.$moment(resp.data[dateStr][i]).format('MM-DD')
           }
         }
-        time = resp.data.date
+        time = resp.data[dateStr]
         voice = resp.data.voice
       } else {
         this.$dialog.alert({

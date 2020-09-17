@@ -60,20 +60,6 @@ export default {
           .then(({ code, data }) => {
             if (code === 0) {
               this.userList = data.records || data
-              /* this.userList.push({
-                id: '448516366190776320',
-                username: 'zhaogang',
-                accountBaseDto: {
-                  id: '448516366190776320',
-                  accountId: '448516366190776320',
-                  name: '廖秀豪',
-                  phone: '18170654864',
-                  idCard: '513447987494196416',
-                  sex: true,
-                  birthday: '2020-05-28 16:40:32',
-                  photo: 'http://192.168.31.118:9101/business/a/q/upload/download/2020/5/28/1590655597926.jpg'
-                }
-              }) */
             } else {
               this.$message.error('网络错误')
             }

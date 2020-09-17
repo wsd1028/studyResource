@@ -72,17 +72,21 @@
       @zoomend="onZoomend"
       class="bm-view"
     >
-      <!-- <bm-boundary :fillOpacity="0" :strokeWeight="2" name="宜宾市叙州区" strokeColor="blue"></bm-boundary> -->
-      <!-- <bm-boundary :fillOpacity="0" :strokeWeight="2" name="宜宾市翠屏区" strokeColor="red"></bm-boundary> -->
       <!-- 区域点 -->
       <div v-if="mapConfig.zoom < 12">
-        <bm-label
-          :content="item.name + '<br/>' + item.value"
+        <bm-marker
+          :icon="{
+            url: require('@/assets/svg/triangle.svg'),
+            size: { width: 20, height: 20 }
+          }"
           :key="index"
-          :labelStyle="cityLabel"
           :position="item.position"
+          :zIndex="10"
+          @click="handelCityIcon($event, item)"
           v-for="(item, index) in cityList"
-        />
+        >
+          <bm-label :content="item.name + '<br/>' + item.value" :labelStyle="cityLabel" :offset="{ width: -30, height: -32 }" :position="item.position" />
+        </bm-marker>
       </div>
       <bm-marker
         :icon="{
@@ -151,7 +155,7 @@ export default {
       projectDetail: {
         //当前选择项目
         mark: false,
-        dialog: true,
+        dialog: false,
         data: {}
       }, //选中项目
       searchProject: {
@@ -195,13 +199,10 @@ export default {
         fontSize: '13px',
         border: 0,
         zIndex: 20,
-        width: '50px',
-        height: '50px',
+        width: '80px',
         display: 'block',
-        'padding-top': '8px',
         'text-align': 'center',
-        backgroundColor: 'rgb(42, 130, 254)',
-        'border-radius': '40px'
+        backgroundColor: 'rgb(42, 130, 254)'
       },
       activeLable: {
         color: 'rgb(42, 130, 254)',

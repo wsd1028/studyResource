@@ -1,6 +1,6 @@
 <template>
   <div class="government-dustDevice mainBox">
-    <myTitle class="mainTop" titleName="扬尘告警"></myTitle>
+    <myTitle class="mainTop" titleName="扬尘噪声"></myTitle>
     <div class="all mainBottom">
       <van-pull-refresh @refresh="getDustList(1)" v-model="refreshloading">
         <van-list :finished="dustFinish" @load="getDustList" finished-text="没有更多了" v-model="loading">

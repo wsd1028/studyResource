@@ -150,6 +150,8 @@ export default {
         examinePeopleId: '', //审核人
         checkPeopleName: '', //巡检人名字
         createDate: '', //创建巡检时间
+        latitude: null,
+        longitude: null,
         id: null, //不传
         departmentState: this.$dictionaries.machineType.company, //部门状态
         workStationId: null, //项目/消纳站ID
@@ -180,6 +182,8 @@ export default {
     }
   },
   async mounted() {
+    window.setLocation = this.setLocation2
+    this.getLocation()
     this.userMsg = this.$store.state.user.user
     this.searchData.searchCode = this.userMsg.accountTypeDto.code
     this.getCheck()
@@ -193,6 +197,15 @@ export default {
   },
   components: { MyUpload },
   methods: {
+    //得到安卓返回的经纬度
+    setLocation2(data) {
+      this.updateData.latitude = data.lat
+      this.updateData.longitude = data.lng
+    },
+    //调用安卓接口获取经纬度
+    getLocation() {
+      if (window.jsCall) window.jsCall.getLocation()
+    },
     //滑动
     onSwipe(type) {
       let length = this.areaList.length

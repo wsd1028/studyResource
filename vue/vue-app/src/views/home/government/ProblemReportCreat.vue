@@ -4,7 +4,7 @@
       <MyMap :needCode="true" @chooseAddress="chooseAddress"></MyMap>
     </van-popup>
     <myTitle class="mainBox2" titleName="新建问题上报"></myTitle>
-    <div class="boxItem mt50">
+    <div class="boxItem mt50" style="margin-top:0">
       <div class="itemContent problemType" style="padding:0 0px 10px">
         <p>问题类型</p>
         <div>
@@ -89,13 +89,14 @@ export default {
       mapDia: false,
       updateData: {
         areaCode: 0,
+        phone: '',
         peopleId: '', //上报人ID
         reportTitle: '未报建工地问题', //问题上报标题
         reportType: this.$dictionaries.problem.type.pollution, //上报类型
         reportMessage: '', //上报描述信息1
         createDate: '', //上报时间1
         reportAddress: '', //上报地址1
-        adminCodeId: '0', //行政区域id1
+        adminCodeId: '', //行政区域id1
         photo: [], //上报图片集合1
         longitude: '',
         latitude: '',
@@ -119,8 +120,10 @@ export default {
     async updateYes() {
       this.btnLoading = true
       this.updateData.peopleId = this.$store.state.user.user.id
+      this.updateData.phone = this.$store.state.user.user.accountBaseDto.phone
+      this.updateData.name = this.$store.state.user.user.accountBaseDto.name
       this.updateData.createDate = this.$moment().format('YYYY-MM-DD hh:mm:ss')
-      let bool = this.$until.checkUpdateData(this.updateData)
+      let bool = this.$until.checkUpdateData(this.updateData, ['adminCodeId', 'phone'])
       //必填项是否验证成功
       if (bool) {
         let url = '/carp/business/a/q/question/report/insert'
@@ -191,6 +194,7 @@ export default {
       color: #323232;
       font-weight: 700;
       margin-left: 16px;
+      font-size: 14px;
     }
     .problemType {
       display: flex;
@@ -206,7 +210,7 @@ export default {
   }
   .myTag {
     padding: 0px 10px;
-    line-height: 30px;
+    line-height: 24px;
     font-size: 18px;
     margin: 4px 10px;
     border-radius: 16px;

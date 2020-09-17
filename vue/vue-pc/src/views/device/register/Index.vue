@@ -10,14 +10,20 @@
       :allow-add="tablePermission.add"
       :allow-delete="tablePermission.del"
       :allow-edit="tablePermission.edit"
-      :show-control="false"
+      :show-control-del="false"
+      :show-control-edit="false"
       :filters="filters"
+      :bind-buttons="[
+        { label: '修改申请', key: 'handleDeviceEdit' },
+        { label: '移机申请', type: 'warning', key: 'handleDeviceMove' }
+      ]"
     ></common-table-control>
   </div>
 </template>
 <script>
 import commonTableControl from '@/components/CommonTableControl'
 export default {
+  name: 'manufacturerRegister',
   data() {
     // 表操作权限
     const uri = this.$store.state.tab.currentMenu ? this.$store.state.tab.currentMenu.uri : ''
@@ -40,16 +46,67 @@ export default {
       tablePermission,
       // 表单配置
       form: {
-        formWidth: '500px',
-        formHeight: '60vh',
-        // 表单数据
-        data: {},
+        formWidth: '1000px',
+        formHeight: 'auto',
+        tableControlWidth: '206px',
+        onBeforeAddShow: () => {
+          this.form.label.videoUrl.show = true
+        },
+        onBeforeEditShow: data => {
+          this.form.label.videoUrl.show = data.type == 202
+        },
+        customEdit: (data, finish) => {
+          data.lastUpdateUpms = user.id
+          this.$http.put(this.editUrl, data).then(({ code, message }) => {
+            if (code === 0) {
+              this.$message.success('修改成功')
+              finish()
+            } else {
+              finish(message)
+            }
+          })
+        },
         // 表格标题
         label: {
-          manufacturerId: {
-            show: false,
-            colShow: false,
-            default: user.accountTypeDto.ancillaryId
+          // 是否标准设备
+          dustType: {
+            label: '标准设备',
+            type: 'select',
+            props: {
+              label: 'name',
+              code: 'id'
+            },
+            item: (() => {
+              this.$http.get('/carp/business/a/q/dict/category/dustType').then(({ code, data }) => {
+                if (code === 0) {
+                  this.form.label.dustType.item = data
+                  this.form.label.dustType.default = data[0].id
+                } else {
+                  this.$message.error('设备类型请求失败')
+                }
+              })
+              return []
+            })(),
+            required: true,
+            span: 12
+          },
+          // 是否基准设备
+          isBasics: {
+            label: '基准设备',
+            type: 'radio',
+            span: 12,
+            item: [
+              { label: '是', code: true },
+              { label: '否', code: false }
+            ],
+            required: true,
+            default: false
+          },
+          // 设备名称
+          deviceName: {
+            label: '设备名称',
+            required: true,
+            span: 12
           },
           // 设备序列号
           sn: {
@@ -57,29 +114,81 @@ export default {
             colType: 'edit',
             width: 136,
             required: true,
-            span: 24
+            span: 12
           },
-          // 工程名称
-          projectName: {
-            label: '工程名称',
-            width: 200,
+          // 设备厂商
+          manufacturerId: {
+            label: '设备厂商',
+            type: 'select',
+            span: 12,
+            props: {
+              label: 'name',
+              code: 'id'
+            },
+            required: true,
+            item: (() => {
+              this.$http
+                .get('/carp/device/a/q/device/agent/manufactures', {
+                  params: {
+                    id: user.accountTypeDto.ancillaryId
+                  }
+                })
+                .then(({ code, data, message }) => {
+                  if (code === 0) {
+                    this.form.label.manufacturerId.item = data || []
+                  } else {
+                    this.$message.error('请求失败：' + message)
+                  }
+                })
+            })(),
+            // 当前账号类型为设备厂商默认当前厂商id
+            show: ![80].includes(this.$userType),
+            default: [80].includes(this.$userType) ? user.accountTypeDto.ancillaryId : null
+          },
+          // 固定源类型
+          fixedSourceType: {
+            label: '固定源类型',
+            type: 'select',
+            props: {
+              label: 'name',
+              code: 'id'
+            },
+            item: (() => {
+              this.$http.get('/carp/business/a/q/dict/category/fixed_source_type').then(({ code, data, message }) => {
+                if (code === 0) {
+                  this.form.label.fixedSourceType.item = data
+                } else {
+                  this.$message.error('未获取到固定源类型: ' + message)
+                }
+              })
+              return []
+            })(),
+            span: 12,
+            required: true
+          },
+          // 固定源名称
+          fixedSourceName: {
+            label: '固定源名称',
+            width: 300,
             placeholder: '请填写完整的工程名称',
             required: true,
-            span: 24
+            span: 12
           },
           keyId: {
             label: 'keyId',
             width: 220,
             show: false,
+            colShow: false,
             real: false,
-            span: 24
+            span: 12
           },
           keySecret: {
             label: 'keySecret',
             width: 220,
             show: false,
+            colShow: false,
             real: false,
-            span: 24
+            span: 12
           },
           // 设备类型
           type: {
@@ -90,46 +199,73 @@ export default {
               label: 'name',
               code: 'code'
             },
+            width: 120,
             required: true,
             default: null,
-            span: 24
+            span: 12,
+            change: type => {
+              this.form.label.videoUrl.show = type == 202
+            }
           },
           // 设备型号
           model: {
             label: '设备型号',
             required: true,
-            span: 24
+            span: 12
           },
           // 联系人
           linkman: {
             label: '联系人',
-            width: 60,
+            width: 80,
             required: true,
-            span: 24
+            span: 12
           },
           // 联系人电话
           phone: {
             label: '联系人电话',
+            width: 120,
             rule: {
               regExp: /^1[3-9]\d(-?\d{4}){2}$|^(0\d{2}-?)?\d{8}$|^(0\d{3}-?)?\d{7}$|^$|^null$|^undefined$/,
               message: '请填写正确的手机号或座机号'
             },
             required: true,
-            span: 24
+            span: 12
           },
-          // 项目定位
+          // 设备批次
+          batch: {
+            label: '设备批次',
+            span: 12,
+            required: true
+          },
+          // 设备定位
           location: {
-            label: '项目定位',
+            label: '设备定位',
             type: 'map',
-            colShow: false,
-            span: 24,
+            span: 12,
             real: false,
             // 定位相关配置
             target: {
               lng: 'lng',
               lat: 'lat'
             },
+            colShow: false,
             required: true
+          },
+          // 现场编号
+          sceneNumber: {
+            label: '现场编号',
+            span: 12
+          },
+          // 设备位置描述
+          local: {
+            label: '设备位置描述',
+            span: 12
+          },
+          videoUrl: {
+            label: '视频URL',
+            span: 24,
+            width: 300,
+            show: true
           },
           // 备注
           note: {
@@ -144,18 +280,46 @@ export default {
             label: '经度',
             type: 'number',
             allowReset: true,
-            show: false,
-            colShow: false
+            colShow: false,
+            show: false
           },
           // 纬度
           lat: {
             label: '纬度',
             type: 'number',
             allowReset: true,
+            colShow: false,
+            show: false
+          },
+          // 接入商id
+          agentId: {
             show: false,
-            colShow: false
+            colShow: false,
+            default: [90].includes(this.$userType) ? user.accountTypeDto.ancillaryId : null
+          },
+          // 修改人员id
+          lastUpdateUpms: {
+            show: false,
+            colShow: false,
+            default: user.id
           }
-        }
+        },
+        tableSort: [
+          'sn',
+          'type',
+          'deviceName',
+          'fixedSourceName',
+          'fixedSourceType',
+          'dustType',
+          'isBasics',
+          'keyId',
+          'keySecret',
+          'videoUrl',
+          'model',
+          'linkman',
+          'phone',
+          'note'
+        ]
       },
       addUrl: '/carp/device/a/q/device/register',
       delUrl: '/carp/device/a/q/device/register',
@@ -170,18 +334,23 @@ export default {
           props: {
             label: 'name'
           },
-          item: []
+          item: [],
+          value: 202
         },
-        // 厂商名称
-        name: {
-          label: '厂商名称搜索',
-          type: 'search',
-          show: [0].includes(this.$userType),
-          value: ''
+        // 用户类型 设备厂商-1 接入厂商-2
+        userType: {
+          show: [0, 50].includes(this.$userType),
+          type: 'select',
+          item: [
+            { label: '设备厂商', code: 1 },
+            { label: '接入厂商', code: 2 }
+          ],
+          value: [0, 50].includes(this.$userType) ? 1 : { 80: 1, 90: 2 }[this.$userType]
         },
-        manufacturerId: {
+        // 用户id
+        generalId: {
           show: false,
-          value: [0].includes(this.$userType) ? '' : user.accountTypeDto.ancillaryId
+          value: [0, 50].includes(this.$userType) ? null : user.accountTypeDto.ancillaryId
         }
       }
     }

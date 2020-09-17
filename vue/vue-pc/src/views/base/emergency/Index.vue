@@ -1,6 +1,7 @@
 <template>
   <div style="display:flex">
     <table-control
+      ref="tableControl"
       :form-config="form"
       add-url="/carp/business/a/q/emergency/plan/increase"
       del-url="/carp/business/a/q/emergency/plan"
@@ -12,10 +13,17 @@
       :show-control-del="false"
       :show-control-edit="false"
       :filters="filters"
-      :bind-buttons="[{ label: '查看详情' }]"
+      :bind-buttons="[
+        { label: '查看详情', key: 'details' },
+        { label: '审核', key: 'review', type: 'warning' }
+      ]"
       @bindButtonClick="
         emergency = $event.row
-        detailsShow = true
+        if ($event.key == 'details') {
+          detailsShow = true
+        } else if ($event.key == 'review') {
+          reviewShow = true
+        }
       "
     >
       <!-- 附件上传 -->
@@ -51,6 +59,7 @@
         </el-upload>
       </div>
     </table-control>
+
     <!-- 查看详情弹窗 -->
     <el-dialog :title="emergency.title" v-if="detailsShow" :visible="true" top="10vh" width="1100px" height="100vh" @close="detailsShow = false">
       <emergency-details
@@ -62,12 +71,30 @@
         "
       ></emergency-details>
     </el-dialog>
+
+    <!-- 审核弹窗 -->
+    <el-dialog v-if="reviewShow" :visible="true" width="500px" @close="reviewShow = false">
+      <div slot="title">
+        <span>审核</span>
+        <el-tag size="mini" type="success" v-cloak style="margin-left:4px"> {{ emergency.title }} </el-tag>
+      </div>
+      <emergency-review
+        :emergency="emergency"
+        :close="
+          () => {
+            reviewShow = false
+            $refs.tableControl.getList()
+          }
+        "
+      ></emergency-review>
+    </el-dialog>
   </div>
 </template>
 
 <script>
 import tableControl from '@/components/CommonTableControl'
 import emergencyDetails from './Details'
+import emergencyReview from './Review'
 export default {
   name: 'emergency',
   data() {
@@ -99,6 +126,9 @@ export default {
 
       // 显示详情弹窗
       detailsShow: false,
+
+      // 审核弹窗显示控制器
+      reviewShow: false,
 
       // 查看详情的应急预案对象
       emergency: {},
@@ -138,6 +168,25 @@ export default {
             label: '版本号',
             type: 'number',
             span: 24
+          },
+
+          // 工作站
+          workStationId: {
+            label: '工作站',
+            type: 'project',
+            show: false,
+            colShow: false,
+            span: 24,
+            change: ({ node }) => {
+              this.form.data.workStationName = node.projectName || node.name
+            },
+            default: [0, 50].includes(this.$userType) ? null : user.accountTypeDto.ancillaryId
+          },
+
+          // 工作站名称
+          workStationName: {
+            label: '工作站',
+            show: false
           },
 
           // 内容
@@ -180,6 +229,33 @@ export default {
             type: 'title',
             colShow: false,
             real: false
+          },
+
+          // 审核信息
+          examineId: {
+            show: false,
+            colShow: false,
+            default: null
+          },
+          examineName: {
+            label: '审核人',
+            show: false,
+            default: null
+          },
+          examineTime: {
+            label: '审核时间',
+            show: false,
+            default: null
+          },
+          state: {
+            label: '审核状态',
+            show: false,
+            colType: 'tag',
+            item: [
+              { label: '通过', code: true, type: 'success' },
+              { label: '未通过', code: false, type: 'danger' }
+            ],
+            default: 0
           }
         }
       },
@@ -188,7 +264,7 @@ export default {
       filters: {
         createPersonId: {
           show: false,
-          value: null
+          value: [0, 50].includes(this.$userType) ? null : user.id
         }
       }
     }
@@ -236,7 +312,8 @@ export default {
   },
   components: {
     tableControl,
-    emergencyDetails
+    emergencyDetails,
+    emergencyReview
   }
 }
 </script>

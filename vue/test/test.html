@@ -1,0 +1,110 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Document</title>
+    <style type="text/css">
+        * {
+            margin: 0px;
+            padding: 0px;
+        }
+
+        .box {
+            margin: 20px 0px 0px 20px;
+        }
+
+        .box1 {
+            width: 50%;
+            height: 15px;
+            background: linear-gradient(to right, #f5911e 40%, #d91f2b, #d91f2b);
+        }
+
+        .box2 {
+            width: 50%;
+            height: 15px;
+            background: linear-gradient(to right, orange, #d91f2b);
+        }
+
+        /*background: -webkit-linear-gradient(red 5%, green 15%, blue 60%);*/
+    </style>
+</head>
+
+<body>
+    <div class="box box1"></div>
+    <div class="box box2"></div>
+    <script type="text/javascript">
+        console.log(colorExcessive([], 30))
+        function colorExcessive(colorList, value) {
+            let color1 = 0,
+                color2 = 0,
+                color3 = 0,
+                level1 = 0,
+                level2 = 0,
+                level3 = 0
+            colorList = [
+                {
+                    color: 'rgb(68, 130, 229)',
+                    value: 0
+                },
+                {
+                    color: 'rgb(33, 214, 156)',
+                    value: 50
+                },
+                {
+                    color: 'rgb(244, 207, 54)',
+                    value: 100
+                },
+                {
+                    color: 'rgb(236, 58, 58)',
+                    value: 150
+                }
+            ]
+            //蓝 （68,130,229）0
+            //绿（33,214,156）50
+            //黄（244,207,54）100
+            //红（236,58,58）150
+
+            //value大于最大值
+            color1 = decomposeColor(colorList[colorList.length - 1].color)[0]
+            color2 = decomposeColor(colorList[colorList.length - 1].color)[1]
+            color3 = decomposeColor(colorList[colorList.length - 1].color)[2]
+
+            for (let i = 0; i < colorList.length; i++) {
+                if (value <= colorList[i].value) {
+                    //value小于最小值
+                    if (i == 0) {
+                        color1 = decomposeColor(colorList[0].color)[0]
+                        color2 = decomposeColor(colorList[0].color)[1]
+                        color3 = decomposeColor(colorList[0].color)[2]
+                        break
+                    }
+                    colorEnd = decomposeColor(colorList[i].color)
+                    colorStart = decomposeColor(colorList[i - 1].color)
+                    level1 = (colorEnd[0] - colorStart[0]) / (colorList[i].value - colorList[i - 1].value)
+                    level2 = (colorEnd[1] - colorStart[1]) / (colorList[i].value - colorList[i - 1].value)
+                    level3 = (colorEnd[2] - colorStart[2]) / (colorList[i].value - colorList[i - 1].value)
+                    color1 = parseInt( colorStart[0] + (value - colorList[i - 1].value) * level1)
+                    color2 = parseInt( colorStart[1] + (value - colorList[i - 1].value) * level2)
+                    color3 = parseInt( colorStart[2] + (value - colorList[i - 1].value) * level3)
+                    break
+                }
+            }
+            function decomposeColor(color) {
+                var regexp = /[0-9]{0,3}/g
+                //利用正则表达式去掉多余的部分，将rgb中的数字提取
+                var colorArr = color.match(regexp).filter(function (s) {
+                    return s && s.trim()
+                })
+                for (let i = 0; i < colorArr.length; i++) {
+                    colorArr[i]=parseInt(colorArr[i])
+                }
+                return colorArr
+            }
+            return `rba(${color1},${color2},${color3})`
+        }
+    </script>
+
+</body>
+
+</html>

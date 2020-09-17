@@ -1,12 +1,30 @@
 <template>
   <div id="app">
-    <router-view />
+    <router-view v-if="isRouterAlive" />
   </div>
 </template>
 
 <script>
 export default {
-  mounted() {}
+  name: 'app',
+  provide() {
+    return {
+      reload: this.reload
+    }
+  },
+  data() {
+    return {
+      isRouterAlive: true
+    }
+  },
+  methods: {
+    reload() {
+      this.isRouterAlive = false
+      this.$nextTick(() => {
+        this.isRouterAlive = true
+      })
+    }
+  }
 }
 </script>
 >
@@ -36,7 +54,6 @@ table {
   border-collapse: collapse;
   width: 100%;
   border-color: #eee;
-  line-height: 40px;
 }
 
 h2,

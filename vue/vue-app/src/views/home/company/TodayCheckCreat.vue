@@ -40,6 +40,8 @@ export default {
         areaCode: 0, //区域code
         checkPeopleId: null, //巡检人ID
         initiatorPeopleId: null, //发起者ID
+        latitude: null,
+        longitude: null,
         examinePeopleId: '', //审核人
         checkPeopleName: '', //巡检人名字
         createDate: '', //创建巡检时间
@@ -73,6 +75,8 @@ export default {
     }
   },
   mounted() {
+    window.setLocation = this.setLocation2
+    this.getLocation()
     this.getCheck()
     this.project = this.$store.state.user.project
     let userMsg = this.$store.state.user.user
@@ -88,6 +92,15 @@ export default {
   },
   components: { MyUpload },
   methods: {
+    //得到安卓返回的经纬度
+    setLocation2(data) {
+      this.updateData.latitude = data.lat
+      this.updateData.longitude = data.lng
+    },
+    //调用安卓接口获取经纬度
+    getLocation() {
+      if (window.jsCall) window.jsCall.getLocation()
+    },
     //上传文件
     uploadYes(fileList, index, name) {
       this.checkings[index][name] = fileList
@@ -95,7 +108,6 @@ export default {
     //确认上传
     async updateYes() {
       let bool = true
-      this.btnLoading = true
       for (let i = 0; i < this.checkings.length; i++) {
         if (!this.checkings[i].checkState) {
           this.updateData.state = this.$dictionaries.todayCheck.update
@@ -134,7 +146,9 @@ export default {
       //必填项是否验证成功
       if (bool) {
         let url = '/carp/business/a/q/todays/check/increase'
+        this.btnLoading = true
         let resp = await this.$http.post(url, this.updateData)
+        this.btnLoading = false
         if (resp.code == 0) {
           this.$dialog.alert({
             message: '创建成功',
@@ -153,7 +167,6 @@ export default {
           confirmButtonColor: 'red'
         })
       }
-      this.btnLoading = false
     },
     //获取检查项
     async getCheck() {

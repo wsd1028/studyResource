@@ -163,20 +163,30 @@ export default {
     }
   },
   methods: {
-    // 获取需求产出物字典表
+    // 获取需求物字典表
     getDurationProductDict() {
       this.$http.get('/carp/business/a/q/dict/category/requirement_type').then(({ code, data }) => {
         if (code === 0) {
           let items = data.map(item => ({ label: item.name, code: item.id }))
           this.form.label.inputs.item = items
+        }
+      })
+    },
+    // 获取产出物字典表
+    getDurationOutType() {
+      this.$http.get('/carp/business/a/q/dict/category/type').then(({ code, data }) => {
+        if (code === 0) {
+          let items = data.map(item => ({ label: item.name, code: item.id }))
           this.form.label.outputs.item = items
         }
       })
     }
   },
   created() {
-    // 获取需求产出物字典表
+    // 获取需求物字典表
     this.getDurationProductDict()
+    // 获取产出物字典表
+    this.getDurationOutType()
   },
   components: {
     tableControl

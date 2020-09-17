@@ -14,6 +14,8 @@
         <router-view class="page-container" :key="$route.query.key" />
       </el-main>
     </el-container>
+    <!-- 音视频通话弹窗 -->
+    <telephone-dialog></telephone-dialog>
   </el-container>
 </template>
 
@@ -21,6 +23,7 @@
 import CommonHeader from '@/components/CommonHeader.vue'
 import CommonAside from '@/components/CommonAside'
 import CommonTab from '@/components/CommonTab'
+import telephoneDialog from './telephone/Index'
 import { mapState } from 'vuex'
 export default {
   computed: {
@@ -84,7 +87,8 @@ export default {
   components: {
     CommonHeader,
     CommonAside,
-    CommonTab
+    CommonTab,
+    telephoneDialog
   }
 }
 </script>
