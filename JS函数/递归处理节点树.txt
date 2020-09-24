@@ -1,4 +1,4 @@
- private AddChildNode(node) {
+ function AddChildNode(node) {
     node.children = [];
     this.nodeMess.forEach(item => {
       if (item.fatherNodeId == node.nodeId) {

@@ -168,6 +168,15 @@ function checkFull() {
   if (isFull === undefined) isFull = false
   return isFull
 }
+//递归
+function test(data) {
+  data.forEach(item => {
+    if (item.children && item.children.length > 0) {
+      test(item)
+    }
+  })
+}
+
 exports = {
   getPageData,
   getCookie,

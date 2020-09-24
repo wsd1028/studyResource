@@ -7,6 +7,7 @@
   <meta http-equiv="X-UA-Compatible" content="ie=edge">
   <link rel="stylesheet" href="./css/element.css">
   <link rel="stylesheet" href="./css/iconfont/iconfont.css">
+  <script src="http://api.map.baidu.com/getscript?v=3.0&ak=Y7mhfb6uz11mbrtjhC7kePvWKNmk9BaY"></script>
   <title>湖南移动首页展示</title>
 </head>
 
@@ -25,45 +26,13 @@
       data: {
         test: 1
       },
-      methods: {
-        changeTest(val, callback) {
-          if (!val) {
-            callback()
-          }
-        }
-      }, mounted() {
-        let that = this
-        let wsd = function () {
-          this.Vue.test = 2
-          console.log(this.Vue)
-          console.log(0)
-        }
-        this.changeTest(0, wsd);
-        console.log(this.test)
-        let arr = [{
-          name: '吴少冬',
-          age: 1
-        }, {
-          name: '张三',
-          age: 2
-        }, {
-          name: '吴额大V额少冬',
-          age: 2
-        }, {
-          name: '说的VG',
-          age: 4
-        }, {
-          name: '吴少冬',
-          age: 2
-        }, {
-          name: '张三',
-          age: 2
-        }, {
-          name: 'w四',
-          age: 4
-        }]
-        let arr2 = Enumerable.from(arr).orderBy("x=>x.name").toArray();//降序OrderByDescending() 
-        console.log(arr2)
+     mounted() {
+       console.log(BMap)
+      var myCity = new BMap.LocalCity()
+			myCity.get(async res => {
+				// console.log(res)
+				alert(JSON.stringify(res))
+			})
       }
     })
   </script>
